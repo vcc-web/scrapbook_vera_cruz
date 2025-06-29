@@ -8,6 +8,9 @@ class ScrapbookViewer {
         this.imagesLoaded = false;
         this.flipbookInitialized = false;
         
+        // Criar referência global para callbacks
+        window.scrapbookInstance = this;
+        
         this.initializeMobile();
         this.initializeElements();
         this.loadPhotos();
@@ -189,6 +192,11 @@ class ScrapbookViewer {
         this.pageFlip.on('flip', (e) => {
             this.currentIndex = e.data;
             this.updateCounter();
+            
+            // Re-otimizar imagens da página atual após um breve delay
+            setTimeout(() => {
+                this.optimizeCurrentPageImage();
+            }, 300);
         });
 
         // Carregar páginas
@@ -196,6 +204,18 @@ class ScrapbookViewer {
         
         this.flipbookInitialized = true;
         console.log('Flipbook inicializado com sucesso!');
+        
+        // Otimizar a exibição das imagens após inicialização
+        setTimeout(() => {
+            this.optimizeImageDisplay();
+            // Garantir que a primeira imagem esteja otimizada
+            this.optimizeCurrentPageImage();
+            // Iniciar watchdog de otimização
+            this.startImageOptimizationWatchdog();
+        }, 500);
+
+        // Força re-otimização periódica para garantir que nenhuma imagem seja cortada
+        this.startImageOptimizationWatchdog();
     }
 
     createPages() {
@@ -241,7 +261,8 @@ class ScrapbookViewer {
                 ${uniqueDecorations}
                 
                 <img src="${photo.src}" alt="Memória ${index + 1}" class="photo" 
-                     style="width: 100%; height: 70%; object-fit: cover; border-radius: 10px; box-shadow: 0 4px 8px rgba(45, 90, 61, 0.3);">
+                     onload="scrapbookInstance.optimizeImageOnLoad(this)"
+                     data-photo-index="${index}">
                 
                 <div class="text-overlay">
                     <div class="memory-text">${photo.text}</div>
@@ -484,6 +505,89 @@ class ScrapbookViewer {
         }
         
         return selectedDecorations.join('');
+    }
+
+    optimizeImageDisplay() {
+        // Otimizar todas as imagens carregadas
+        const images = document.querySelectorAll('.photo');
+        images.forEach((img, index) => {
+            if (img.complete && img.naturalHeight !== 0) {
+                this.adjustImageFit(img);
+            } else {
+                img.addEventListener('load', () => {
+                    this.adjustImageFit(img);
+                });
+            }
+        });
+    }
+
+    adjustImageFit(img) {
+        if (!img.complete || img.naturalHeight === 0) {
+            return; // Imagem ainda não carregou
+        }
+
+        const photoFrame = img.closest('.photo-frame');
+        const aspectRatio = img.naturalWidth / img.naturalHeight;
+
+        // Remover classes anteriores
+        photoFrame.classList.remove('portrait-image', 'landscape-image', 'square-image');
+
+        // Limpar estilos inline que podem interferir
+        img.style.cssText = '';
+
+        // Classificar a imagem por orientação e aplicar classe
+        if (aspectRatio < 0.8) {
+            // Imagem portrait (vertical)
+            photoFrame.classList.add('portrait-image');
+        } else if (aspectRatio > 1.3) {
+            // Imagem landscape (horizontal)
+            photoFrame.classList.add('landscape-image');
+        } else {
+            // Imagem quadrada ou proporção equilibrada
+            photoFrame.classList.add('square-image');
+        }
+
+        // Garantir que as propriedades CSS sejam aplicadas
+        img.classList.add('photo');
+        
+        // Adicionar classe para indicar que a imagem foi otimizada
+        photoFrame.classList.add('image-optimized');
+        
+        console.log(`Imagem otimizada: ${aspectRatio.toFixed(2)} - ${photoFrame.classList.contains('portrait-image') ? 'Portrait' : photoFrame.classList.contains('landscape-image') ? 'Landscape' : 'Square'}`);
+    }
+
+    optimizeImageOnLoad(img) {
+        // Marcar que a imagem foi carregada
+        const photoFrame = img.closest('.photo-frame');
+        photoFrame.classList.add('photo-loaded');
+        
+        // Aplicar otimização imediatamente
+        this.adjustImageFit(img);
+        
+        // Re-aplicar otimização após um pequeno delay para garantir que tudo esteja renderizado
+        setTimeout(() => {
+            this.adjustImageFit(img);
+        }, 100);
+    }
+
+    optimizeCurrentPageImage() {
+        // Encontrar a imagem da página atual
+        const currentPage = document.querySelector(`.page:nth-child(${this.currentIndex + 1})`);
+        if (currentPage) {
+            const currentImage = currentPage.querySelector('.photo');
+            if (currentImage) {
+                this.adjustImageFit(currentImage);
+            }
+        }
+    }
+
+    // Força re-otimização periódica para garantir que nenhuma imagem seja cortada
+    startImageOptimizationWatchdog() {
+        setInterval(() => {
+            if (this.flipbookInitialized) {
+                this.optimizeImageDisplay();
+            }
+        }, 5000); // Verificar a cada 5 segundos
     }
 }
 
