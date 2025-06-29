@@ -22,7 +22,6 @@ class ScrapbookViewer {
             navRight: document.getElementById('nav-right'),
             flipbookContainer: document.getElementById('flipbook-container'),
             flipbook: document.getElementById('flipbook'),
-            progressDots: document.getElementById('progress-dots'),
             currentIndex: document.getElementById('current-index'),
             totalPhotos: document.getElementById('total-photos')
         };
@@ -102,7 +101,6 @@ class ScrapbookViewer {
         });
         
         this.elements.totalPhotos.textContent = this.photos.length;
-        this.createProgressDots();
         this.preloadImages();
     }
 
@@ -144,9 +142,9 @@ class ScrapbookViewer {
             maxHeight: 1350,
             maxShadowOpacity: 0.5,
             showCover: false,
-            mobileScrollSupport: false,
+            mobileScrollSupport: true,
             clickEventForward: false,
-            usePortrait: false,
+            usePortrait: true,
             startZIndex: 0,
             autoSize: true,
             showPageCorners: true,
@@ -157,7 +155,6 @@ class ScrapbookViewer {
         // Eventos da biblioteca
         this.pageFlip.on('flip', (e) => {
             this.currentIndex = e.data;
-            this.updateProgress();
             this.updateCounter();
         });
 
@@ -181,6 +178,10 @@ class ScrapbookViewer {
     }
 
     createPageContent(photo, index) {
+        // Escolher um estilo de moldura único para cada página
+        const frameStyles = ['frame-style-1', 'frame-style-2', 'frame-style-3', 'frame-style-4', 'frame-style-5', 'frame-style-6'];
+        const frameStyle = frameStyles[index % frameStyles.length];
+        
         const frameDecorations = Array.from({length: 4}, (_, i) => 
             `<div class="frame-decoration frame-${['top-left', 'top-right', 'bottom-left', 'bottom-right'][i]}"></div>`
         ).join('');
@@ -194,15 +195,19 @@ class ScrapbookViewer {
             <div class="page-curl page-curl-bottom-left"></div>
         `;
 
+        // Adicionar elementos decorativos únicos baseados no índice
+        const uniqueDecorations = this.generateUniqueDecorations(index);
+
         return `
             <div class="paper-texture"></div>
-            <div class="photo-frame">
+            <div class="photo-frame ${frameStyle}">
                 ${frameDecorations}
                 ${washiTapes}
                 ${pageCurls}
+                ${uniqueDecorations}
                 
                 <img src="${photo.src}" alt="Memória ${index + 1}" class="photo" 
-                     style="width: 100%; height: 70%; object-fit: cover; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+                     style="width: 100%; height: 70%; object-fit: cover; border-radius: 10px; box-shadow: 0 4px 8px rgba(45, 90, 61, 0.3);">
                 
                 <div class="text-overlay">
                     <div class="memory-text">${photo.text}</div>
@@ -210,16 +215,6 @@ class ScrapbookViewer {
                 </div>
             </div>
         `;
-    }
-
-    createProgressDots() {
-        this.elements.progressDots.innerHTML = '';
-        this.photos.forEach((_, index) => {
-            const dot = document.createElement('div');
-            dot.className = `progress-dot ${index === 0 ? 'active' : ''}`;
-            dot.addEventListener('click', () => this.goToPhoto(index));
-            this.elements.progressDots.appendChild(dot);
-        });
     }
 
     bindEvents() {
@@ -304,13 +299,6 @@ class ScrapbookViewer {
         }
     }
 
-    updateProgress() {
-        const dots = this.elements.progressDots.querySelectorAll('.progress-dot');
-        dots.forEach((dot, index) => {
-            dot.classList.toggle('active', index === this.currentIndex);
-        });
-    }
-
     updateCounter() {
         this.elements.currentIndex.textContent = this.currentIndex + 1;
     }
@@ -327,6 +315,48 @@ class ScrapbookViewer {
 
     hideLoading() {
         this.elements.loading.classList.add('hidden');
+    }
+
+    generateUniqueDecorations(index) {
+        const decorations = [
+            // Flores e plantas
+            '<div style="position: absolute; top: 5px; left: 5px; font-size: 18px; color: #2d5a3d;">🌿</div>',
+            '<div style="position: absolute; top: 5px; right: 5px; font-size: 18px; color: #d4af37;">✨</div>',
+            '<div style="position: absolute; bottom: 5px; left: 5px; font-size: 16px; color: #2d5a3d;">🍃</div>',
+            '<div style="position: absolute; bottom: 5px; right: 5px; font-size: 16px; color: #d4af37;">💫</div>',
+            
+            // Elementos decorativos geométricos
+            '<div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 30px; height: 3px; background: linear-gradient(90deg, #d4af37, #2d5a3d);"></div>',
+            '<div style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); width: 40px; height: 2px; background: linear-gradient(90deg, #2d5a3d, #d4af37);"></div>',
+            
+            // Cantos ornamentais
+            '<div style="position: absolute; top: 8px; left: 8px; width: 20px; height: 20px; border-top: 2px solid #d4af37; border-left: 2px solid #d4af37;"></div><div style="position: absolute; top: 8px; right: 8px; width: 20px; height: 20px; border-top: 2px solid #d4af37; border-right: 2px solid #d4af37;"></div>',
+            
+            // Pequenos elementos naturais
+            '<div style="position: absolute; top: 15px; left: 15px; font-size: 14px; color: #2d5a3d;">🌱</div><div style="position: absolute; bottom: 15px; right: 15px; font-size: 14px; color: #d4af37;">⭐</div>',
+            
+            // Linhas decorativas
+            '<div style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 2px; height: 60px; background: linear-gradient(180deg, transparent, #d4af37, transparent);"></div><div style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 2px; height: 60px; background: linear-gradient(180deg, transparent, #2d5a3d, transparent);"></div>',
+            
+            // Elementos únicos especiais
+            '<div style="position: absolute; top: 12px; right: 12px; width: 15px; height: 15px; background: #d4af37; transform: rotate(45deg); box-shadow: 0 2px 4px rgba(45, 90, 61, 0.3);"></div>',
+            '<div style="position: absolute; bottom: 12px; left: 12px; width: 12px; height: 12px; border-radius: 50%; background: radial-gradient(circle, #2d5a3d, #d4af37); border: 1px solid #1a3d28;"></div>',
+            
+            // Padrões únicos
+            '<div style="position: absolute; top: 20px; left: 20px; width: 25px; height: 25px; background: conic-gradient(#d4af37, #2d5a3d, #d4af37); border-radius: 50%; opacity: 0.7;"></div>',
+            '<div style="position: absolute; bottom: 20px; right: 20px; font-size: 20px; color: #2d5a3d; text-shadow: 1px 1px 2px rgba(212, 175, 55, 0.5);">❋</div>',
+        ];
+        
+        // Selecionar 1-3 decorações aleatórias baseadas no índice
+        const numDecorations = (index % 3) + 1;
+        const selectedDecorations = [];
+        
+        for (let i = 0; i < numDecorations; i++) {
+            const decorationIndex = (index * 3 + i) % decorations.length;
+            selectedDecorations.push(decorations[decorationIndex]);
+        }
+        
+        return selectedDecorations.join('');
     }
 }
 
