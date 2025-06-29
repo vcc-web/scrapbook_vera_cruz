@@ -8,6 +8,7 @@ class ScrapbookViewer {
         this.imagesLoaded = false;
         this.flipbookInitialized = false;
         
+        this.initializeMobile();
         this.initializeElements();
         this.loadPhotos();
         this.bindEvents();
@@ -154,26 +155,35 @@ class ScrapbookViewer {
         // Criar páginas HTML para cada foto
         this.createPages();
         
-        // Inicializar a biblioteca page-flip
-        this.pageFlip = new St.PageFlip(this.elements.flipbook, {
-            width: 800,
-            height: 600,
+        // Detectar se é mobile
+        const isMobile = window.innerWidth <= 768;
+        
+        // Configuração otimizada para mobile e desktop
+        const flipbookConfig = {
+            width: isMobile ? window.innerWidth : 800,
+            height: isMobile ? window.innerHeight : 600,
             size: 'stretch',
-            minWidth: 315,
-            maxWidth: 1000,
-            minHeight: 420,
-            maxHeight: 1350,
-            maxShadowOpacity: 0.5,
+            minWidth: isMobile ? window.innerWidth : 315,
+            maxWidth: isMobile ? window.innerWidth : 1000,
+            minHeight: isMobile ? window.innerHeight : 420,
+            maxHeight: isMobile ? window.innerHeight : 1350,
+            maxShadowOpacity: isMobile ? 0.3 : 0.5,
             showCover: false,
             mobileScrollSupport: false,
             clickEventForward: false,
-            usePortrait: false,
+            usePortrait: isMobile,
             startZIndex: 0,
             autoSize: true,
-            showPageCorners: true,
+            showPageCorners: !isMobile,
             disableFlipByClick: false,
-            swipeDistance: 30
-        });
+            swipeDistance: isMobile ? 50 : 30,
+            // Mobile-specific settings
+            flippingTime: isMobile ? 800 : 1000,
+            useMouseEvents: !isMobile
+        };
+        
+        // Inicializar a biblioteca page-flip
+        this.pageFlip = new St.PageFlip(this.elements.flipbook, flipbookConfig);
 
         // Eventos da biblioteca
         this.pageFlip.on('flip', (e) => {
@@ -283,6 +293,11 @@ class ScrapbookViewer {
 
         // Touch events para mobile
         this.bindTouchEvents();
+        
+        // Redimensionamento da janela
+        window.addEventListener('resize', () => {
+            this.handleResize();
+        });
     }
 
     bindTouchEvents() {
@@ -290,14 +305,17 @@ class ScrapbookViewer {
         let startY = 0;
         let endX = 0;
         let endY = 0;
-        const minSwipeDistance = 50;
+        const minSwipeDistance = window.innerWidth <= 768 ? 50 : 30;
 
-        this.elements.flipbook.addEventListener('touchstart', (e) => {
+        // Touch events no container principal para melhor detecção
+        const touchTarget = window.innerWidth <= 768 ? document.body : this.elements.flipbook;
+
+        touchTarget.addEventListener('touchstart', (e) => {
             startX = e.touches[0].clientX;
             startY = e.touches[0].clientY;
-        });
+        }, { passive: true });
 
-        this.elements.flipbook.addEventListener('touchend', (e) => {
+        touchTarget.addEventListener('touchend', (e) => {
             endX = e.changedTouches[0].clientX;
             endY = e.changedTouches[0].clientY;
 
@@ -306,13 +324,21 @@ class ScrapbookViewer {
 
             // Verificar se é um swipe horizontal
             if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
+                e.preventDefault();
                 if (deltaX > 0) {
                     this.previousPhoto();
                 } else {
                     this.nextPhoto();
                 }
             }
-        });
+        }, { passive: false });
+
+        // Prevenir scroll em mobile
+        if (window.innerWidth <= 768) {
+            document.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+            }, { passive: false });
+        }
     }
 
     nextPhoto() {
@@ -377,6 +403,45 @@ class ScrapbookViewer {
                 this.hideLoading();
             }
         }, 10000);
+    }
+
+    handleResize() {
+        const isMobile = window.innerWidth <= 768;
+        
+        if (this.pageFlip) {
+            // Reinicializar o flipbook com novas dimensões se necessário
+            if (isMobile) {
+                this.pageFlip.updateBoundary();
+            } else {
+                this.pageFlip.updateBoundary();
+            }
+        }
+        
+        // Ajustar viewport para mobile
+        if (isMobile) {
+            document.body.style.height = window.innerHeight + 'px';
+        }
+    }
+
+    initializeMobile() {
+        if (window.innerWidth <= 768) {
+            // Configurações específicas para mobile
+            document.body.classList.add('mobile');
+            
+            // Ajustar altura para mobile
+            const setVH = () => {
+                let vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
+            };
+            
+            setVH();
+            window.addEventListener('resize', setVH);
+            
+            // Prevenir zoom em iOS
+            document.addEventListener('gesturestart', (e) => e.preventDefault());
+            document.addEventListener('gesturechange', (e) => e.preventDefault());
+            document.addEventListener('gestureend', (e) => e.preventDefault());
+        }
     }
 
     generateUniqueDecorations(index) {
