@@ -5,6 +5,8 @@ class ScrapbookViewer {
         this.photos = [];
         this.pageFlip = null;
         this.isAnimating = false;
+        this.imagesLoaded = false;
+        this.flipbookInitialized = false;
         
         this.initializeElements();
         this.loadPhotos();
@@ -113,14 +115,26 @@ class ScrapbookViewer {
             img.onload = () => {
                 loadedCount++;
                 if (loadedCount === totalImages) {
-                    this.initializeFlipbook();
+                    this.imagesLoaded = true;
+                    console.log('Todas as imagens foram carregadas!');
+                    // Se o usuário já clicou no botão mas o flipbook não foi inicializado
+                    if (!this.flipbookInitialized && this.elements.instructions.classList.contains('hidden')) {
+                        this.initializeFlipbook();
+                    }
+                    this.hideLoading();
                 }
             };
             img.onerror = () => {
                 console.warn(`Failed to load image: ${photo.src}`);
                 loadedCount++;
                 if (loadedCount === totalImages) {
-                    this.initializeFlipbook();
+                    this.imagesLoaded = true;
+                    console.log('Carregamento de imagens concluído (com alguns erros)');
+                    // Se o usuário já clicou no botão mas o flipbook não foi inicializado
+                    if (!this.flipbookInitialized && this.elements.instructions.classList.contains('hidden')) {
+                        this.initializeFlipbook();
+                    }
+                    this.hideLoading();
                 }
             };
             img.src = photo.src;
@@ -128,6 +142,15 @@ class ScrapbookViewer {
     }
 
     initializeFlipbook() {
+        if (this.flipbookInitialized) {
+            return; // Já foi inicializado
+        }
+        
+        if (!this.imagesLoaded) {
+            console.log('Aguardando carregamento das imagens...');
+            return; // Aguardar carregamento das imagens
+        }
+        
         // Criar páginas HTML para cada foto
         this.createPages();
         
@@ -142,9 +165,9 @@ class ScrapbookViewer {
             maxHeight: 1350,
             maxShadowOpacity: 0.5,
             showCover: false,
-            mobileScrollSupport: true,
+            mobileScrollSupport: false,
             clickEventForward: false,
-            usePortrait: true,
+            usePortrait: false,
             startZIndex: 0,
             autoSize: true,
             showPageCorners: true,
@@ -161,7 +184,8 @@ class ScrapbookViewer {
         // Carregar páginas
         this.pageFlip.loadFromHTML(document.querySelectorAll('.page'));
         
-        this.hideLoading();
+        this.flipbookInitialized = true;
+        console.log('Flipbook inicializado com sucesso!');
     }
 
     createPages() {
@@ -221,6 +245,16 @@ class ScrapbookViewer {
         // Botão de iniciar
         this.elements.startBtn.addEventListener('click', () => {
             this.hideInstructions();
+            // Garantir que o flipbook seja inicializado quando o usuário clicar
+            if (!this.flipbookInitialized) {
+                if (this.imagesLoaded) {
+                    this.initializeFlipbook();
+                } else {
+                    // Se as imagens ainda não carregaram, mostrar loading e aguardar
+                    this.elements.loading.classList.remove('hidden');
+                    this.waitForImagesAndInitialize();
+                }
+            }
         });
 
         // Navegação por clique
@@ -310,11 +344,39 @@ class ScrapbookViewer {
 
     hideInstructions() {
         this.elements.instructions.classList.add('hidden');
-        this.elements.storyView.classList.remove('hidden');
+        // Só mostrar a story view se o flipbook estiver inicializado ou as imagens carregadas
+        if (this.flipbookInitialized || this.imagesLoaded) {
+            this.elements.storyView.classList.remove('hidden');
+        }
     }
 
     hideLoading() {
         this.elements.loading.classList.add('hidden');
+        // Se as instruções foram escondidas, mostrar a story view
+        if (this.elements.instructions.classList.contains('hidden')) {
+            this.elements.storyView.classList.remove('hidden');
+        }
+    }
+
+    waitForImagesAndInitialize() {
+        // Verificar periodicamente se as imagens foram carregadas
+        const checkInterval = setInterval(() => {
+            if (this.imagesLoaded) {
+                clearInterval(checkInterval);
+                this.initializeFlipbook();
+                this.hideLoading();
+            }
+        }, 100);
+
+        // Timeout de segurança - se demorar mais que 10 segundos, inicializar mesmo assim
+        setTimeout(() => {
+            if (!this.flipbookInitialized) {
+                clearInterval(checkInterval);
+                console.warn('Timeout aguardando imagens - inicializando flipbook mesmo assim');
+                this.initializeFlipbook();
+                this.hideLoading();
+            }
+        }, 10000);
     }
 
     generateUniqueDecorations(index) {
