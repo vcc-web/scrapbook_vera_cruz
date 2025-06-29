@@ -3,9 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#a3c585">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>Scrapbook de Memórias</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Indie+Flower&family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Indie+Flower&family=Kalam:wght@300;400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Indie+Flower&family=Kalam:wght@300;400;700&display=swap"></noscript>
     <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
 </head>
 <body>
@@ -19,8 +24,8 @@
         <!-- Main story view -->
         <div id="story-view" class="story-view hidden">
             <!-- Navigation areas -->
-            <div class="nav-area nav-left" id="nav-left"></div>
-            <div class="nav-area nav-right" id="nav-right"></div>
+            <div class="nav-area nav-left" id="nav-left" role="button" aria-label="Página anterior" tabindex="0"></div>
+            <div class="nav-area nav-right" id="nav-right" role="button" aria-label="Próxima página" tabindex="0"></div>
 
             <!-- Flipbook container -->
             <div id="flipbook-container">
@@ -28,23 +33,24 @@
             </div>
 
             <!-- Photo counter -->
-            <div class="photo-counter">
+            <div class="photo-counter" role="status" aria-live="polite">
                 <span id="current-index">1</span> / <span id="total-photos">0</span>
             </div>
         </div>
 
         <!-- Instructions overlay -->
-        <div id="instructions" class="instructions">
+        <div id="instructions" class="instructions" role="dialog" aria-labelledby="instructions-title" aria-modal="true">
             <div class="instruction-content">
-                <h2>📸 Scrapbook de Memórias</h2>
+                <h2 id="instructions-title">📸 Scrapbook de Memórias</h2>
                 <p>✨ Clique na parte <strong>direita</strong> da tela para avançar</p>
                 <p>✨ Clique na parte <strong>esquerda</strong> da tela para voltar</p>
                 <p>✨ Use as setas do teclado para navegar</p>
-                <button id="start-btn" class="start-button">Começar Jornada</button>
+                <button id="start-btn" class="start-button" type="button">Começar Jornada</button>
             </div>
         </div>
     </div>
 
+    <script src="mobile-responsive.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

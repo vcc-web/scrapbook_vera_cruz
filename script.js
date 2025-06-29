@@ -54,26 +54,26 @@ class ScrapbookViewer {
 
         // Textos aleatórios para as memórias
         const memoryTexts = [
-            'Momentos preciosos que ficaram gravados no coração 💝',
+            'Momentos preciosos que ficaram gravados no coração',
             'Cada clique uma lembrança especial...',
-            'Dias que merecem ser lembrados para sempre ✨',
-            'Sorrisos que aquecem a alma 😊',
+            'Dias que merecem ser lembrados para sempre',
+            'Sorrisos que aquecem a alma',
             'Memórias que se transformam em tesouros',
             'Instantes mágicos capturados com amor',
             'Fotografias que contam nossa história',
             'Momentos únicos, emoções verdadeiras',
-            'Lembranças que nos fazem sorrir 🌟',
+            'Lembranças que nos fazem sorrir',
             'Cada foto, uma página da vida',
             'Registros de felicidade genuína',
             'Momentos simples, sentimentos profundos',
             'Capturando a essência dos bons momentos',
             'Memórias que acompanham o coração',
-            'Instantes que se tornaram eternos 💫',
+            'Instantes que se tornaram eternos',
             'Fotografias cheias de significado',
             'Momentos especiais, pessoas especiais',
             'Lembranças que nos conectam ao que importa',
             'Cada imagem conta uma história linda',
-            'Registros de amor e felicidade 💕'
+            'Registros de amor e felicidade'
         ];
 
         // Gerar dados das fotos com base nos nomes dos arquivos
@@ -161,15 +161,15 @@ class ScrapbookViewer {
         // Detectar se é mobile
         const isMobile = window.innerWidth <= 768;
         
-        // Configuração otimizada para mobile e desktop
+        // Configuração otimizada para mobile e desktop (tamanho aumentado)
         const flipbookConfig = {
-            width: isMobile ? window.innerWidth : 800,
-            height: isMobile ? window.innerHeight : 600,
+            width: isMobile ? window.innerWidth : 1200,
+            height: isMobile ? window.innerHeight : 800,
             size: 'stretch',
-            minWidth: isMobile ? window.innerWidth : 315,
-            maxWidth: isMobile ? window.innerWidth : 1000,
-            minHeight: isMobile ? window.innerHeight : 420,
-            maxHeight: isMobile ? window.innerHeight : 1350,
+            minWidth: isMobile ? window.innerWidth : 400,
+            maxWidth: isMobile ? window.innerWidth : 1400,
+            minHeight: isMobile ? window.innerHeight : 500,
+            maxHeight: isMobile ? window.innerHeight : 900,
             maxShadowOpacity: isMobile ? 0.3 : 0.5,
             showCover: false,
             mobileScrollSupport: false,
@@ -222,11 +222,23 @@ class ScrapbookViewer {
         // Limpar flipbook
         this.elements.flipbook.innerHTML = '';
         
+        // Definir os temas de cores
+        const themes = ['theme-green', 'theme-blue-light', 'theme-blue-turquoise', 'theme-gold', 'theme-gray'];
+        
         // Criar páginas para cada foto
         this.photos.forEach((photo, index) => {
             const pageDiv = document.createElement('div');
-            pageDiv.className = 'page';
-            pageDiv.innerHTML = this.createPageContent(photo, index);
+            // Alternar entre os temas baseado no índice
+            const themeClass = themes[index % themes.length];
+            pageDiv.className = `page ${themeClass}`;
+            
+            // Adicionar overlay de textura de papel
+            const paperOverlay = document.createElement('div');
+            paperOverlay.className = 'paperOverlay';
+            pageDiv.appendChild(paperOverlay);
+            
+            // Adicionar conteúdo da página
+            pageDiv.innerHTML += this.createPageContent(photo, index);
             this.elements.flipbook.appendChild(pageDiv);
         });
     }
@@ -235,13 +247,9 @@ class ScrapbookViewer {
         // Escolher um estilo de moldura único para cada página
         const frameStyles = ['frame-style-1', 'frame-style-2', 'frame-style-3', 'frame-style-4', 'frame-style-5', 'frame-style-6'];
         const frameStyle = frameStyles[index % frameStyles.length];
-        
+
         const frameDecorations = Array.from({length: 4}, (_, i) => 
             `<div class="frame-decoration frame-${['top-left', 'top-right', 'bottom-left', 'bottom-right'][i]}"></div>`
-        ).join('');
-
-        const washiTapes = Array.from({length: 3}, (_, i) => 
-            `<div class="washi-tape washi-${i + 1}"></div>`
         ).join('');
 
         const pageCurls = `
@@ -256,7 +264,6 @@ class ScrapbookViewer {
             <div class="paper-texture"></div>
             <div class="photo-frame ${frameStyle}">
                 ${frameDecorations}
-                ${washiTapes}
                 ${pageCurls}
                 ${uniqueDecorations}
                 
@@ -467,40 +474,37 @@ class ScrapbookViewer {
 
     generateUniqueDecorations(index) {
         const decorations = [
-            // Flores e plantas
-            '<div style="position: absolute; top: 5px; left: 5px; font-size: 18px; color: #2d5a3d;">🌿</div>',
-            '<div style="position: absolute; top: 5px; right: 5px; font-size: 18px; color: #d4af37;">✨</div>',
-            '<div style="position: absolute; bottom: 5px; left: 5px; font-size: 16px; color: #2d5a3d;">🍃</div>',
-            '<div style="position: absolute; bottom: 5px; right: 5px; font-size: 16px; color: #d4af37;">💫</div>',
+            // Elementos decorativos geométricos artesanais
+            '<div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 30px; height: 3px; background: linear-gradient(90deg, #d4af37, #2d5a3d); opacity: 0.6;"></div>',
+            '<div style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); width: 40px; height: 2px; background: linear-gradient(90deg, #2d5a3d, #d4af37); opacity: 0.6;"></div>',
             
-            // Elementos decorativos geométricos
-            '<div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 30px; height: 3px; background: linear-gradient(90deg, #d4af37, #2d5a3d);"></div>',
-            '<div style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); width: 40px; height: 2px; background: linear-gradient(90deg, #2d5a3d, #d4af37);"></div>',
+            // Cantos ornamentais delicados
+            '<div style="position: absolute; top: 8px; left: 8px; width: 15px; height: 15px; border-top: 1px solid rgba(212, 175, 55, 0.5); border-left: 1px solid rgba(212, 175, 55, 0.5);"></div>',
+            '<div style="position: absolute; top: 8px; right: 8px; width: 15px; height: 15px; border-top: 1px solid rgba(212, 175, 55, 0.5); border-right: 1px solid rgba(212, 175, 55, 0.5);"></div>',
             
-            // Cantos ornamentais
-            '<div style="position: absolute; top: 8px; left: 8px; width: 20px; height: 20px; border-top: 2px solid #d4af37; border-left: 2px solid #d4af37;"></div><div style="position: absolute; top: 8px; right: 8px; width: 20px; height: 20px; border-top: 2px solid #d4af37; border-right: 2px solid #d4af37;"></div>',
-            
-            // Pequenos elementos naturais
-            '<div style="position: absolute; top: 15px; left: 15px; font-size: 14px; color: #2d5a3d;">🌱</div><div style="position: absolute; bottom: 15px; right: 15px; font-size: 14px; color: #d4af37;">⭐</div>',
-            
-            // Linhas decorativas
-            '<div style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 2px; height: 60px; background: linear-gradient(180deg, transparent, #d4af37, transparent);"></div><div style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 2px; height: 60px; background: linear-gradient(180deg, transparent, #2d5a3d, transparent);"></div>',
+            // Linhas decorativas sutis
+            '<div style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); width: 1px; height: 40px; background: linear-gradient(180deg, transparent, rgba(212, 175, 55, 0.4), transparent);"></div>',
+            '<div style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 1px; height: 40px; background: linear-gradient(180deg, transparent, rgba(45, 90, 61, 0.4), transparent);"></div>',
             
             // Elementos únicos especiais
-            '<div style="position: absolute; top: 12px; right: 12px; width: 15px; height: 15px; background: #d4af37; transform: rotate(45deg); box-shadow: 0 2px 4px rgba(45, 90, 61, 0.3);"></div>',
-            '<div style="position: absolute; bottom: 12px; left: 12px; width: 12px; height: 12px; border-radius: 50%; background: radial-gradient(circle, #2d5a3d, #d4af37); border: 1px solid #1a3d28;"></div>',
+            '<div style="position: absolute; top: 12px; right: 12px; width: 8px; height: 8px; background: rgba(212, 175, 55, 0.5); transform: rotate(45deg); opacity: 0.7;"></div>',
+            '<div style="position: absolute; bottom: 12px; left: 12px; width: 6px; height: 6px; border-radius: 50%; background: rgba(45, 90, 61, 0.5); border: 1px solid rgba(26, 61, 40, 0.3);"></div>',
             
-            // Padrões únicos
-            '<div style="position: absolute; top: 20px; left: 20px; width: 25px; height: 25px; background: conic-gradient(#d4af37, #2d5a3d, #d4af37); border-radius: 50%; opacity: 0.7;"></div>',
-            '<div style="position: absolute; bottom: 20px; right: 20px; font-size: 20px; color: #2d5a3d; text-shadow: 1px 1px 2px rgba(212, 175, 55, 0.5);">❋</div>',
+            // Padrões geométricos simples
+            '<div style="position: absolute; top: 15px; left: 15px; width: 12px; height: 12px; background: conic-gradient(rgba(212, 175, 55, 0.3), rgba(45, 90, 61, 0.3)); border-radius: 50%; opacity: 0.6;"></div>',
+            '<div style="position: absolute; bottom: 15px; right: 15px; width: 10px; height: 10px; background: rgba(206, 184, 136, 0.4); border-radius: 2px; transform: rotate(15deg);"></div>',
+            
+            // Bordas decorativas
+            '<div style="position: absolute; top: 0; left: 20%; width: 60%; height: 1px; background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);"></div>',
+            '<div style="position: absolute; bottom: 0; left: 30%; width: 40%; height: 1px; background: linear-gradient(90deg, transparent, rgba(45, 90, 61, 0.3), transparent);"></div>',
         ];
         
-        // Selecionar 1-3 decorações aleatórias baseadas no índice
-        const numDecorations = (index % 3) + 1;
+        // Selecionar 1-2 decorações baseadas no índice
+        const numDecorations = (index % 2) + 1;
         const selectedDecorations = [];
         
         for (let i = 0; i < numDecorations; i++) {
-            const decorationIndex = (index * 3 + i) % decorations.length;
+            const decorationIndex = (index * 2 + i) % decorations.length;
             selectedDecorations.push(decorations[decorationIndex]);
         }
         

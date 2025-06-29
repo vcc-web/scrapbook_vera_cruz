@@ -1,18 +1,55 @@
-/* CSS Variables for mobile viewport */
+/* CSS Variables for mobile viewport and responsive design */
 :root {
     --vh: 1vh;
+    --safe-area-inset-top: env(safe-area-inset-top);
+    --safe-area-inset-right: env(safe-area-inset-right);
+    --safe-area-inset-bottom: env(safe-area-inset-bottom);
+    --safe-area-inset-left: env(safe-area-inset-left);
+    
+    /* Responsive breakpoints */
+    --mobile-breakpoint: 768px;
+    --tablet-breakpoint: 1024px;
+    --desktop-breakpoint: 1200px;
+    
+    /* Dynamic sizing variables */
+    --frame-padding: clamp(15px, 4vw, 60px);
+    --text-size-small: clamp(0.8rem, 2.5vw, 0.9rem);
+    --text-size-medium: clamp(1rem, 3vw, 1.2rem);
+    --text-size-large: clamp(1.2rem, 4vw, 1.4rem);
+    --text-size-xlarge: clamp(1.8rem, 5vw, 2.5rem);
+    
+    /* Safe area calculations */
+    --safe-height: calc(100vh - var(--safe-area-inset-top) - var(--safe-area-inset-bottom));
+    --safe-width: calc(100vw - var(--safe-area-inset-left) - var(--safe-area-inset-right));
 }
 
-/* Mobile-specific body class */
+/* Enhanced mobile-specific body class with safe area support */
 body.mobile {
     height: calc(var(--vh, 1vh) * 100);
+    height: var(--safe-height);
     overflow: hidden;
     position: fixed;
     width: 100%;
+    padding-top: var(--safe-area-inset-top);
+    padding-bottom: var(--safe-area-inset-bottom);
+    padding-left: var(--safe-area-inset-left);
+    padding-right: var(--safe-area-inset-right);
 }
 
 body.mobile #scrapbook-container {
     height: calc(var(--vh, 1vh) * 100);
+    height: var(--safe-height);
+}
+
+/* iOS specific adjustments */
+body.ios {
+    -webkit-overflow-scrolling: touch;
+    -webkit-text-size-adjust: 100%;
+}
+
+/* Android specific adjustments */
+body.android {
+    overscroll-behavior: none;
 }
 
 /* Reset and Base Styles */
@@ -24,11 +61,17 @@ body.mobile #scrapbook-container {
 
 body {
     font-family: 'Kalam', cursive;
-    background: linear-gradient(135deg, #2d5a3d 0%, #1a3d28 100%);
+    background: linear-gradient(135deg, #2e442f 0%, #7ba05b 100%);
     overflow: hidden;
     height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
     user-select: none;
     cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="%23d4af37" opacity="0.7"/></svg>'), auto;
+    /* Enhanced mobile support */
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    overscroll-behavior: none;
 }
 
 /* Container */
@@ -37,12 +80,12 @@ body {
     width: 100vw;
     height: 100vh;
     background: 
-        radial-gradient(circle at 30% 20%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 70% 80%, rgba(45, 90, 61, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 40% 40%, rgba(26, 61, 40, 0.05) 0%, transparent 50%);
+        radial-gradient(circle at 30% 20%, rgba(163, 197, 133, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 70% 80%, rgba(123, 160, 91, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(93, 138, 58, 0.06) 0%, transparent 50%);
 }
 
-/* Loading Screen */
+/* Loading Screen - Enhanced responsiveness */
 .loading {
     position: absolute;
     top: 50%;
@@ -50,15 +93,17 @@ body {
     transform: translate(-50%, -50%);
     text-align: center;
     font-family: 'Dancing Script', cursive;
-    font-size: 1.5rem;
+    font-size: var(--text-size-large);
     color: #d4af37;
+    padding: 0 20px;
+    max-width: 90vw;
 }
 
 .loading-spinner {
-    width: 50px;
-    height: 50px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #ff6b6b;
+    width: clamp(40px, 8vw, 50px);
+    height: clamp(40px, 8vw, 50px);
+    border: clamp(3px, 1vw, 4px) solid #f3f3f3;
+    border-top: clamp(3px, 1vw, 4px) solid #ff6b6b;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin: 0 auto 20px;
@@ -84,7 +129,7 @@ body {
     justify-content: center;
 }
 
-/* Navigation Areas */
+/* Navigation Areas - Enhanced touch targets */
 .nav-area {
     position: absolute;
     top: 0;
@@ -93,6 +138,11 @@ body {
     z-index: 10;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    /* Enhanced touch targets for mobile */
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .nav-left {
@@ -109,6 +159,14 @@ body {
     background-color: rgba(255, 255, 255, 0.05);
 }
 
+/* Touch feedback for mobile */
+@media (max-width: 768px) {
+    .nav-area:active {
+        background-color: rgba(212, 175, 55, 0.2);
+        transition: background-color 0.1s ease;
+    }
+}
+
 /* Flipbook Container */
 #flipbook-container {
     display: flex;
@@ -120,18 +178,45 @@ body {
 }
 
 #flipbook {
-    width: min(90vw, 800px);
-    height: min(80vh, 600px);
+    width: min(95vw, 1200px);
+    height: min(90vh, 800px);
     background: transparent;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* Responsive flipbook sizing */
+@media (max-width: 768px) {
+    #flipbook {
+        width: 100vw !important;
+        height: 100vh !important;
+        height: calc(var(--vh, 1vh) * 100) !important;
+        max-width: none !important;
+        max-height: none !important;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    #flipbook {
+        width: min(90vw, 1000px);
+        height: min(85vh, 700px);
+    }
+}
+
+@media (min-width: 1025px) {
+    #flipbook {
+        width: min(85vw, 1200px);
+        height: min(80vh, 900px);
+    }
 }
 
 /* Page styles for page-flip library */
 .page {
-    background: linear-gradient(145deg, #fefefe 0%, #f8f8f8 100%);
-    border: 1px solid #e0e0e0;
+    background: linear-gradient(135deg, #f0f8e8 0%, #e8f4d8 100%);
+    border: 1px solid #c4d6a3;
     box-shadow: 
-        0 4px 8px rgba(0, 0, 0, 0.1),
-        inset 0 1px 2px rgba(255, 255, 255, 0.8);
+        0 4px 8px rgba(0, 0, 0, 0.15),
+        inset 0 1px 2px rgba(255, 255, 255, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -139,29 +224,193 @@ body {
     overflow: hidden;
 }
 
-/* Paper texture overlay */
-.page::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-        radial-gradient(circle at 20% 50%, rgba(255, 248, 220, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 240, 245, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 40% 80%, rgba(240, 248, 255, 0.3) 0%, transparent 50%);
-    pointer-events: none;
+/* Page Theme Variations - Apenas cores de fundo */
+/* Verde Theme */
+.page.theme-green {
+    background: linear-gradient(135deg, #e8f4d8 0%, #d8f0c8 100%);
 }
 
-/* Photo Frame for flipbook pages */
+/* Azul Claro Theme */
+.page.theme-blue-light {
+    background: linear-gradient(135deg, #e8f8fc 0%, #d8f2fa 100%);
+}
+
+/* Azul Turquesa Theme */
+.page.theme-blue-turquoise {
+    background: linear-gradient(135deg, #e8fffe 0%, #d8fcfc 100%);
+}
+
+/* Dourado Theme */
+.page.theme-gold {
+    background: linear-gradient(135deg, #fef8e8 0%, #fdf2d8 100%);
+}
+
+/* Cinza Theme */
+.page.theme-gray {
+    background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
+}
+
+/* Paper texture overlay - using subtle CSS texture */
+.paperOverlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(139, 169, 91, 0.02) 1px, transparent 1px),
+        radial-gradient(circle at 80% 70%, rgba(212, 175, 55, 0.015) 1px, transparent 1px),
+        radial-gradient(circle at 40% 80%, rgba(93, 138, 58, 0.01) 1px, transparent 1px),
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 1px,
+            rgba(139, 169, 91, 0.008) 1px,
+            rgba(139, 169, 91, 0.008) 2px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 1px,
+            rgba(212, 230, 193, 0.012) 1px,
+            rgba(212, 230, 193, 0.012) 2px
+        ),
+        linear-gradient(
+            45deg,
+            rgba(139, 169, 91, 0.003) 25%,
+            transparent 25%,
+            transparent 75%,
+            rgba(139, 169, 91, 0.003) 75%
+        );
+
+    opacity: 0.6;
+    z-index: -1;
+}
+
+/* Paper Overlay Theme Variations */
+/* Verde Theme Paper */
+.page.theme-green .paperOverlay {
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(74, 107, 55, 0.02) 1px, transparent 1px),
+        radial-gradient(circle at 80% 70%, rgba(139, 169, 91, 0.015) 1px, transparent 1px),
+        radial-gradient(circle at 40% 80%, rgba(93, 138, 58, 0.01) 1px, transparent 1px),
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 1px,
+            rgba(74, 107, 55, 0.008) 1px,
+            rgba(74, 107, 55, 0.008) 2px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 1px,
+            rgba(139, 169, 91, 0.012) 1px,
+            rgba(139, 169, 91, 0.012) 2px
+        );
+}
+
+/* Azul Claro Theme Paper */
+.page.theme-blue-light .paperOverlay {
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(40, 174, 185, 0.02) 1px, transparent 1px),
+        radial-gradient(circle at 80% 70%, rgba(64, 192, 203, 0.015) 1px, transparent 1px),
+        radial-gradient(circle at 40% 80%, rgba(32, 148, 158, 0.01) 1px, transparent 1px),
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 1px,
+            rgba(40, 174, 185, 0.008) 1px,
+            rgba(40, 174, 185, 0.008) 2px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 1px,
+            rgba(64, 192, 203, 0.012) 1px,
+            rgba(64, 192, 203, 0.012) 2px
+        );
+}
+
+/* Azul Turquesa Theme Paper */
+.page.theme-blue-turquoise .paperOverlay {
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(0, 222, 219, 0.02) 1px, transparent 1px),
+        radial-gradient(circle at 80% 70%, rgba(32, 238, 235, 0.015) 1px, transparent 1px),
+        radial-gradient(circle at 40% 80%, rgba(0, 189, 186, 0.01) 1px, transparent 1px),
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 1px,
+            rgba(0, 222, 219, 0.008) 1px,
+            rgba(0, 222, 219, 0.008) 2px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 1px,
+            rgba(32, 238, 235, 0.012) 1px,
+            rgba(32, 238, 235, 0.012) 2px
+        );
+}
+
+/* Dourado Theme Paper */
+.page.theme-gold .paperOverlay {
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(249, 182, 71, 0.02) 1px, transparent 1px),
+        radial-gradient(circle at 80% 70%, rgba(255, 204, 102, 0.015) 1px, transparent 1px),
+        radial-gradient(circle at 40% 80%, rgba(230, 167, 56, 0.01) 1px, transparent 1px),
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 1px,
+            rgba(249, 182, 71, 0.008) 1px,
+            rgba(249, 182, 71, 0.008) 2px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 1px,
+            rgba(255, 204, 102, 0.012) 1px,
+            rgba(255, 204, 102, 0.012) 2px
+        );
+}
+
+/* Cinza Theme Paper */
+.page.theme-gray .paperOverlay {
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(56, 55, 61, 0.02) 1px, transparent 1px),
+        radial-gradient(circle at 80% 70%, rgba(96, 95, 101, 0.015) 1px, transparent 1px),
+        radial-gradient(circle at 40% 80%, rgba(72, 71, 77, 0.01) 1px, transparent 1px),
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 1px,
+            rgba(56, 55, 61, 0.008) 1px,
+            rgba(56, 55, 61, 0.008) 2px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 1px,
+            rgba(96, 95, 101, 0.012) 1px,
+            rgba(96, 95, 101, 0.012) 2px
+        );
+}
+
+/* Textura específica para molduras - removida para usar apenas textura de papel */
+.photo-frame::before {
+    display: none;
+}
+
+/* Photo Frame for flipbook pages - Enhanced responsiveness */
 .page .photo-frame {
     position: relative;
     width: 100%;
     height: 100%;
     background: linear-gradient(145deg, #ffffff 0%, #f8f8f8 100%);
-    border-radius: 15px;
-    padding: 30px;
+    border-radius: clamp(10px, 2vw, 15px);
+    padding: var(--frame-padding);
     box-shadow: 
         0 10px 20px rgba(0, 0, 0, 0.1),
         inset 0 2px 4px rgba(255, 255, 255, 0.8),
@@ -171,18 +420,65 @@ body {
     align-items: center;
     justify-content: center;
     transform-style: preserve-3d;
+    box-sizing: border-box;
 }
 
-/* Regular photo frame (for non-flipbook mode) */
+/* Photo Frame Theme Variations */
+/* Verde Theme Frame */
+.page.theme-green .photo-frame {
+    background: linear-gradient(145deg, #f8fff5 0%, #f0fae8 100%);
+    box-shadow: 
+        0 10px 20px rgba(74, 107, 55, 0.1),
+        inset 0 2px 4px rgba(255, 255, 255, 0.8),
+        inset 0 -2px 4px rgba(74, 107, 55, 0.05);
+}
+
+/* Azul Claro Theme Frame */
+.page.theme-blue-light .photo-frame {
+    background: linear-gradient(145deg, #f5fcfe 0%, #e8f8fc 100%);
+    box-shadow: 
+        0 10px 20px rgba(40, 174, 185, 0.1),
+        inset 0 2px 4px rgba(255, 255, 255, 0.8),
+        inset 0 -2px 4px rgba(40, 174, 185, 0.05);
+}
+
+/* Azul Turquesa Theme Frame */
+.page.theme-blue-turquoise .photo-frame {
+    background: linear-gradient(145deg, #f5fffe 0%, #e8fffe 100%);
+    box-shadow: 
+        0 10px 20px rgba(0, 222, 219, 0.1),
+        inset 0 2px 4px rgba(255, 255, 255, 0.8),
+        inset 0 -2px 4px rgba(0, 222, 219, 0.05);
+}
+
+/* Dourado Theme Frame */
+.page.theme-gold .photo-frame {
+    background: linear-gradient(145deg, #fffcf5 0%, #fef8e8 100%);
+    box-shadow: 
+        0 10px 20px rgba(249, 182, 71, 0.1),
+        inset 0 2px 4px rgba(255, 255, 255, 0.8),
+        inset 0 -2px 4px rgba(249, 182, 71, 0.05);
+}
+
+/* Cinza Theme Frame */
+.page.theme-gray .photo-frame {
+    background: linear-gradient(145deg, #fafafa 0%, #f0f0f0 100%);
+    box-shadow: 
+        0 10px 20px rgba(56, 55, 61, 0.1),
+        inset 0 2px 4px rgba(255, 255, 255, 0.8),
+        inset 0 -2px 4px rgba(56, 55, 61, 0.05);
+}
+
+/* Regular photo frame (for non-flipbook mode) - Enhanced responsiveness */
 .photo-frame {
     position: relative;
-    width: min(90vw, 90vh);
-    height: min(80vw, 80vh);
-    max-width: 800px;
-    max-height: 600px;
+    width: min(95vw, 95vh);
+    height: min(85vw, 85vh);
+    max-width: min(1000px, 90vw);
+    max-height: min(750px, 90vh);
     background: linear-gradient(145deg, #ffffff 0%, #f8f8f8 100%);
-    border-radius: 20px;
-    padding: 40px;
+    border-radius: clamp(15px, 3vw, 20px);
+    padding: var(--frame-padding);
     box-shadow: 
         0 20px 40px rgba(0, 0, 0, 0.15),
         inset 0 2px 4px rgba(255, 255, 255, 0.8),
@@ -191,6 +487,8 @@ body {
     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     animation: frameFloat 6s ease-in-out infinite;
     transform-style: preserve-3d;
+    box-sizing: border-box;
+    margin: auto;
 }
 
 @keyframes frameFloat {
@@ -206,90 +504,148 @@ body {
         inset 0 -2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* Frame Decorations */
+/* Frame Decorations como Pinos Sóbrios e Minimalistas */
 .frame-decoration {
     position: absolute;
-    width: 30px;
-    height: 30px;
-    background: radial-gradient(circle, #d4af37 0%, #b8860b 100%);
+    width: 12px;
+    height: 12px;
+    z-index: 10;
+    cursor: pointer;
+    animation: pinEnter 0.6s ease-out forwards;
+    transform-origin: center;
+}
+
+@keyframes pinEnter {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Sombra muito sutil do pino */
+.frame-decoration::before {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 10px;
+    height: 10px;
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.1), transparent);
+    border-radius: 50%;
+    z-index: -1;
+}
+
+/* Pino estilo prata discreta */
+.frame-top-left {
+    top: 12px;
+    left: 12px;
+    background: radial-gradient(circle at 30% 30%, #a8a8a8, #808080);
     border-radius: 50%;
     box-shadow: 
-        inset 0 2px 4px rgba(255, 255, 255, 0.5),
-        0 2px 4px rgba(0, 0, 0, 0.3);
+        0 1px 2px rgba(0, 0, 0, 0.15),
+        inset 0 0.5px 1px rgba(255, 255, 255, 0.3);
 }
 
-.frame-top-left { top: 15px; left: 15px; }
-.frame-top-right { top: 15px; right: 15px; }
-.frame-bottom-left { bottom: 15px; left: 15px; }
-.frame-bottom-right { bottom: 15px; right: 15px; }
-
-/* Washi Tape Decorations */
-.washi-tape {
+.frame-top-left::after {
+    content: '';
     position: absolute;
-    background: repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 5px,
-        rgba(255, 107, 107, 0.3) 5px,
-        rgba(255, 107, 107, 0.3) 10px
-    );
-    transform-origin: center;
-    opacity: 0.8;
-    border-radius: 2px;
+    top: 50%;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, #606060, #404040);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
 }
 
-.washi-1 {
-    top: -10px;
-    left: 20%;
-    width: 100px;
-    height: 20px;
-    transform: rotate(15deg);
-    background: repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 3px,
-        rgba(255, 182, 193, 0.7) 3px,
-        rgba(255, 182, 193, 0.7) 6px
-    );
+/* Pino estilo bronze discreto */
+.frame-top-right {
+    top: 12px;
+    right: 12px;
+    background: radial-gradient(circle at 30% 30%, #b8860b, #8b6914);
+    border-radius: 50%;
+    box-shadow: 
+        0 1px 2px rgba(0, 0, 0, 0.15),
+        inset 0 0.5px 1px rgba(255, 255, 255, 0.2);
 }
 
-.washi-2 {
-    bottom: -10px;
-    right: 25%;
-    width: 80px;
-    height: 20px;
-    transform: rotate(-20deg);
-    background: repeating-linear-gradient(
-        135deg,
-        transparent,
-        transparent 4px,
-        rgba(173, 216, 230, 0.7) 4px,
-        rgba(173, 216, 230, 0.7) 8px
-    );
+.frame-top-right::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, #654321, #4a3018);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
 }
 
-.washi-3 {
-    top: 30%;
-    right: -10px;
-    width: 20px;
-    height: 60px;
-    transform: rotate(25deg);
-    background: repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 5px,
-        rgba(255, 255, 224, 0.7) 5px,
-        rgba(255, 255, 224, 0.7) 10px
-    );
+/* Pino estilo cobre discreto */
+.frame-bottom-left {
+    bottom: 12px;
+    left: 12px;
+    background: radial-gradient(circle at 30% 30%, #b87333, #a0522d);
+    border-radius: 50%;
+    box-shadow: 
+        0 1px 2px rgba(0, 0, 0, 0.15),
+        inset 0 0.5px 1px rgba(255, 255, 255, 0.2);
 }
 
-/* Photo */
+.frame-bottom-left::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, #8b4513, #654321);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Pino estilo ferro discreto */
+.frame-bottom-right {
+    bottom: 12px;
+    right: 12px;
+    background: radial-gradient(circle at 30% 30%, #708090, #556b7d);
+    border-radius: 50%;
+    box-shadow: 
+        0 1px 2px rgba(0, 0, 0, 0.15),
+        inset 0 0.5px 1px rgba(255, 255, 255, 0.2);
+}
+
+.frame-bottom-right::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, #2f4f4f, #1c3535);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Efeito hover muito sutil nos pinos */
+.frame-decoration:hover {
+    transform: scale(1.02);
+    transition: all 0.2s ease;
+}
+
+
+
+/* Photo - Enhanced responsive image handling */
 .photo {
     width: 100%;
     height: 70%;
     object-fit: contain !important;
     object-position: center !important;
-    border-radius: 10px;
+    border-radius: clamp(8px, 1.5vw, 10px);
     background: #f8f6f0;
     box-shadow: 
         0 8px 16px rgba(45, 90, 61, 0.2),
@@ -300,17 +656,79 @@ body {
     margin: auto;
     max-width: 100%;
     max-height: 100%;
+    box-sizing: border-box;
 }
 
-/* Text Overlay */
+/* Responsive photo sizing for different screen ratios */
+@media (max-aspect-ratio: 1/1) {
+    /* Portrait screens */
+    .photo {
+        width: 90%;
+        height: auto;
+        max-height: 65%;
+    }
+}
+
+@media (min-aspect-ratio: 16/9) {
+    /* Wide screens */
+    .photo {
+        width: auto;
+        height: 75%;
+        max-width: 85%;
+    }
+}
+
+/* Efeito de "furar" a foto com os pinos */
+.photo::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 12% 12%, rgba(0,0,0,0.15) 8px, transparent 12px),
+        radial-gradient(circle at 88% 12%, rgba(0,0,0,0.15) 8px, transparent 12px),
+        radial-gradient(circle at 12% 88%, rgba(0,0,0,0.15) 8px, transparent 12px),
+        radial-gradient(circle at 88% 88%, rgba(0,0,0,0.15) 8px, transparent 12px);
+    pointer-events: none;
+    opacity: 0.7;
+    z-index: 5;
+}
+
+/* Animação de oscilação sutil dos pinos */
+@keyframes pinFloat {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-1px) rotate(1deg); }
+}
+
+.frame-decoration {
+    animation: pinEnter 0.6s ease-out forwards, pinFloat 4s ease-in-out infinite 1s;
+}
+
+/* Pequeno reflexo nos pinos metálicos */
+.frame-top-left::before,
+.frame-top-right::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 8px;
+    height: 8px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.6), transparent);
+    border-radius: 50%;
+    z-index: 1;
+}
+
+/* Text Overlay - Enhanced responsiveness */
 .text-overlay {
     position: absolute;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
+    bottom: clamp(15px, 4vw, 20px);
+    left: clamp(15px, 4vw, 20px);
+    right: clamp(15px, 4vw, 20px);
     background: rgba(248, 246, 240, 0.95);
-    padding: 15px 20px;
-    border-radius: 15px;
+    padding: clamp(12px, 3vw, 20px);
+    border-radius: clamp(10px, 2vw, 15px);
     border: 2px solid rgba(212, 175, 55, 0.3);
     box-shadow: 
         0 4px 12px rgba(45, 90, 61, 0.2),
@@ -319,6 +737,53 @@ body {
     transform: translateY(100px);
     opacity: 0;
     animation: slideUpText 0.6s ease-out 0.5s forwards;
+    box-sizing: border-box;
+}
+
+/* Text Overlay Theme Variations */
+/* Verde Theme Text Overlay */
+.page.theme-green .text-overlay {
+    background: rgba(248, 255, 245, 0.95);
+    border: 2px solid rgba(74, 107, 55, 0.3);
+    box-shadow: 
+        0 4px 12px rgba(74, 107, 55, 0.2),
+        inset 0 1px 0 rgba(74, 107, 55, 0.3);
+}
+
+/* Azul Claro Theme Text Overlay */
+.page.theme-blue-light .text-overlay {
+    background: rgba(245, 252, 254, 0.95);
+    border: 2px solid rgba(40, 174, 185, 0.3);
+    box-shadow: 
+        0 4px 12px rgba(40, 174, 185, 0.2),
+        inset 0 1px 0 rgba(40, 174, 185, 0.3);
+}
+
+/* Azul Turquesa Theme Text Overlay */
+.page.theme-blue-turquoise .text-overlay {
+    background: rgba(245, 255, 254, 0.95);
+    border: 2px solid rgba(0, 222, 219, 0.3);
+    box-shadow: 
+        0 4px 12px rgba(0, 222, 219, 0.2),
+        inset 0 1px 0 rgba(0, 222, 219, 0.3);
+}
+
+/* Dourado Theme Text Overlay */
+.page.theme-gold .text-overlay {
+    background: rgba(255, 252, 245, 0.95);
+    border: 2px solid rgba(249, 182, 71, 0.3);
+    box-shadow: 
+        0 4px 12px rgba(249, 182, 71, 0.2),
+        inset 0 1px 0 rgba(249, 182, 71, 0.3);
+}
+
+/* Cinza Theme Text Overlay */
+.page.theme-gray .text-overlay {
+    background: rgba(250, 250, 250, 0.95);
+    border: 2px solid rgba(56, 55, 61, 0.3);
+    box-shadow: 
+        0 4px 12px rgba(56, 55, 61, 0.2),
+        inset 0 1px 0 rgba(56, 55, 61, 0.3);
 }
 
 @keyframes slideUpText {
@@ -330,40 +795,95 @@ body {
 
 .memory-text {
     font-family: 'Dancing Script', cursive;
-    font-size: 1.4rem;
+    font-size: var(--text-size-large);
     color: #2d5a3d;
     margin-bottom: 5px;
     line-height: 1.4;
     font-weight: 600;
+    word-wrap: break-word;
+    hyphens: auto;
 }
 
 .memory-date {
     font-family: 'Indie Flower', cursive;
-    font-size: 1rem;
+    font-size: var(--text-size-medium);
     color: #d4af37;
     text-align: right;
     font-weight: 400;
     text-shadow: 0 1px 2px rgba(45, 90, 61, 0.2);
 }
 
-/* Photo Counter */
+/* Memory Text Theme Variations */
+/* Verde Theme Text */
+.page.theme-green .memory-text {
+    color: #2d5a3d;
+}
+
+.page.theme-green .memory-date {
+    color: #4a6b37;
+    text-shadow: 0 1px 2px rgba(74, 107, 55, 0.2);
+}
+
+/* Azul Claro Theme Text */
+.page.theme-blue-light .memory-text {
+    color: #1a5a66;
+}
+
+.page.theme-blue-light .memory-date {
+    color: #28aeb9;
+    text-shadow: 0 1px 2px rgba(40, 174, 185, 0.2);
+}
+
+/* Azul Turquesa Theme Text */
+.page.theme-blue-turquoise .memory-text {
+    color: #00b5b2;
+}
+
+.page.theme-blue-turquoise .memory-date {
+    color: #00dedb;
+    text-shadow: 0 1px 2px rgba(0, 222, 219, 0.2);
+}
+
+/* Dourado Theme Text */
+.page.theme-gold .memory-text {
+    color: #8b6914;
+}
+
+.page.theme-gold .memory-date {
+    color: #f9b647;
+    text-shadow: 0 1px 2px rgba(249, 182, 71, 0.2);
+}
+
+/* Cinza Theme Text */
+.page.theme-gray .memory-text {
+    color: #2a2930;
+}
+
+.page.theme-gray .memory-date {
+    color: #38373d;
+    text-shadow: 0 1px 2px rgba(56, 55, 61, 0.2);
+}
+
+/* Photo Counter - Enhanced responsiveness */
 .photo-counter {
     position: absolute;
-    top: 30px;
-    right: 30px;
+    top: clamp(20px, 4vw, 30px);
+    right: clamp(20px, 4vw, 30px);
     background: rgba(248, 246, 240, 0.9);
-    padding: 8px 15px;
-    border-radius: 20px;
+    padding: clamp(6px, 2vw, 15px);
+    border-radius: clamp(15px, 3vw, 20px);
     border: 1px solid rgba(212, 175, 55, 0.3);
     font-family: 'Kalam', cursive;
-    font-size: 0.9rem;
+    font-size: var(--text-size-small);
     color: #2d5a3d;
     font-weight: 700;
     box-shadow: 0 4px 12px rgba(45, 90, 61, 0.1);
     backdrop-filter: blur(10px);
+    z-index: 100;
+    box-sizing: border-box;
 }
 
-/* Instructions Overlay */
+/* Instructions Overlay - Enhanced responsiveness */
 .instructions {
     position: absolute;
     top: 0;
@@ -376,17 +896,21 @@ body {
     justify-content: center;
     z-index: 100;
     backdrop-filter: blur(5px);
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .instruction-content {
     background: linear-gradient(135deg, #f8f6f0 0%, #e8e2d8 100%);
-    padding: 40px;
-    border-radius: 20px;
+    padding: clamp(30px, 6vw, 40px);
+    border-radius: clamp(15px, 3vw, 20px);
     border: 3px solid #d4af37;
     text-align: center;
     box-shadow: 0 20px 40px rgba(45, 90, 61, 0.3);
-    max-width: 400px;
+    max-width: min(400px, 90vw);
     animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-sizing: border-box;
+    width: 100%;
 }
 
 @keyframes popIn {
@@ -402,41 +926,54 @@ body {
 
 .instruction-content h2 {
     font-family: 'Dancing Script', cursive;
-    font-size: 2.5rem;
+    font-size: var(--text-size-xlarge);
     color: #2d5a3d;
     margin-bottom: 20px;
     font-weight: 700;
     text-shadow: 0 2px 4px rgba(212, 175, 55, 0.3);
+    word-wrap: break-word;
 }
 
 .instruction-content p {
     font-family: 'Kalam', cursive;
-    font-size: 1.1rem;
+    font-size: var(--text-size-medium);
     color: #34495e;
     margin-bottom: 10px;
     line-height: 1.5;
+    word-wrap: break-word;
 }
 
 .start-button {
     margin-top: 25px;
-    padding: 12px 30px;
+    padding: clamp(10px, 3vw, 12px) clamp(25px, 6vw, 30px);
     background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
     color: #2d5a3d;
     border: 2px solid #2d5a3d;
     border-radius: 25px;
     font-family: 'Kalam', cursive;
-    font-size: 1.1rem;
+    font-size: var(--text-size-medium);
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+    /* Enhanced touch target */
+    min-height: 44px;
+    min-width: 120px;
+    touch-action: manipulation;
 }
 
-.start-button:hover {
+.start-button:hover,
+.start-button:focus {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(212, 175, 55, 0.6);
     background: linear-gradient(135deg, #f4e474 0%, #d4af37 100%);
     border-color: #1a3d28;
+    outline: none;
+}
+
+.start-button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
 }
 
 /* Page Flip Animation Styles */
@@ -485,7 +1022,8 @@ body {
 }
 
 /* Page shadow effects during flip */
-.page::before {
+.page.flipping-forward::before,
+.page.flipping-backward::before {
     content: '';
     position: absolute;
     top: 0;
@@ -498,15 +1036,10 @@ body {
         rgba(0, 0, 0, 0.1) 50%,
         rgba(0, 0, 0, 0.3) 100%
     );
-    opacity: 0;
+    opacity: 1;
     transition: opacity 0.4s ease;
     pointer-events: none;
     z-index: 10;
-}
-
-.flipping-forward .page-current::before,
-.flipping-backward .page-current::before {
-    opacity: 1;
 }
 
 /* Page settle animation */
@@ -613,11 +1146,46 @@ body {
     width: 100%;
     height: 100%;
     background-image: 
-        radial-gradient(circle at 20% 80%, rgba(120, 119, 108, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(120, 119, 108, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 40% 40%, rgba(120, 119, 108, 0.1) 0%, transparent 50%);
+        /* Textura principal de papel vintage */
+        radial-gradient(circle at 20% 80%, rgba(139, 134, 130, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(160, 155, 150, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(180, 175, 170, 0.10) 0%, transparent 50%),
+        
+        /* Fibras do papel */
+        repeating-linear-gradient(
+            30deg,
+            transparent,
+            transparent 0.5px,
+            rgba(190, 185, 180, 0.06) 0.5px,
+            rgba(190, 185, 180, 0.06) 1px
+        ),
+        repeating-linear-gradient(
+            120deg,
+            transparent,
+            transparent 0.5px,
+            rgba(200, 195, 190, 0.05) 0.5px,
+            rgba(200, 195, 190, 0.05) 1px
+        ),
+        
+        /* Manchas de envelhecimento */
+        radial-gradient(ellipse at 70% 30%, rgba(210, 190, 170, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse at 30% 70%, rgba(195, 175, 155, 0.09) 0%, transparent 50%),
+        
+        /* Pontos de textura */
+        repeating-radial-gradient(
+            circle at 50% 50%,
+            transparent 0px,
+            rgba(220, 215, 210, 0.04) 1px,
+            transparent 2px
+        );
+    background-size: 
+        80px 80px, 120px 120px, 100px 100px,
+        4px 4px, 6px 6px,
+        200px 150px, 180px 120px,
+        15px 15px;
     pointer-events: none;
-    opacity: 0.3;
+    opacity: 0.6;
+    z-index: 1;
 }
 
 /* Page curl effect for corners */
@@ -697,48 +1265,67 @@ body {
 }
 
 /* ================================
-   MOBILE RESPONSIVENESS
+   ENHANCED MOBILE RESPONSIVENESS
    ================================ */
 
+/* Base Mobile Styles (up to 768px) */
 @media screen and (max-width: 768px) {
-    /* Mobile viewport adjustments */
+    /* Core mobile viewport fixes */
+    html {
+        -webkit-text-size-adjust: 100%;
+        touch-action: manipulation;
+    }
+    
     body {
         overflow: hidden;
         position: fixed;
         width: 100%;
         height: 100vh;
+        height: calc(var(--vh, 1vh) * 100);
         -webkit-overflow-scrolling: touch;
+        overscroll-behavior: none;
+        padding-top: var(--safe-area-inset-top);
+        padding-bottom: var(--safe-area-inset-bottom);
+        padding-left: var(--safe-area-inset-left);
+        padding-right: var(--safe-area-inset-right);
     }
 
     #scrapbook-container {
         width: 100vw;
         height: 100vh;
+        height: calc(var(--vh, 1vh) * 100);
         position: fixed;
         top: 0;
         left: 0;
+        padding: 0;
+        margin: 0;
     }
 
-    /* Flipbook Container Mobile */
+    /* Flipbook Container Mobile Optimization */
     #flipbook-container {
         display: flex;
         justify-content: center;
         align-items: center;
         width: 100%;
         height: 100%;
-        padding: 10px;
+        padding: 0;
+        overflow: hidden;
     }
 
     #flipbook {
         width: 100vw !important;
         height: 100vh !important;
+        height: calc(var(--vh, 1vh) * 100) !important;
         max-width: none !important;
         max-height: none !important;
+        position: relative;
     }
 
-    /* Single page mode for mobile */
+    /* Single page mobile optimization */
     .page {
         width: 100vw !important;
         height: 100vh !important;
+        height: calc(var(--vh, 1vh) * 100) !important;
         background: linear-gradient(145deg, #fefefe 0%, #f8f8f8 100%);
         border: none;
         box-shadow: none;
@@ -747,19 +1334,21 @@ body {
         justify-content: center;
         position: relative;
         overflow: hidden;
-        padding: 20px;
+        padding: 0;
+        margin: 0;
     }
 
-    /* Mobile Photo Frame */
+    /* Mobile Photo Frame - Completely responsive */
     .page .photo-frame {
         position: relative;
-        width: calc(100vw - 40px);
-        height: calc(100vh - 80px);
+        width: calc(100vw - 20px);
+        height: calc(100vh - 40px);
+        height: calc(var(--vh, 1vh) * 100 - 40px);
         background: linear-gradient(145deg, #ffffff 0%, #f8f6f0 100%);
-        border-radius: 20px;
-        padding: 20px;
+        border-radius: 15px;
+        padding: 15px;
         box-shadow: 
-            0 10px 30px rgba(45, 90, 61, 0.2),
+            0 8px 25px rgba(45, 90, 61, 0.15),
             inset 0 2px 4px rgba(255, 255, 255, 0.8),
             inset 0 -2px 4px rgba(45, 90, 61, 0.05);
         display: flex;
@@ -767,250 +1356,404 @@ body {
         align-items: center;
         justify-content: center;
         transform-style: preserve-3d;
+        box-sizing: border-box;
+        margin: auto;
+        max-width: none;
+        max-height: none;
     }
 
-    /* Mobile photo sizing */
-    .page .photo-frame img {
-        width: 100% !important;
-        height: 65% !important;
-        object-fit: contain;
-        object-position: center;
+    /* Mobile photo optimization - prevent cropping */
+    .page .photo-frame img,
+    .page .photo-frame .photo {
+        width: auto !important;
+        height: auto !important;
+        max-width: calc(100% - 10px) !important;
+        max-height: calc(70% - 10px) !important;
+        object-fit: contain !important;
+        object-position: center !important;
         background: #f8f6f0;
-        border-radius: 15px;
-        box-shadow: 0 6px 20px rgba(45, 90, 61, 0.3);
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(45, 90, 61, 0.2);
+        margin: auto;
+        display: block;
     }
 
-    /* Mobile text overlay */
+    /* Mobile text overlay optimization */
     .text-overlay {
         position: absolute;
-        bottom: 15px;
-        left: 15px;
-        right: 15px;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
         background: rgba(248, 246, 240, 0.95);
-        padding: 12px 16px;
-        border-radius: 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
         border: 2px solid rgba(212, 175, 55, 0.3);
         box-shadow: 
             0 4px 12px rgba(45, 90, 61, 0.2),
             inset 0 1px 0 rgba(212, 175, 55, 0.3);
         backdrop-filter: blur(10px);
+        box-sizing: border-box;
+        max-width: calc(100vw - 40px);
     }
 
     .memory-text {
         font-family: 'Dancing Script', cursive;
-        font-size: 1.2rem;
+        font-size: clamp(1rem, 4vw, 1.2rem);
         color: #2d5a3d;
         margin-bottom: 4px;
         line-height: 1.3;
         font-weight: 600;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
 
     .memory-date {
         font-family: 'Indie Flower', cursive;
-        font-size: 0.9rem;
+        font-size: clamp(0.8rem, 3vw, 0.9rem);
         color: #d4af37;
         text-align: right;
         font-weight: 400;
         text-shadow: 0 1px 2px rgba(45, 90, 61, 0.2);
     }
 
-    /* Mobile Navigation Areas */
+    /* Mobile Navigation Areas - Enhanced touch zones */
     .nav-area {
         position: fixed;
         top: 0;
         width: 50vw;
         height: 100vh;
+        height: calc(var(--vh, 1vh) * 100);
         z-index: 1000;
         cursor: pointer;
-        transition: background-color 0.3s ease;
+        transition: background-color 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .nav-left {
         left: 0;
-        background: linear-gradient(90deg, rgba(212, 175, 55, 0.1) 0%, transparent 100%);
+        background: linear-gradient(90deg, rgba(212, 175, 55, 0.05) 0%, transparent 100%);
     }
 
     .nav-right {
         right: 0;
-        background: linear-gradient(270deg, rgba(212, 175, 55, 0.1) 0%, transparent 100%);
+        background: linear-gradient(270deg, rgba(212, 175, 55, 0.05) 0%, transparent 100%);
     }
 
     .nav-area:active {
-        background-color: rgba(212, 175, 55, 0.2);
+        background-color: rgba(212, 175, 55, 0.15);
+        transition: background-color 0.1s ease;
     }
 
-    /* Mobile Photo Counter */
+    /* Mobile Photo Counter - Fixed positioning */
     .photo-counter {
         position: fixed;
-        top: 20px;
-        right: 20px;
+        top: 15px;
+        right: 15px;
         background: rgba(248, 246, 240, 0.9);
-        padding: 6px 12px;
-        border-radius: 15px;
+        padding: 5px 10px;
+        border-radius: 12px;
         border: 1px solid rgba(212, 175, 55, 0.3);
         font-family: 'Kalam', cursive;
-        font-size: 0.8rem;
+        font-size: clamp(0.7rem, 2.5vw, 0.8rem);
         color: #2d5a3d;
         font-weight: 700;
-        box-shadow: 0 4px 12px rgba(45, 90, 61, 0.1);
+        box-shadow: 0 2px 8px rgba(45, 90, 61, 0.1);
         z-index: 1000;
+        backdrop-filter: blur(10px);
     }
 
-    /* Mobile Progress Dots */
-    .progress-container {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 1000;
-    }
-
-    .progress-dots {
-        display: flex;
-        gap: 8px;
-        padding: 8px 16px;
-        background: rgba(248, 246, 240, 0.9);
-        border-radius: 20px;
-        border: 1px solid rgba(212, 175, 55, 0.3);
-        box-shadow: 0 4px 12px rgba(45, 90, 61, 0.1);
-    }
-
-    .progress-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: rgba(212, 175, 55, 0.3);
-        border: 1px solid rgba(212, 175, 55, 0.6);
-        transition: all 0.3s ease;
-        cursor: pointer;
-    }
-
-    .progress-dot.active {
-        background: #d4af37;
-        border-color: #2d5a3d;
-        transform: scale(1.3);
-        box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
-    }
-
-    /* Mobile Instructions */
+    /* Mobile Instructions - Full screen responsive */
     .instruction-content {
         background: linear-gradient(135deg, #f8f6f0 0%, #e8e2d8 100%);
-        padding: 30px 20px;
-        border-radius: 20px;
+        padding: 25px 20px;
+        border-radius: 15px;
         border: 3px solid #d4af37;
         text-align: center;
-        box-shadow: 0 20px 40px rgba(45, 90, 61, 0.3);
+        box-shadow: 0 15px 35px rgba(45, 90, 61, 0.3);
         max-width: calc(100vw - 40px);
+        width: 100%;
         margin: 0 20px;
+        box-sizing: border-box;
     }
 
     .instruction-content h2 {
         font-family: 'Dancing Script', cursive;
-        font-size: 2rem;
+        font-size: clamp(1.6rem, 6vw, 2rem);
         color: #2d5a3d;
         margin-bottom: 15px;
         font-weight: 700;
         text-shadow: 0 2px 4px rgba(212, 175, 55, 0.3);
+        word-wrap: break-word;
     }
 
     .instruction-content p {
         font-family: 'Kalam', cursive;
-        font-size: 0.9rem;
+        font-size: clamp(0.85rem, 3.5vw, 0.95rem);
         color: #2d5a3d;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
         line-height: 1.4;
+        word-wrap: break-word;
     }
 
-    /* Mobile Loading */
+    .start-button {
+        margin-top: 20px;
+        padding: 12px 25px;
+        min-height: 44px;
+        min-width: 120px;
+        font-size: clamp(0.9rem, 3.5vw, 1rem);
+        border-radius: 22px;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Mobile Loading - Responsive */
     .loading {
-        font-size: 1.2rem;
+        font-size: clamp(1.1rem, 4vw, 1.3rem);
         padding: 0 20px;
         text-align: center;
+        max-width: calc(100vw - 40px);
     }
 
     .loading-spinner {
-        width: 40px;
-        height: 40px;
-        border: 3px solid #f3f3f3;
-        border-top: 3px solid #d4af37;
+        width: clamp(35px, 8vw, 45px);
+        height: clamp(35px, 8vw, 45px);
+        border: clamp(2px, 1vw, 3px) solid #f3f3f3;
+        border-top: clamp(2px, 1vw, 3px) solid #d4af37;
         margin: 0 auto 15px;
     }
 
-    /* Hide decorative elements on small screens */
+    /* Hide decorative elements on mobile for performance */
     .frame-decoration,
     .washi-tape,
-    .page-curl {
-        display: none;
+    .page-curl,
+    .paper-texture {
+        display: none !important;
     }
 
-    /* Mobile-specific frame styles */
+    /* Mobile-specific frame styles - simplified */
     .frame-style-1 .photo-frame,
     .frame-style-2 .photo-frame,
     .frame-style-3 .photo-frame,
     .frame-style-4 .photo-frame,
     .frame-style-5 .photo-frame,
     .frame-style-6 .photo-frame {
-        border: 3px solid #d4af37;
-        border-radius: 20px;
+        border: 2px solid #d4af37;
+        border-radius: 15px;
         background: linear-gradient(145deg, #ffffff 0%, #f8f6f0 100%);
         box-shadow: 
-            0 10px 30px rgba(45, 90, 61, 0.2),
+            0 8px 25px rgba(45, 90, 61, 0.15),
             inset 0 2px 4px rgba(255, 255, 255, 0.8),
             inset 0 -2px 4px rgba(45, 90, 61, 0.05);
     }
 }
 
+/* Extra Small Mobile (up to 480px) */
 @media screen and (max-width: 480px) {
-    /* Extra small mobile adjustments */
     .page .photo-frame {
-        padding: 15px;
-        width: calc(100vw - 30px);
-        height: calc(100vh - 60px);
+        padding: 12px;
+        width: calc(100vw - 15px);
+        height: calc(var(--vh, 1vh) * 100 - 30px);
+        border-radius: 12px;
     }
 
-    .memory-text {
-        font-size: 1rem;
-    }
-
-    .memory-date {
-        font-size: 0.8rem;
-    }
-
-    .instruction-content h2 {
-        font-size: 1.8rem;
-    }
-
-    .instruction-content p {
-        font-size: 0.85rem;
-    }
-}
-
-/* Landscape mobile adjustments */
-@media screen and (max-width: 768px) and (orientation: landscape) {
-    .page .photo-frame img {
-        height: 60% !important;
+    .page .photo-frame img,
+    .page .photo-frame .photo {
+        max-width: calc(100% - 5px) !important;
+        max-height: calc(65% - 5px) !important;
+        border-radius: 8px;
     }
 
     .text-overlay {
-        bottom: 10px;
-        left: 10px;
-        right: 10px;
-        padding: 8px 12px;
+        bottom: 8px;
+        left: 8px;
+        right: 8px;
+        padding: 8px 10px;
+        border-radius: 8px;
+    }
+
+    .memory-text {
+        font-size: clamp(0.9rem, 4.5vw, 1rem);
+        line-height: 1.2;
+    }
+
+    .memory-date {
+        font-size: clamp(0.75rem, 3.5vw, 0.8rem);
     }
 
     .photo-counter {
         top: 10px;
         right: 10px;
         padding: 4px 8px;
-        font-size: 0.7rem;
+        font-size: clamp(0.65rem, 2.8vw, 0.7rem);
+        border-radius: 10px;
     }
 
-    .progress-container {
-        bottom: 10px;
+    .instruction-content {
+        padding: 20px 15px;
+        margin: 0 15px;
+    }
+
+    .instruction-content h2 {
+        font-size: clamp(1.4rem, 7vw, 1.8rem);
+        margin-bottom: 12px;
+    }
+
+    .instruction-content p {
+        font-size: clamp(0.8rem, 4vw, 0.85rem);
+        margin-bottom: 6px;
+        line-height: 1.3;
+    }
+
+    .start-button {
+        padding: 10px 20px;
+        font-size: clamp(0.85rem, 4vw, 0.9rem);
+        margin-top: 15px;
     }
 }
 
-/* Image optimization styles */
+/* Mobile Landscape Optimization */
+@media screen and (max-width: 768px) and (orientation: landscape) {
+    .page .photo-frame {
+        width: calc(100vw - 30px);
+        height: calc(var(--vh, 1vh) * 100 - 20px);
+        padding: 10px;
+    }
+
+    .page .photo-frame img,
+    .page .photo-frame .photo {
+        max-height: calc(55% - 5px) !important;
+        max-width: calc(90% - 5px) !important;
+    }
+
+    .text-overlay {
+        bottom: 5px;
+        left: 5px;
+        right: 5px;
+        padding: 6px 10px;
+    }
+
+    .photo-counter {
+        top: 8px;
+        right: 8px;
+        padding: 3px 6px;
+        font-size: clamp(0.6rem, 2.5vw, 0.7rem);
+    }
+
+    .memory-text {
+        font-size: clamp(0.85rem, 3.5vw, 0.95rem);
+    }
+
+    .memory-date {
+        font-size: clamp(0.7rem, 3vw, 0.75rem);
+    }
+}
+
+/* Tablet Styles (769px to 1024px) */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    .photo-frame {
+        width: min(90vw, 85vh);
+        height: min(80vw, 75vh);
+        max-width: 900px;
+        max-height: 700px;
+        padding: clamp(35px, 5vw, 45px);
+    }
+
+    .memory-text {
+        font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+    }
+
+    .memory-date {
+        font-size: clamp(0.9rem, 2vw, 1rem);
+    }
+
+    .instruction-content h2 {
+        font-size: clamp(2rem, 4vw, 2.3rem);
+    }
+
+    .instruction-content p {
+        font-size: clamp(1rem, 2.2vw, 1.1rem);
+    }
+
+    .start-button {
+        font-size: clamp(1rem, 2.2vw, 1.1rem);
+        padding: clamp(11px, 2.5vw, 13px) clamp(28px, 5vw, 32px);
+    }
+}
+
+/* Large Desktop (1025px and up) */
+@media screen and (min-width: 1025px) {
+    .photo-frame {
+        width: min(85vw, 80vh);
+        height: min(75vw, 70vh);
+        max-width: 1200px;
+        max-height: 900px;
+        padding: clamp(50px, 4vw, 70px);
+    }
+
+    .frame-decoration {
+        width: clamp(25px, 2vw, 30px);
+        height: clamp(25px, 2vw, 30px);
+    }
+
+    .frame-top-left,
+    .frame-top-right,
+    .frame-bottom-left,
+    .frame-bottom-right {
+        top: auto;
+        bottom: auto;
+        left: auto;
+        right: auto;
+    }
+
+    .frame-top-left { 
+        top: clamp(18px, 2vw, 25px); 
+        left: clamp(18px, 2vw, 25px); 
+    }
+    .frame-top-right { 
+        top: clamp(18px, 2vw, 25px); 
+        right: clamp(18px, 2vw, 25px); 
+    }
+    .frame-bottom-left { 
+        bottom: clamp(18px, 2vw, 25px); 
+        left: clamp(18px, 2vw, 25px); 
+    }
+    .frame-bottom-right { 
+        bottom: clamp(18px, 2vw, 25px); 
+        right: clamp(18px, 2vw, 25px); 
+    }
+}
+
+/* High DPI and Retina Display Optimization */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .photo {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background: white !important;
+    }
+    
+    .nav-area,
+    .photo-counter,
+    .instructions,
+    .loading {
+        display: none !important;
+    }
+    
+    .photo-frame {
+        box-shadow: none !important;
+        border: 2px solid #333 !important;
+        page-break-inside: avoid;
+    }
+}
+
+/* Enhanced Image Optimization - Universal Rules */
 .image-optimized {
     transition: all 0.3s ease;
 }
@@ -1026,15 +1769,7 @@ body {
     transition: all 0.3s ease;
 }
 
-/* Different image aspect ratio handling */
-.photo-frame {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
-
+/* Universal image container optimization */
 .photo-container {
     width: 100%;
     height: 70%;
@@ -1042,85 +1777,12 @@ body {
     align-items: center;
     justify-content: center;
     background: #f8f6f0;
-    border-radius: 10px;
+    border-radius: clamp(8px, 1.5vw, 10px);
     overflow: hidden;
+    box-sizing: border-box;
 }
 
-/* Responsive image container for different orientations */
-@media screen and (min-width: 769px) {
-    .photo-frame.portrait-image {
-        flex-direction: row;
-        padding: 40px 60px;
-    }
-    
-    .photo-frame.portrait-image .photo {
-        width: auto !important;
-        height: 80% !important;
-        max-width: 90% !important;
-        max-height: 80% !important;
-        object-fit: contain !important;
-    }
-    
-    .photo-frame.landscape-image .photo {
-        width: 95% !important;
-        height: auto !important;
-        max-width: 95% !important;
-        max-height: 70% !important;
-        object-fit: contain !important;
-    }
-    
-    .photo-frame.square-image .photo {
-        width: 85% !important;
-        height: 75% !important;
-        max-width: 85% !important;
-        max-height: 75% !important;
-        object-fit: contain !important;
-    }
-
-    /* Ensure no image cropping */
-    .photo-frame .photo {
-        object-fit: contain !important;
-        object-position: center !important;
-        background: #f8f6f0 !important;
-    }
-}
-
-/* Mobile-specific image optimization */
-@media screen and (max-width: 768px) {
-    .photo-frame .photo {
-        object-fit: contain !important;
-        object-position: center !important;
-        max-width: 95% !important;
-        max-height: 80% !important;
-    }
-    
-    .photo-frame.portrait-image .photo {
-        width: auto !important;
-        height: 75% !important;
-        max-width: 90% !important;
-    }
-    
-    .photo-frame.landscape-image .photo {
-        width: 90% !important;
-        height: auto !important;
-        max-height: 65% !important;
-    }
-    
-    .photo-frame.square-image .photo {
-        width: 85% !important;
-        height: 70% !important;
-    }
-}
-
-/* Desktop-specific image optimization */
-@media screen and (min-width: 769px) {
-    .photo-frame .photo {
-        object-fit: cover;
-        object-position: center;
-    }
-}
-
-/* Force image optimization - no cropping allowed */
+/* Universal image optimization - No cropping policy */
 .photo-frame img,
 .photo-frame .photo,
 img.photo {
@@ -1133,14 +1795,45 @@ img.photo {
     display: block !important;
     margin: auto !important;
     background: #f8f6f0 !important;
-    border-radius: 10px !important;
+    border-radius: clamp(8px, 1.5vw, 10px) !important;
+    box-sizing: border-box !important;
 }
 
 /* Override any inline styles that might cause cropping */
-*[style*="object-fit: cover"] {
-    object-fit: contain !important;
-}
-
+*[style*="object-fit: cover"],
 *[style*="object-fit:cover"] {
     object-fit: contain !important;
 }
+
+/* Responsive image handling for different orientations */
+@media screen and (min-width: 769px) {
+    .photo-frame.portrait-image {
+        flex-direction: row;
+        padding: clamp(40px, 5vw, 60px);
+    }
+    
+    .photo-frame.portrait-image .photo {
+        width: auto !important;
+        height: 80% !important;
+        max-width: 90% !important;
+        max-height: 80% !important;
+    }
+    
+    .photo-frame.landscape-image .photo {
+        width: 95% !important;
+        height: auto !important;
+        max-width: 95% !important;
+        max-height: 70% !important;
+    }
+    
+    .photo-frame.square-image .photo {
+        width: 85% !important;
+        height: 75% !important;
+        max-width: 85% !important;
+        max-height: 75% !important;
+    }
+}
+
+
+
+
