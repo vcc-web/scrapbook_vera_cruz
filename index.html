@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrapbook de Memórias</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Indie+Flower&family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+</head>
+<body>
+    <div id="scrapbook-container">
+        <!-- Loading indicator -->
+        <div id="loading" class="loading">
+            <div class="loading-spinner"></div>
+            <p>Carregando memórias...</p>
+        </div>
+
+        <!-- Main story view -->
+        <div id="story-view" class="story-view hidden">
+            <!-- Navigation areas -->
+            <div class="nav-area nav-left" id="nav-left"></div>
+            <div class="nav-area nav-right" id="nav-right"></div>
+
+            <!-- Flipbook container -->
+            <div id="flipbook-container">
+                <div id="flipbook"></div>
+            </div>
+
+            <!-- Progress indicator -->
+            <div class="progress-container">
+                <div class="progress-dots" id="progress-dots"></div>
+            </div>
+
+            <!-- Photo counter -->
+            <div class="photo-counter">
+                <span id="current-index">1</span> / <span id="total-photos">0</span>
+            </div>
+        </div>
+
+        <!-- Instructions overlay -->
+        <div id="instructions" class="instructions">
+            <div class="instruction-content">
+                <h2>📸 Scrapbook de Memórias</h2>
+                <p>✨ Clique na parte <strong>direita</strong> da tela para avançar</p>
+                <p>✨ Clique na parte <strong>esquerda</strong> da tela para voltar</p>
+                <p>✨ Use as setas do teclado para navegar</p>
+                <button id="start-btn" class="start-button">Começar Jornada</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
