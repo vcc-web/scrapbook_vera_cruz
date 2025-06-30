@@ -1,0 +1,247 @@
+/* Basic sample */
+
+body {
+	overflow: hidden;
+	background-color: #fcfcfc;
+	margin: 0;
+	padding: 0;
+}
+
+.flipbook-viewport {
+	overflow: hidden;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flipbook-viewport .container {
+	position: absolute;
+	margin: auto;
+	
+	background:
+		radial-gradient(circle at 30% 20%, rgba(163, 197, 133, 0.12) 0%, transparent 50%),
+		radial-gradient(circle at 70% 80%, rgba(123, 160, 91, 0.08) 0%, transparent 50%),
+		radial-gradient(circle at 40% 40%, rgba(93, 138, 58, 0.06) 0%, transparent 50%);
+}
+
+.flipbook-viewport .flipbook {
+	width: 1000px;
+	height: 800px;
+}
+
+.flipbook-viewport .page {
+	width: 1000px;
+	height: 800px;
+}
+
+.flipbook .page {
+	-webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.flipbook-viewport .page img {
+	-webkit-user-select: none;
+	user-select: none;
+	margin: 0;
+	padding: 1%;
+	background: #f1f1f1;
+}
+
+.flipbook-viewport .shadow {
+	-webkit-transition: -webkit-box-shadow 0.5s;
+	transition: box-shadow 0.5s;
+
+	-webkit-box-shadow: 0 0 20px #ccc;
+	box-shadow: 0 0 20px #ccc;
+}
+
+.flipbook-viewport .double {
+	width: 800px;
+	height: 400px;
+	background-size: 100% 100%;
+}
+
+/* Scrapbook styles */
+.page {
+	position: relative;
+	overflow: hidden;
+}
+
+.scrapbook-content {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+	box-sizing: border-box;
+}
+
+.scrapbook-content img {
+	max-width: 70%;
+	max-height: 70%;
+	object-fit: contain;
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+	filter: sepia(5%) saturate(110%) brightness(105%);
+	transition: transform 0.3s ease;
+}
+
+.scrapbook-content img:hover {
+	transform: scale(1.05) !important;
+}
+
+.scrapbook-text {
+	position: absolute;
+	font-family: 'Brush Script MT', cursive, 'Comic Sans MS', sans-serif;
+	font-size: 24px;
+	font-weight: bold;
+	color: #2c3e50;
+	text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+	padding: 8px 16px;
+	background: rgba(255, 255, 255, 0.7);
+	border-radius: 12px;
+	backdrop-filter: blur(5px);
+	border: 2px solid rgba(255, 255, 255, 0.5);
+	max-width: 200px;
+	text-align: center;
+	word-wrap: break-word;
+	line-height: 1.2;
+}
+
+.scrapbook-text.top-left {
+	top: 30px;
+	left: 30px;
+	transform: rotate(-5deg);
+}
+
+.scrapbook-text.top-right {
+	top: 30px;
+	right: 30px;
+	transform: rotate(5deg);
+}
+
+.scrapbook-text.bottom-left {
+	bottom: 30px;
+	left: 30px;
+	transform: rotate(3deg);
+}
+
+.scrapbook-text.bottom-right {
+	bottom: 30px;
+	right: 30px;
+	transform: rotate(-3deg);
+}
+
+.scrapbook-text.center {
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%) rotate(2deg);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+	.flipbook-viewport .flipbook {
+		width: 800px;
+		height: 640px;
+		left: -320px;
+		top: -160px;
+	}
+
+	.flipbook-viewport .page {
+		width: 800px;
+		height: 640px;
+	}
+
+	.scrapbook-text {
+		font-size: 20px;
+		max-width: 160px;
+	}
+}
+
+@media (max-width: 900px) {
+	.flipbook-viewport .flipbook {
+		width: 600px;
+		height: 480px;
+		left: -240px;
+		top: -120px;
+	}
+
+	.flipbook-viewport .page {
+		width: 600px;
+		height: 480px;
+	}
+
+	.scrapbook-text {
+		font-size: 18px;
+		max-width: 140px;
+		padding: 6px 12px;
+	}
+
+	.scrapbook-text.top-left,
+	.scrapbook-text.top-right {
+		top: 20px;
+	}
+
+	.scrapbook-text.top-left,
+	.scrapbook-text.bottom-left {
+		left: 20px;
+	}
+
+	.scrapbook-text.top-right,
+	.scrapbook-text.bottom-right {
+		right: 20px;
+	}
+
+	.scrapbook-text.bottom-left,
+	.scrapbook-text.bottom-right {
+		bottom: 20px;
+	}
+}
+
+@media (max-width: 600px) {
+	.flipbook-viewport .flipbook {
+		width: 400px;
+		height: 320px;
+		left: -160px;
+		top: -80px;
+	}
+
+	.flipbook-viewport .page {
+		width: 400px;
+		height: 320px;
+	}
+
+	.scrapbook-content {
+		padding: 15px;
+	}
+
+	.scrapbook-text {
+		font-size: 14px;
+		max-width: 100px;
+		padding: 4px 8px;
+	}
+
+	.scrapbook-text.top-left,
+	.scrapbook-text.top-right {
+		top: 15px;
+	}
+
+	.scrapbook-text.top-left,
+	.scrapbook-text.bottom-left {
+		left: 15px;
+	}
+
+	.scrapbook-text.top-right,
+	.scrapbook-text.bottom-right {
+		right: 15px;
+	}
+
+	.scrapbook-text.bottom-left,
+	.scrapbook-text.bottom-right {
+		bottom: 15px;
+	}
+}

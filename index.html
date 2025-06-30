@@ -1,58 +1,38 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#a3c585">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="mobile-web-app-capable" content="yes">
-    <title>Scrapbook de Memórias</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="pattern-styles.css">
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Indie+Flower&family=Kalam:wght@300;400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Indie+Flower&family=Kalam:wght@300;400;700&display=swap"></noscript>
-    <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlipBook</title>
+    <link rel="shortcut icon" href="#!" type="image/x-icon">
+    
+    <link rel="stylesheet" href="css/pattern-styles.css">
+    <link rel="stylesheet" href="css/styles.css">
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="js/turn.min.js"></script>
+    <script src="js/zoom.min.js"></script>
+    <script src="js/scissor.min.js"></script>
+    <script src="js/hash.js"></script>
 </head>
+
 <body>
-    <div id="scrapbook-container">
-        <!-- Loading indicator -->
-        <div id="loading" class="loading">
-            <div class="loading-spinner"></div>
-            <p>Carregando memórias...</p>
-        </div>
 
-        <!-- Main story view -->
-        <div id="story-view" class="story-view hidden">
-            <!-- Navigation areas -->
-            <div class="nav-area nav-left" id="nav-left" role="button" aria-label="Página anterior" tabindex="0"></div>
-            <div class="nav-area nav-right" id="nav-right" role="button" aria-label="Próxima página" tabindex="0"></div>
-
-            <!-- Flipbook container -->
-            <div id="flipbook-container">
-                <div id="flipbook"></div>
-            </div>
-
-            <!-- Photo counter -->
-            <div class="photo-counter" role="status" aria-live="polite">
-                <span id="current-index">1</span> / <span id="total-photos">0</span>
-            </div>
-        </div>
-
-        <!-- Instructions overlay -->
-        <div id="instructions" class="instructions" role="dialog" aria-labelledby="instructions-title" aria-modal="true">
-            <div class="instruction-content">
-                <h2 id="instructions-title">📸 Scrapbook de Memórias</h2>
-                <p>✨ Clique na parte <strong>direita</strong> da tela para avançar</p>
-                <p>✨ Clique na parte <strong>esquerda</strong> da tela para voltar</p>
-                <p>✨ Use as setas do teclado para navegar</p>
-                <button id="start-btn" class="start-button" type="button">Começar Jornada</button>
+    <div class="flipbook-viewport">
+        <div class="container">
+            <div class="flipbook">
+                <div class="page"></div>
+                <div class="page"></div>
             </div>
         </div>
     </div>
 
-    <script src="mobile-responsive.js"></script>
-    <script src="image-protection.js"></script>
-    <script src="script.js"></script>
+    <script src="js/book.js"></script>
 </body>
+
 </html>
