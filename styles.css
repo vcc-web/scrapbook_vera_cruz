@@ -224,32 +224,6 @@ body {
     overflow: hidden;
 }
 
-/* Page Theme Variations - Apenas cores de fundo */
-/* Verde Theme */
-.page.theme-green {
-    background: linear-gradient(135deg, #e8f4d8 0%, #d8f0c8 100%);
-}
-
-/* Azul Claro Theme */
-.page.theme-blue-light {
-    background: linear-gradient(135deg, #e8f8fc 0%, #d8f2fa 100%);
-}
-
-/* Azul Turquesa Theme */
-.page.theme-blue-turquoise {
-    background: linear-gradient(135deg, #e8fffe 0%, #d8fcfc 100%);
-}
-
-/* Dourado Theme */
-.page.theme-gold {
-    background: linear-gradient(135deg, #fef8e8 0%, #fdf2d8 100%);
-}
-
-/* Cinza Theme */
-.page.theme-gray {
-    background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
-}
-
 /* Paper texture overlay - using subtle CSS texture */
 .paperOverlay {
     position: absolute;
@@ -408,65 +382,14 @@ body {
     position: relative;
     width: 100%;
     height: 100%;
-    background: linear-gradient(145deg, #ffffff 0%, #f8f8f8 100%);
     border-radius: clamp(10px, 2vw, 15px);
-    padding: var(--frame-padding);
-    box-shadow: 
-        0 10px 20px rgba(0, 0, 0, 0.1),
-        inset 0 2px 4px rgba(255, 255, 255, 0.8),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.05);
+    /* padding: var(--frame-padding); */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     transform-style: preserve-3d;
     box-sizing: border-box;
-}
-
-/* Photo Frame Theme Variations */
-/* Verde Theme Frame */
-.page.theme-green .photo-frame {
-    background: linear-gradient(145deg, #f8fff5 0%, #f0fae8 100%);
-    box-shadow: 
-        0 10px 20px rgba(74, 107, 55, 0.1),
-        inset 0 2px 4px rgba(255, 255, 255, 0.8),
-        inset 0 -2px 4px rgba(74, 107, 55, 0.05);
-}
-
-/* Azul Claro Theme Frame */
-.page.theme-blue-light .photo-frame {
-    background: linear-gradient(145deg, #f5fcfe 0%, #e8f8fc 100%);
-    box-shadow: 
-        0 10px 20px rgba(40, 174, 185, 0.1),
-        inset 0 2px 4px rgba(255, 255, 255, 0.8),
-        inset 0 -2px 4px rgba(40, 174, 185, 0.05);
-}
-
-/* Azul Turquesa Theme Frame */
-.page.theme-blue-turquoise .photo-frame {
-    background: linear-gradient(145deg, #f5fffe 0%, #e8fffe 100%);
-    box-shadow: 
-        0 10px 20px rgba(0, 222, 219, 0.1),
-        inset 0 2px 4px rgba(255, 255, 255, 0.8),
-        inset 0 -2px 4px rgba(0, 222, 219, 0.05);
-}
-
-/* Dourado Theme Frame */
-.page.theme-gold .photo-frame {
-    background: linear-gradient(145deg, #fffcf5 0%, #fef8e8 100%);
-    box-shadow: 
-        0 10px 20px rgba(249, 182, 71, 0.1),
-        inset 0 2px 4px rgba(255, 255, 255, 0.8),
-        inset 0 -2px 4px rgba(249, 182, 71, 0.05);
-}
-
-/* Cinza Theme Frame */
-.page.theme-gray .photo-frame {
-    background: linear-gradient(145deg, #fafafa 0%, #f0f0f0 100%);
-    box-shadow: 
-        0 10px 20px rgba(56, 55, 61, 0.1),
-        inset 0 2px 4px rgba(255, 255, 255, 0.8),
-        inset 0 -2px 4px rgba(56, 55, 61, 0.05);
 }
 
 /* Regular photo frame (for non-flipbook mode) - Enhanced responsiveness */
@@ -476,13 +399,9 @@ body {
     height: min(85vw, 85vh);
     max-width: min(1000px, 90vw);
     max-height: min(750px, 90vh);
-    background: linear-gradient(145deg, #ffffff 0%, #f8f8f8 100%);
     border-radius: clamp(15px, 3vw, 20px);
-    padding: var(--frame-padding);
-    box-shadow: 
-        0 20px 40px rgba(0, 0, 0, 0.15),
-        inset 0 2px 4px rgba(255, 255, 255, 0.8),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+    /* padding: var(--frame-padding); */
+
     transform: rotate(-1deg);
     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     animation: frameFloat 6s ease-in-out infinite;
@@ -494,14 +413,6 @@ body {
 @keyframes frameFloat {
     0%, 100% { transform: rotate(-1deg) translateY(0px); }
     50% { transform: rotate(-1deg) translateY(-10px); }
-}
-
-.photo-frame:hover {
-    transform: rotate(0deg) scale(1.02);
-    box-shadow: 
-        0 30px 60px rgba(0, 0, 0, 0.2),
-        inset 0 2px 4px rgba(255, 255, 255, 0.9),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.05);
 }
 
 /* Frame Decorations como Pinos Sóbrios e Minimalistas */
@@ -639,12 +550,14 @@ body {
 
 
 
-/* Photo - Enhanced responsive image handling */
+/* Photo - Enhanced responsive image handling with intelligent positioning */
 .photo {
-    width: 100%;
-    height: 70%;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 70%;
     object-fit: contain !important;
-    object-position: center !important;
+    object-position: center center !important;
     border-radius: clamp(8px, 1.5vw, 10px);
     background: #f8f6f0;
     box-shadow: 
@@ -654,28 +567,108 @@ body {
     filter: sepia(10%) saturate(120%) brightness(105%);
     display: block;
     margin: auto;
-    max-width: 100%;
-    max-height: 100%;
     box-sizing: border-box;
+    /* Intelligent positioning to preserve important areas */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
 }
 
-/* Responsive photo sizing for different screen ratios */
+/* Intelligent image container with aspect ratio preservation */
+.photo-container {
+    width: 100%;
+    height: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f6f0;
+    border-radius: clamp(8px, 1.5vw, 10px);
+    overflow: hidden;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.photo-container .photo {
+    position: relative;
+    z-index: 1;
+}
+
+/* Responsive photo sizing for different screen ratios and orientations */
 @media (max-aspect-ratio: 1/1) {
-    /* Portrait screens */
+    /* Portrait screens - Optimize for vertical images */
     .photo {
-        width: 90%;
+        width: auto;
         height: auto;
+        max-width: 90%;
         max-height: 65%;
+        object-fit: contain !important;
+    }
+    
+    .photo-container {
+        height: 75%;
     }
 }
 
 @media (min-aspect-ratio: 16/9) {
-    /* Wide screens */
+    /* Wide screens - Optimize for horizontal images */
     .photo {
         width: auto;
-        height: 75%;
+        height: auto;
         max-width: 85%;
+        max-height: 75%;
+        object-fit: contain !important;
     }
+    
+    .photo-container {
+        height: 65%;
+    }
+}
+
+/* Smart image orientation detection and optimization */
+.photo-frame.portrait-orientation .photo {
+    max-width: 75% !important;
+    max-height: 85% !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+}
+
+.photo-frame.landscape-orientation .photo {
+    max-width: 95% !important;
+    max-height: 65% !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+}
+
+.photo-frame.square-orientation .photo {
+    max-width: 80% !important;
+    max-height: 75% !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+}
+
+/* Face-priority positioning (when JavaScript detects faces) */
+.photo-frame.has-faces .photo {
+    object-position: center 35% !important; /* Slightly higher to show faces better */
+    object-fit: contain !important;
+}
+
+.photo-frame.faces-top .photo {
+    object-position: center 25% !important;
+    object-fit: contain !important;
+}
+
+.photo-frame.faces-bottom .photo {
+    object-position: center 75% !important;
+    object-fit: contain !important;
+}
+
+.photo-frame.faces-left .photo {
+    object-position: 25% center !important;
+    object-fit: contain !important;
+}
+
+.photo-frame.faces-right .photo {
+    object-position: 75% center !important;
+    object-fit: contain !important;
 }
 
 /* Efeito de "furar" a foto com os pinos */
@@ -1107,13 +1100,8 @@ body {
     height: min(80vw, 80vh);
     max-width: 800px;
     max-height: 600px;
-    background: linear-gradient(145deg, #ffffff 0%, #f8f8f8 100%);
     border-radius: 20px;
     padding: 40px;
-    box-shadow: 
-        0 20px 40px rgba(0, 0, 0, 0.15),
-        inset 0 2px 4px rgba(255, 255, 255, 0.8),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.1);
     transform: rotate(-1deg);
     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     animation: frameFloat 6s ease-in-out infinite;
@@ -1326,7 +1314,6 @@ body {
         width: 100vw !important;
         height: 100vh !important;
         height: calc(var(--vh, 1vh) * 100) !important;
-        background: linear-gradient(145deg, #fefefe 0%, #f8f8f8 100%);
         border: none;
         box-shadow: none;
         display: flex;
@@ -1344,13 +1331,8 @@ body {
         width: calc(100vw - 20px);
         height: calc(100vh - 40px);
         height: calc(var(--vh, 1vh) * 100 - 40px);
-        background: linear-gradient(145deg, #ffffff 0%, #f8f6f0 100%);
         border-radius: 15px;
         padding: 15px;
-        box-shadow: 
-            0 8px 25px rgba(45, 90, 61, 0.15),
-            inset 0 2px 4px rgba(255, 255, 255, 0.8),
-            inset 0 -2px 4px rgba(45, 90, 61, 0.05);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -1362,7 +1344,7 @@ body {
         max-height: none;
     }
 
-    /* Mobile photo optimization - prevent cropping */
+    /* Mobile photo optimization - prevent cropping and preserve important areas */
     .page .photo-frame img,
     .page .photo-frame .photo {
         width: auto !important;
@@ -1370,12 +1352,49 @@ body {
         max-width: calc(100% - 10px) !important;
         max-height: calc(70% - 10px) !important;
         object-fit: contain !important;
-        object-position: center !important;
+        object-position: center center !important;
         background: #f8f6f0;
         border-radius: 10px;
         box-shadow: 0 4px 15px rgba(45, 90, 61, 0.2);
         margin: auto;
         display: block;
+        /* Ensure no cropping on mobile */
+        min-width: auto;
+        min-height: auto;
+    }
+    
+    /* Mobile container optimization */
+    .page .photo-frame .photo-container {
+        width: 100%;
+        height: 75%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border-radius: 10px;
+        background: #f8f6f0;
+    }
+    
+    /* Mobile orientation-specific adjustments */
+    .page .photo-frame.portrait-orientation .photo {
+        max-width: calc(80% - 10px) !important;
+        max-height: calc(75% - 10px) !important;
+    }
+    
+    .page .photo-frame.landscape-orientation .photo {
+        max-width: calc(95% - 10px) !important;
+        max-height: calc(65% - 10px) !important;
+    }
+    
+    .page .photo-frame.square-orientation .photo {
+        max-width: calc(85% - 10px) !important;
+        max-height: calc(70% - 10px) !important;
+    }
+    
+    /* Mobile face-priority positioning */
+    .page .photo-frame.has-faces .photo {
+        object-position: center 40% !important;
+        max-height: calc(75% - 10px) !important;
     }
 
     /* Mobile text overlay optimization */
@@ -1491,7 +1510,7 @@ body {
     .instruction-content p {
         font-family: 'Kalam', cursive;
         font-size: clamp(0.85rem, 3.5vw, 0.95rem);
-        color: #2d5a3d;
+        color: #34495e;
         margin-bottom: 8px;
         line-height: 1.4;
         word-wrap: break-word;
@@ -1532,21 +1551,6 @@ body {
         display: none !important;
     }
 
-    /* Mobile-specific frame styles - simplified */
-    .frame-style-1 .photo-frame,
-    .frame-style-2 .photo-frame,
-    .frame-style-3 .photo-frame,
-    .frame-style-4 .photo-frame,
-    .frame-style-5 .photo-frame,
-    .frame-style-6 .photo-frame {
-        border: 2px solid #d4af37;
-        border-radius: 15px;
-        background: linear-gradient(145deg, #ffffff 0%, #f8f6f0 100%);
-        box-shadow: 
-            0 8px 25px rgba(45, 90, 61, 0.15),
-            inset 0 2px 4px rgba(255, 255, 255, 0.8),
-            inset 0 -2px 4px rgba(45, 90, 61, 0.05);
-    }
 }
 
 /* Extra Small Mobile (up to 480px) */
@@ -1563,6 +1567,24 @@ body {
         max-width: calc(100% - 5px) !important;
         max-height: calc(65% - 5px) !important;
         border-radius: 8px;
+        object-fit: contain !important;
+        object-position: center center !important;
+    }
+    
+    /* Extra small mobile orientation adjustments */
+    .page .photo-frame.portrait-orientation .photo {
+        max-width: calc(75% - 5px) !important;
+        max-height: calc(70% - 5px) !important;
+    }
+    
+    .page .photo-frame.landscape-orientation .photo {
+        max-width: calc(90% - 5px) !important;
+        max-height: calc(60% - 5px) !important;
+    }
+    
+    .page .photo-frame.has-faces .photo {
+        object-position: center 35% !important;
+        max-height: calc(70% - 5px) !important;
     }
 
     .text-overlay {
@@ -1625,6 +1647,24 @@ body {
     .page .photo-frame .photo {
         max-height: calc(55% - 5px) !important;
         max-width: calc(90% - 5px) !important;
+        object-fit: contain !important;
+        object-position: center center !important;
+    }
+    
+    /* Mobile landscape orientation-specific */
+    .page .photo-frame.portrait-orientation .photo {
+        max-width: calc(70% - 5px) !important;
+        max-height: calc(60% - 5px) !important;
+    }
+    
+    .page .photo-frame.landscape-orientation .photo {
+        max-width: calc(95% - 5px) !important;
+        max-height: calc(50% - 5px) !important;
+    }
+    
+    .page .photo-frame.has-faces .photo {
+        object-position: center 40% !important;
+        max-height: calc(60% - 5px) !important;
     }
 
     .text-overlay {
@@ -1782,12 +1822,12 @@ body {
     box-sizing: border-box;
 }
 
-/* Universal image optimization - No cropping policy */
+/* Universal image optimization - No cropping policy with intelligent positioning */
 .photo-frame img,
 .photo-frame .photo,
 img.photo {
     object-fit: contain !important;
-    object-position: center !important;
+    object-position: center center !important;
     width: auto !important;
     height: auto !important;
     max-width: 95% !important;
@@ -1797,43 +1837,326 @@ img.photo {
     background: #f8f6f0 !important;
     border-radius: clamp(8px, 1.5vw, 10px) !important;
     box-sizing: border-box !important;
+    /* Enhanced image quality */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
 }
 
-/* Override any inline styles that might cause cropping */
-*[style*="object-fit: cover"],
-*[style*="object-fit:cover"] {
+/* Intelligent positioning system for preserving important content */
+.photo-frame.content-priority-faces img,
+.photo-frame.content-priority-faces .photo {
+    object-position: center 35% !important;
+}
+
+.photo-frame.content-priority-top img,
+.photo-frame.content-priority-top .photo {
+    object-position: center 25% !important;
+}
+
+.photo-frame.content-priority-bottom img,
+.photo-frame.content-priority-bottom .photo {
+    object-position: center 75% !important;
+}
+
+.photo-frame.content-priority-left img,
+.photo-frame.content-priority-left .photo {
+    object-position: 25% center !important;
+}
+
+.photo-frame.content-priority-right img,
+.photo-frame.content-priority-right .photo {
+    object-position: 75% center !important;
+}
+
+/* Aspect ratio intelligent sizing */
+.photo-frame.aspect-portrait img,
+.photo-frame.aspect-portrait .photo {
+    max-width: 80% !important;
+    max-height: 90% !important;
+}
+
+.photo-frame.aspect-landscape img,
+.photo-frame.aspect-landscape .photo {
+    max-width: 95% !important;
+    max-height: 75% !important;
+}
+
+.photo-frame.aspect-square img,
+.photo-frame.aspect-square .photo {
+    max-width: 85% !important;
+    max-height: 80% !important;
+}
+
+/* ================================
+   ADVANCED IMAGE PROTECTION SYSTEM
+   ================================ */
+
+/* Smart Content Detection Classes */
+.photo-frame.detect-faces .photo {
+    object-fit: contain !important;
+    object-position: center 30% !important; /* Focus on upper portion for faces */
+    max-height: 85% !important;
+}
+
+.photo-frame.detect-people .photo {
+    object-fit: contain !important;
+    object-position: center 40% !important; /* Focus slightly above center for people */
+    max-height: 90% !important;
+}
+
+.photo-frame.detect-text .photo {
+    object-fit: contain !important;
+    object-position: center center !important; /* Keep text centered */
+    max-width: 100% !important;
+    max-height: 85% !important;
+}
+
+/* Intelligent Crop Prevention */
+.no-crop {
+    object-fit: contain !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+.preserve-aspect {
+    aspect-ratio: attr(data-aspect-ratio) !important;
     object-fit: contain !important;
 }
 
-/* Responsive image handling for different orientations */
-@media screen and (min-width: 769px) {
-    .photo-frame.portrait-image {
-        flex-direction: row;
-        padding: clamp(40px, 5vw, 60px);
+/* Content-Aware Positioning */
+.content-top-heavy .photo {
+    object-position: center 25% !important;
+    max-height: 80% !important;
+}
+
+.content-bottom-heavy .photo {
+    object-position: center 75% !important;
+    max-height: 80% !important;
+}
+
+.content-left-heavy .photo {
+    object-position: 25% center !important;
+    max-width: 85% !important;
+}
+
+.content-right-heavy .photo {
+    object-position: 75% center !important;
+    max-width: 85% !important;
+}
+
+.content-center-heavy .photo {
+    object-position: center center !important;
+    max-width: 90% !important;
+    max-height: 85% !important;
+}
+
+/* Dynamic Sizing Based on Content */
+.photo-frame[data-orientation="portrait"] .photo {
+    max-width: 75% !important;
+    max-height: 90% !important;
+    object-fit: contain !important;
+}
+
+.photo-frame[data-orientation="landscape"] .photo {
+    max-width: 95% !important;
+    max-height: 80% !important;
+    object-fit: contain !important;
+}
+
+.photo-frame[data-orientation="square"] .photo {
+    max-width: 85% !important;
+    max-height: 80% !important;
+    object-fit: contain !important;
+}
+
+/* Critical Content Protection */
+.protect-faces .photo,
+.protect-text .photo,
+.protect-important .photo {
+    object-fit: contain !important;
+    padding: 2% !important;
+    box-sizing: border-box !important;
+    max-width: 90% !important;
+    max-height: 80% !important;
+}
+
+/* Fallback for Unknown Content */
+.photo-frame:not([class*="detect-"]):not([class*="content-"]) .photo {
+    object-fit: contain !important;
+    object-position: center center !important;
+    max-width: 90% !important;
+    max-height: 75% !important;
+    padding: 2% !important;
+    box-sizing: border-box !important;
+}
+
+/* Mobile Content Protection */
+@media (max-width: 768px) {
+    .photo-frame.detect-faces .photo,
+    .photo-frame.detect-people .photo {
+        object-position: center 35% !important;
+        max-height: 75% !important;
     }
     
-    .photo-frame.portrait-image .photo {
-        width: auto !important;
-        height: 80% !important;
-        max-width: 90% !important;
-        max-height: 80% !important;
-    }
-    
-    .photo-frame.landscape-image .photo {
-        width: 95% !important;
-        height: auto !important;
-        max-width: 95% !important;
-        max-height: 70% !important;
-    }
-    
-    .photo-frame.square-image .photo {
-        width: 85% !important;
-        height: 75% !important;
+    .content-top-heavy .photo,
+    .content-bottom-heavy .photo,
+    .content-left-heavy .photo,
+    .content-right-heavy .photo {
         max-width: 85% !important;
+        max-height: 70% !important;
+        object-fit: contain !important;
+    }
+    
+    .protect-faces .photo,
+    .protect-text .photo,
+    .protect-important .photo {
+        padding: 3% !important;
+        max-width: 88% !important;
         max-height: 75% !important;
     }
 }
 
+/* Quality Enhancement */
+.photo-quality-enhanced {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: optimize-contrast;
+    image-rendering: crisp-edges;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    will-change: transform;
+}
 
+/* Accessibility for Screen Readers */
+.photo[alt=""],
+.photo:not([alt]) {
+    /* Ensure images have proper alt text for accessibility */
+    outline: 2px solid transparent;
+}
 
+/* Print Protection */
+@media print {
+    .photo-frame .photo {
+        object-fit: contain !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        page-break-inside: avoid !important;
+    }
+}
 
+/* ================================
+   END ADVANCED IMAGE PROTECTION
+   ================================ */
+
+/* ================================
+   EMERGENCY PROTECTION SYSTEM
+   ================================ */
+
+/* Proteção de emergência para timeouts e falhas */
+.photo-frame.emergency-protection .photo,
+.emergency-protection .photo {
+    object-fit: contain !important;
+    object-position: center center !important;
+    width: auto !important;
+    height: auto !important;
+    max-width: 88% !important;
+    max-height: 72% !important;
+    display: block !important;
+    margin: auto !important;
+    padding: 2% !important;
+    box-sizing: border-box !important;
+    background: #f8f6f0 !important;
+    border-radius: clamp(8px, 1.5vw, 10px) !important;
+    /* Performance optimizations */
+    image-rendering: auto !important;
+    will-change: auto !important;
+    transform: none !important;
+}
+
+/* Fallback rápido para imagens com problema de carregamento */
+.photo-frame.emergency-protection {
+    background: linear-gradient(135deg, #f0f8e8 0%, #e8f4d8 100%) !important;
+    border: 2px solid rgba(212, 175, 55, 0.3) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 200px !important;
+}
+
+/* Loading state melhorado */
+.photo-frame.loading .photo,
+.photo[data-loading="true"] {
+    opacity: 0.7 !important;
+    filter: blur(1px) !important;
+    transition: opacity 0.3s ease, filter 0.3s ease !important;
+}
+
+.photo-frame.loaded .photo,
+.photo[data-loading="false"] {
+    opacity: 1 !important;
+    filter: none !important;
+}
+
+/* Indicador de erro de carregamento */
+.photo-frame.load-error::before {
+    content: "📷 Carregando imagem..." !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    background: rgba(248, 246, 240, 0.9) !important;
+    padding: 10px 15px !important;
+    border-radius: 8px !important;
+    font-family: 'Kalam', cursive !important;
+    font-size: 14px !important;
+    color: #2d5a3d !important;
+    z-index: 10 !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+}
+
+/* Mobile emergency protection */
+@media (max-width: 768px) {
+    .photo-frame.emergency-protection .photo,
+    .emergency-protection .photo {
+        max-width: 85% !important;
+        max-height: 68% !important;
+        padding: 3% !important;
+    }
+    
+    .photo-frame.emergency-protection {
+        min-height: 150px !important;
+        padding: 15px !important;
+    }
+    
+    .photo-frame.load-error::before {
+        font-size: 12px !important;
+        padding: 8px 12px !important;
+    }
+}
+
+/* Performance optimizations for slow devices */
+.performance-mode .photo {
+    image-rendering: auto !important;
+    will-change: auto !important;
+    transform: none !important;
+    transition: none !important;
+}
+
+.performance-mode .photo-frame {
+    animation: none !important;
+    transform: none !important;
+    transition: none !important;
+}
+
+/* Retry mechanism visual feedback */
+.photo-frame.retrying .photo {
+    animation: pulse 1.5s ease-in-out infinite !important;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+
+/* ================================
+   END EMERGENCY PROTECTION SYSTEM
+   ================================ */

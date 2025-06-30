@@ -1,3 +1,5 @@
+const TOTAL_PATTERNS = 153;
+
 // Scrapbook de Memórias - Script Principal com Page-Flip
 class ScrapbookViewer {
     constructor() {
@@ -222,14 +224,29 @@ class ScrapbookViewer {
         // Limpar flipbook
         this.elements.flipbook.innerHTML = '';
         
-        // Definir os temas de cores
-        const themes = ['theme-green', 'theme-blue-light', 'theme-blue-turquoise', 'theme-gold', 'theme-gray'];
+        // Definir todos os padrões disponíveis
+        const patterns = [];
+        for (let i = 1; i <= TOTAL_PATTERNS; i++) {
+            if (i === 11 || i === 56 || i === 57) continue; // Padrões a serem removidos
+            patterns.push(`pattern-${i}`);
+        }
+        
+        // Embaralhar os padrões para uso aleatório sem repetição
+        const shuffledPatterns = [...patterns].sort(() => Math.random() - 0.5);
         
         // Criar páginas para cada foto
         this.photos.forEach((photo, index) => {
             const pageDiv = document.createElement('div');
-            // Alternar entre os temas baseado no índice
-            const themeClass = themes[index % themes.length];
+            
+            // Usar padrão aleatório, repetindo a lista se necessário
+            const patternIndex = index % shuffledPatterns.length;
+            const themeClass = shuffledPatterns[patternIndex];
+            
+            // Se chegamos ao fim da lista, embaralhar novamente para próxima sequência
+            if (index > 0 && index % shuffledPatterns.length === 0) {
+                shuffledPatterns.sort(() => Math.random() - 0.5);
+            }
+            
             pageDiv.className = `page ${themeClass}`;
             
             // Adicionar overlay de textura de papel
@@ -241,12 +258,11 @@ class ScrapbookViewer {
             pageDiv.innerHTML += this.createPageContent(photo, index);
             this.elements.flipbook.appendChild(pageDiv);
         });
+        
+        console.log(`Criadas ${this.photos.length} páginas com padrões aleatórios!`);
     }
 
     createPageContent(photo, index) {
-        // Escolher um estilo de moldura único para cada página
-        const frameStyles = ['frame-style-1', 'frame-style-2', 'frame-style-3', 'frame-style-4', 'frame-style-5', 'frame-style-6'];
-        const frameStyle = frameStyles[index % frameStyles.length];
 
         const frameDecorations = Array.from({length: 4}, (_, i) => 
             `<div class="frame-decoration frame-${['top-left', 'top-right', 'bottom-left', 'bottom-right'][i]}"></div>`
@@ -262,14 +278,16 @@ class ScrapbookViewer {
 
         return `
             <div class="paper-texture"></div>
-            <div class="photo-frame ${frameStyle}">
+            <div class="photo-frame" data-photo-index="${index}">
                 ${frameDecorations}
                 ${pageCurls}
                 ${uniqueDecorations}
                 
                 <img src="${photo.src}" alt="Memória ${index + 1}" class="photo" 
                      onload="scrapbookInstance.optimizeImageOnLoad(this)"
-                     data-photo-index="${index}">
+                     data-photo-index="${index}"
+                     data-content-type="general"
+                     loading="lazy">
                 
                 <div class="text-overlay">
                     <div class="memory-text">${photo.text}</div>
@@ -561,26 +579,36 @@ class ScrapbookViewer {
     }
 
     optimizeImageOnLoad(img) {
-        // Marcar que a imagem foi carregada
+        // Marcar imagem como carregada
         const photoFrame = img.closest('.photo-frame');
-        photoFrame.classList.add('photo-loaded');
+        if (photoFrame) {
+            photoFrame.classList.add('photo-loaded');
+        }
         
-        // Aplicar otimização imediatamente
-        this.adjustImageFit(img);
-        
-        // Re-aplicar otimização após um pequeno delay para garantir que tudo esteja renderizado
-        setTimeout(() => {
-            this.adjustImageFit(img);
-        }, 100);
+        // Aplicar proteção robusta no momento exato do carregamento
+        if (window.protectImage) {
+            const contentType = this.detectImageContentType(img.src);
+            window.protectImage(img, contentType);
+            console.log(`🛡️ Proteção aplicada: ${contentType}`);
+        } else {
+            // Fallback robusto
+            this.applyFallbackProtection(img);
+            console.log('🛡️ Proteção fallback aplicada');
+        }
     }
 
     optimizeCurrentPageImage() {
-        // Encontrar a imagem da página atual
+        // Proteção da imagem da página atual (caso necessário)
         const currentPage = document.querySelector(`.page:nth-child(${this.currentIndex + 1})`);
         if (currentPage) {
             const currentImage = currentPage.querySelector('.photo');
-            if (currentImage) {
-                this.adjustImageFit(currentImage);
+            if (currentImage && !currentImage.dataset.protected) {
+                const contentType = this.detectImageContentType(currentImage.src);
+                if (window.protectImage) {
+                    window.protectImage(currentImage, contentType);
+                } else {
+                    this.applyFallbackProtection(currentImage);
+                }
             }
         }
     }
@@ -592,6 +620,41 @@ class ScrapbookViewer {
                 this.optimizeImageDisplay();
             }
         }, 5000); // Verificar a cada 5 segundos
+    }
+    
+    // Detecção inteligente de conteúdo por nome de arquivo
+    detectImageContentType(src) {
+        const filename = src.toLowerCase();
+        
+        // Fotos de smartphone (padrão de data) = pessoas/família
+        if (filename.match(/\d{8}_\d{6}/) || filename.includes('img-')) {
+            return 'people';
+        }
+        
+        // Detecção por palavras-chave
+        if (filename.includes('face') || filename.includes('portrait') || filename.includes('selfie')) {
+            return 'faces';
+        }
+        
+        if (filename.includes('group') || filename.includes('family') || filename.includes('people')) {
+            return 'people';
+        }
+        
+        return 'general';
+    }
+
+    // Proteção fallback simples caso o sistema principal falhe
+    applyFallbackProtection(img) {
+        img.style.objectFit = 'contain';
+        img.style.objectPosition = 'center center';
+        img.style.maxWidth = '90%';
+        img.style.maxHeight = '85%';
+        img.style.width = 'auto';
+        img.style.height = 'auto';
+        img.style.display = 'block';
+        img.style.margin = 'auto';
+        
+        console.log('🛡️ Proteção fallback aplicada');
     }
 }
 
