@@ -383,7 +383,7 @@ body {
     width: 100%;
     height: 100%;
     border-radius: clamp(10px, 2vw, 15px);
-    /* padding: var(--frame-padding); */
+    padding: 1% !important;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -400,7 +400,7 @@ body {
     max-width: min(1000px, 90vw);
     max-height: min(750px, 90vh);
     border-radius: clamp(15px, 3vw, 20px);
-    /* padding: var(--frame-padding); */
+    padding: 1% !important;
 
     transform: rotate(-1deg);
     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -1835,6 +1835,7 @@ img.photo {
     display: block !important;
     margin: auto !important;
     background: #f8f6f0 !important;
+    padding: 1% !important;
     border-radius: clamp(8px, 1.5vw, 10px) !important;
     box-sizing: border-box !important;
     /* Enhanced image quality */
@@ -1974,7 +1975,7 @@ img.photo {
 .protect-text .photo,
 .protect-important .photo {
     object-fit: contain !important;
-    padding: 2% !important;
+    padding: none !important;
     box-sizing: border-box !important;
     max-width: 90% !important;
     max-height: 80% !important;
@@ -1986,7 +1987,7 @@ img.photo {
     object-position: center center !important;
     max-width: 90% !important;
     max-height: 75% !important;
-    padding: 2% !important;
+    padding: none !important;
     box-sizing: border-box !important;
 }
 
