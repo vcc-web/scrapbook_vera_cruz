@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FlipBook</title>
     <link rel="shortcut icon" href="#!" type="image/x-icon">
-    
+
     <link rel="stylesheet" href="css/pattern-styles.css">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/all.css">
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
@@ -22,17 +23,27 @@
 </head>
 
 <body>
-
     <div class="flipbook-viewport">
         <div class="container">
-            <div class="flipbook">
-                <div class="page"></div>
-                <div class="page"></div>
+            <div class="flipbook turn-flipbook animated sj-book sj-book-transform">
+                <div depth="5" class="hard">
+                    <div class="side"></div>
+                </div>
+                <div depth="5" class="hard front-side">
+                    <div class="depth"></div>
+                </div>
+
+                <div class="hard fixed back-side p55">
+                    <div class="depth"></div>
+                </div>
+                <div class="hard p56"></div>
             </div>
         </div>
     </div>
 
-    <script src="js/book.js"></script>
+
+    <script src="js/bookUtils.js"></script>
+    <script src="js/all.js"></script>
 </body>
 
 </html>

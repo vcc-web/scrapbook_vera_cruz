@@ -9,38 +9,7 @@ const scrapbookTexts = [
     "Captured hearts", "Endless love", "Treasure trove", "Sweet dreams", "Joyful hearts"
 ];
 
-function getRandomRotation() {
-    return Math.random() * 60 - 30; // -30 to 30 degrees
-}
 
-function getRandomPattern() {
-    return Math.floor(Math.random() * 156) + 1; // patterns 1-156
-}
-
-function getRandomText() {
-    return scrapbookTexts[Math.floor(Math.random() * scrapbookTexts.length)];
-}
-
-function getRandomLayout() {
-    const layouts = ['top-left', 'top-right', 'bottom-left', 'bottom-right', 'center'];
-    return layouts[Math.floor(Math.random() * layouts.length)];
-}
-
-function createScrapbookPage(imageSrc, imageAlt) {
-    const rotation = getRandomRotation();
-    const pattern = getRandomPattern();
-    const text = getRandomText();
-    const layout = getRandomLayout();
-    
-    return `
-        <div class="page pattern-${pattern}" data-layout="${layout}">
-            <div class="scrapbook-content">
-                <img src="img/${imageSrc}" alt="${imageAlt}" style="transform: rotate(${rotation}deg);">
-                <div class="scrapbook-text ${layout}">${text}</div>
-            </div>
-        </div>
-    `;
-}
 
 function loadApp() {
     var flipbook = $('.flipbook');
@@ -73,8 +42,8 @@ function loadApp() {
     $('.flipbook .double').remove();
 
     // Add scrapbook pages
-    imageFiles.forEach(img => {
-        const pageHtml = createScrapbookPage(img, img);
+    imageFiles.forEach((img, indx) => {
+        const pageHtml = createScrapbookPage(img, img, indx);
         flipbook.append(pageHtml);
     });
 
@@ -82,11 +51,69 @@ function loadApp() {
 
     // Create the flipbook
     $('.flipbook').turn({
-        elevation: 50,
+        width: 1000,
+        height: 800,
+        duration: 1500,
         gradients: true,
-        autoCenter: true
+        acceleration: true,
+        autoCenter: true,
+        elevation: 50,
+        pages: 56,
+        when: {
+            turning: function (event, page) {
+                // Handle page turning event
+                console.log('Turning to page:', page);
+            },
+            turned: function (event, page, view) {
+                $(this).turn('center');
+
+                if (page == 1) {
+                    $(this).turn('peel', 'br');
+                }
+
+            },
+        }
     });
 }
+
+// Using arrow keys to turn the page
+
+$(document).on('keydown', function (e) {
+
+    var previous = 37, next = 39, esc = 27;
+
+    switch (e.keyCode) {
+        case previous:
+
+            // left arrow
+            $('.flipbook').turn('previous');
+            e.preventDefault();
+
+            break;
+        case next:
+
+            //right arrow
+            $('.flipbook').turn('next');
+            e.preventDefault();
+
+            break;
+        case esc:
+
+            $('.flipbook-viewport').zoom('zoomOut');
+            e.preventDefault();
+
+            break;
+    }
+});
+
+$(window).on('resize', function () {
+    resizeViewport();
+}).on('orientationchange', function () {
+    resizeViewport();
+});
+
+
+$('#canvas').hide();
 
 // Load turn.js
 loadApp()

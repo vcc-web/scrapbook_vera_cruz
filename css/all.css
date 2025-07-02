@@ -1,0 +1,255 @@
+.sj-book {
+    width: 1000px;
+    height: 800px;
+    background-image: url(../pics/spine.png);
+    /* Gold overlay using a pseudo-element for the background image */
+    position: relative;
+}
+.sj-book::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: url(../pics/spine.png);
+    background-repeat: repeat-y;
+    background-position: 500px 0;
+    filter: sepia(1) hue-rotate(20deg) saturate(3) brightness(1.1);
+    pointer-events: none;
+}
+.sj-book {
+    background-repeat: repeat-y;
+    background-position: 500px 0;
+    z-index: 0;
+}
+
+.sj-book .inner-gradient {
+    background: -webkit-gradient(linear, left top, right top, color-stop(0, rgba(0, 0, 0, 0)), color-stop(0.3, rgba(0, 0, 0, 0.2)), color-stop(0.5, rgba(255, 255, 255, 0.2))) !important;
+}
+
+.sj-book .outer-gradient {
+    background: -webkit-gradient(linear, left top, right top, color-stop(0.4, rgba(0, 0, 0, 0)), color-stop(0.5, rgba(0, 0, 0, 0.3)), to(rgba(0, 0, 0, 0))) !important;
+}
+
+.animated {
+    -webkit-transition: margin-left 0.2s ease-in-out;
+    -moz-transition: margin-left 0.2s ease-in-out;
+    -o-transition: margin-left 0.2s ease-in-out;
+    -ms-transition: margin-left 0.2s ease-in-out;
+    transition: margin-left 0.2s ease-in-out;
+}
+
+.show-bar .sj-book .shadow {
+    -webkit-transition: -webkit-box-shadow 0.5s;
+    -moz-transition: -moz-box-shadow 0.5s;
+    -o-transition: -webkit-box-shadow 0.5s;
+    -ms-transition: -ms-box-shadow 0.5s;
+
+    -webkit-box-shadow: 0 0 10px #999;
+    -moz-box-shadow: 0 0 10px #999;
+    -ms-box-shadow: 0 0 10px #999;
+    -o-box-shadow: 0 0 10px #999;
+    box-shadow: 0 0 10px #999;
+}
+
+
+.sj-book .p1,
+.sj-book .p55 {
+    background: linear-gradient(to right, #fbc153 5%, #4e9143 0.5%, #4e9143 100%);
+}
+
+.sj-book .p2,
+.sj-book .p56 {
+    background: linear-gradient(to left, #fbc153 5%, #4e9143 0.5%, #4e9143 100%);
+}
+
+.sj-book .p1 {
+    background-position: 0 0;
+}
+
+.sj-book .p1 .side {
+    width: 5px;
+    height: 600px;
+    position: absolute;
+    top: 0;
+    left: 475px;
+
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #bbb), color-stop(0.5, #ddd), color-stop(1, #bbb));
+    background-image: -webkit-linear-gradient(left, #bbb, #ddd, #bbb);
+    background-image: -moz-linear-gradient(left, #bbb, #ddd, #bbb);
+    background-image: -ms-linear-gradient(left, #bbb, #ddd, #bbb);
+    background-image: -o-linear-gradient(left, #bbb, #ddd, #bbb);
+    background-image: linear-gradient(left, #bbb, #ddd, #bbb);
+
+    -webkit-transform: rotateY(-90deg);
+    -moz-transform: rotateY(-90deg);
+    -o-transform: rotateY(-90deg);
+    -ms-transform: rotateY(-90deg);
+    transform: rotateY(-90deg);
+
+    -webkit-transform-origin: top right;
+    -moz-transform-origin: top right;
+    -o-transform-origin: top right;
+    -ms-transform-origin: top right;
+    transform-origin: top right;
+
+    z-index: 100000;
+}
+
+.noie .sj-book-transform div[page="1"]>div,
+.noie .sj-book-transform div[page="2"]>div {
+    overflow: visible !important;
+}
+
+.sj-book .depth {
+    background-image: url(../pics/pages-depth.png);
+    mix-blend-mode: soft-light;
+    position: absolute;
+    background-repeat: repeat-y;
+    background-size: cover;
+    top: 2px;
+    width: 19px;
+    height: 800px;
+}
+
+.sj-book .front-side .depth {
+    left: 4px;
+    background-position: 0 0;
+}
+
+.sj-book .back-side .depth {
+    right: 1px;
+    background-position: right 0;
+}
+
+.sj-book .p2 {
+    background-position: -500px 0 !important;
+}
+
+
+
+.sj-book .p56 {
+    background-position: -500px 0 !important;
+}
+
+.sj-book .hard {
+    width: 500px;
+    height: 800px;
+    background-color: white;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    -ms-box-shadow: none;
+    box-shadow: none;
+}
+
+.sj-book .page-wrapper {
+    -webkit-perspective: 2000px;
+    -moz-perspective: 2000px;
+    -ms-perspective: 2000px;
+    perspective: 2000px;
+}
+
+.sj-book .own-size {
+    width: 480px;
+    height: 782px;
+    overflow: hidden;
+}
+
+.sj-book .own-size.even {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.sj-book .own-size.odd {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.sj-book .loader {
+    background-image: url(../pics/loader.gif);
+    width: 22px;
+    height: 22px;
+    position: absolute;
+    top: 280px;
+    left: 219px;
+}
+
+.sj-book .page-number {
+    color: #999;
+    width: 100%;
+    bottom: 25px;
+    position: absolute;
+    display: block;
+    text-align: center;
+    line-height: 30px;
+    font-size: 11px;
+}
+
+.sj-book .table-contents {
+    font-size: 16px;
+    width: 300px;
+    margin: 80px auto;
+    color: #ccc;
+}
+
+.sj-book .table-contents li {
+    list-style: none;
+    line-height: 25px;
+}
+
+.sj-book .table-contents span {
+    float: right;
+}
+
+.sj-book .table-contents a {
+    float: left;
+    width: 100%;
+    clear: both;
+    text-decoration: none;
+    color: #333;
+    margin: 2px 0;
+    padding: 0 10px;
+}
+
+.sj-book .table-contents a:hover {
+    background: #CAD1EE;
+    float: left;
+    width: 100%;
+    clear: both;
+    text-decoration: none;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -o-border-radius: 10px;
+    -ms-border-radius: 10px;
+    border-radius: 10px;
+}
+
+.sj-book .book-content .capital,
+.sj-book .book-content .no-indent {
+    text-indent: 0;
+}
+
+.sj-book .capital:first-letter {
+    display: block;
+    float: left;
+    font-size: 300%;
+    line-height: 70%;
+    margin-right: 6px;
+    margin-top: 7px;
+    margin-left: 18px;
+}
+
+.ie8 .sj-book .even,
+.ie9 .sj-book .even {
+    background-color: white;
+    background-image: url(../pics/gradient-page-left.jpg);
+    background-position: right top;
+    background-repeat: repeat-y;
+}
+
+.ie8 .sj-book .odd,
+.ie9 .sj-book .odd {
+    background-color: white;
+    background-image: url(../pics/gradient-page-right.jpg);
+    background-position: left top;
+    background-repeat: repeat-y;
+}
