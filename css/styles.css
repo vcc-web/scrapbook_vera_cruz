@@ -128,52 +128,10 @@ body {
 	transition: transform 0.3s ease;
 }
 
-.scrapbook-text {
-	position: absolute;
-	font-family: 'Brush Script MT', cursive, 'Comic Sans MS', sans-serif;
-	font-size: 24px;
-	font-weight: bold;
-	color: #2c3e50;
-	text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
-	padding: 8px 16px;
-	background: rgba(255, 255, 255, 0.7);
-	border-radius: 12px;
-	backdrop-filter: blur(5px);
-	border: 2px solid rgba(255, 255, 255, 0.5);
-	max-width: 200px;
-	text-align: center;
-	word-wrap: break-word;
-	line-height: 1.2;
-}
-
-.scrapbook-text.top-left {
-	top: 30px;
-	left: 30px;
-	transform: rotate(-5deg);
-}
-
-.scrapbook-text.top-right {
-	top: 30px;
-	right: 30px;
-	transform: rotate(5deg);
-}
-
-.scrapbook-text.bottom-left {
-	bottom: 30px;
-	left: 30px;
-	transform: rotate(3deg);
-}
-
-.scrapbook-text.bottom-right {
-	bottom: 30px;
-	right: 30px;
-	transform: rotate(-3deg);
-}
-
-.scrapbook-text.center {
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%) rotate(2deg);
+/* Page overflow management for text expansion */
+.page .own-size {
+    position: relative;
+    overflow: visible !important;
 }
 
 /* Responsive adjustments */
@@ -189,11 +147,6 @@ body {
 		width: 800px;
 		height: 640px;
 	}
-
-	.scrapbook-text {
-		font-size: 20px;
-		max-width: 160px;
-	}
 }
 
 @media (max-width: 900px) {
@@ -207,32 +160,6 @@ body {
 	.flipbook-viewport .page {
 		width: 600px;
 		height: 480px;
-	}
-
-	.scrapbook-text {
-		font-size: 18px;
-		max-width: 140px;
-		padding: 6px 12px;
-	}
-
-	.scrapbook-text.top-left,
-	.scrapbook-text.top-right {
-		top: 20px;
-	}
-
-	.scrapbook-text.top-left,
-	.scrapbook-text.bottom-left {
-		left: 20px;
-	}
-
-	.scrapbook-text.top-right,
-	.scrapbook-text.bottom-right {
-		right: 20px;
-	}
-
-	.scrapbook-text.bottom-left,
-	.scrapbook-text.bottom-right {
-		bottom: 20px;
 	}
 }
 
@@ -251,31 +178,5 @@ body {
 
 	.scrapbook-content {
 		padding: 15px;
-	}
-
-	.scrapbook-text {
-		font-size: 14px;
-		max-width: 100px;
-		padding: 4px 8px;
-	}
-
-	.scrapbook-text.top-left,
-	.scrapbook-text.top-right {
-		top: 15px;
-	}
-
-	.scrapbook-text.top-left,
-	.scrapbook-text.bottom-left {
-		left: 15px;
-	}
-
-	.scrapbook-text.top-right,
-	.scrapbook-text.bottom-right {
-		right: 15px;
-	}
-
-	.scrapbook-text.bottom-left,
-	.scrapbook-text.bottom-right {
-		bottom: 15px;
 	}
 }

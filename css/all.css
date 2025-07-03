@@ -146,12 +146,13 @@
     -moz-perspective: 2000px;
     -ms-perspective: 2000px;
     perspective: 2000px;
+    overflow: visible !important;
 }
 
 .sj-book .own-size {
     width: 480px;
     height: 782px;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .sj-book .own-size.even {

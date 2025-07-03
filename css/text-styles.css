@@ -1,0 +1,331 @@
+/* ======================================== */
+/* SCRAPBOOK TEXT STYLES                   */
+/* Post-it notes with handwritten look     */
+/* ======================================== */
+
+/* Importar fonte Dancing Script */
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap');
+
+.scrapbook-text {
+	position: absolute;
+	font-family: 'Dancing Script', cursive, 'Brush Script MT', cursive;
+	font-size: 22px;
+	font-weight: 600;
+	color: #ffffff;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+	padding: 12px 18px;
+	background: linear-gradient(135deg, #ffeb3b 0%, #fff176 100%);
+	border-radius: 3px 15px 3px 15px;
+	box-shadow: 
+		0 4px 8px rgba(0, 0, 0, 0.15),
+		0 1px 3px rgba(0, 0, 0, 0.2),
+		inset 0 1px 0 rgba(255, 255, 255, 0.3);
+	border: none;
+	max-width: 180px;
+	text-align: left;
+	word-wrap: break-word;
+	line-height: 1.3;
+	cursor: pointer;
+	transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+	z-index: 10;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	transform-style: preserve-3d;
+	animation: subtleFloat 6s ease-in-out infinite;
+	/* Removido overflow: hidden para permitir fita visível */
+}
+
+.scrapbook-text:hover {
+	border-radius: 3px 15px 3px 15px;
+	transform: scale(1.05);
+	box-shadow: 
+		0 8px 25px rgba(0, 0, 0, 0.25),
+		0 3px 10px rgba(0, 0, 0, 0.15),
+		inset 0 1px 0 rgba(255, 255, 255, 0.4);
+	z-index: 50;
+	max-width: 280px;
+	white-space: normal;
+	text-overflow: unset;
+	min-height: auto;
+	padding: 15px 22px;
+	font-size: 20px;
+}
+
+.scrapbook-text.expanded {
+	border-radius: 3px 15px 3px 15px;
+	transform: scale(1.05);
+	box-shadow: 
+		0 8px 25px rgba(0, 0, 0, 0.25),
+		0 3px 10px rgba(0, 0, 0, 0.15),
+		inset 0 1px 0 rgba(255, 255, 255, 0.4);
+	z-index: 50;
+	max-width: 280px;
+	white-space: normal;
+	text-overflow: unset;
+	min-height: auto;
+	padding: 15px 22px;
+	font-size: 20px;
+}
+
+/* Posicionamento e cores específicas */
+.scrapbook-text.top-left {
+	top: 30px;
+	left: 30px;
+	transform: rotate(-8deg);
+	transform-origin: left top;
+	background: linear-gradient(135deg, #ff9800 0%, #ffb74d 100%);
+	--rotation: -8deg;
+}
+
+.scrapbook-text.top-right {
+	top: 30px;
+	right: 30px;
+	transform: rotate(6deg);
+	transform-origin: right top;
+	background: linear-gradient(135deg, #e91e63 0%, #f06292 100%);
+	--rotation: 6deg;
+}
+
+.scrapbook-text.bottom-left {
+	bottom: 30px;
+	left: 30px;
+	transform: rotate(4deg);
+	transform-origin: left bottom;
+	background: linear-gradient(135deg, #4caf50 0%, #81c784 100%);
+	--rotation: 4deg;
+}
+
+.scrapbook-text.bottom-right {
+	bottom: 30px;
+	right: 30px;
+	transform: rotate(-7deg);
+	transform-origin: right bottom;
+	background: linear-gradient(135deg, #2196f3 0%, #64b5f6 100%);
+	--rotation: -7deg;
+}
+
+.scrapbook-text.center {
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%) rotate(3deg);
+	transform-origin: center center;
+	background: linear-gradient(135deg, #9c27b0 0%, #ba68c8 100%);
+	--rotation: 3deg;
+}
+
+/* Estados hover/expanded para cada posição - SEM rotação */
+.scrapbook-text.top-left:hover,
+.scrapbook-text.top-left.expanded {
+	transform: rotate(-8deg) scale(1.05);
+}
+
+.scrapbook-text.top-right:hover,
+.scrapbook-text.top-right.expanded {
+	transform: rotate(6deg) scale(1.05);
+}
+
+.scrapbook-text.bottom-left:hover,
+.scrapbook-text.bottom-left.expanded {
+	transform: rotate(4deg) scale(1.05);
+}
+
+.scrapbook-text.bottom-right:hover,
+.scrapbook-text.bottom-right.expanded {
+	transform: rotate(-7deg) scale(1.05);
+}
+
+.scrapbook-text.center:hover,
+.scrapbook-text.center.expanded {
+	transform: translate(-50%, -50%) rotate(3deg) scale(1.05);
+}
+
+/* Variações adicionais de cores para post-it */
+.scrapbook-text.post-it-yellow {
+	background: linear-gradient(135deg, #ffeb3b 0%, #fff176 100%);
+}
+
+.scrapbook-text.post-it-pink {
+	background: linear-gradient(135deg, #ff4081 0%, #ff80ab 100%);
+}
+
+.scrapbook-text.post-it-blue {
+	background: linear-gradient(135deg, #03a9f4 0%, #4fc3f7 100%);
+}
+
+.scrapbook-text.post-it-green {
+	background: linear-gradient(135deg, #66bb6a 0%, #a5d6a7 100%);
+}
+
+.scrapbook-text.post-it-orange {
+	background: linear-gradient(135deg, #ff7043 0%, #ffab91 100%);
+}
+
+.scrapbook-text.post-it-purple {
+	background: linear-gradient(135deg, #ab47bc 0%, #ce93d8 100%);
+}
+
+/* Efeito de sombra mais realista */
+.scrapbook-text::after {
+	content: '';
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	right: -3px;
+	bottom: -3px;
+	background: rgba(0, 0, 0, 0.1);
+	border-radius: 3px 15px 3px 15px;
+	z-index: -2;
+	transform: rotate(1deg);
+}
+
+/* Fita adesiva usando pseudo-elemento */
+.scrapbook-text::before {
+	content: '';
+	position: absolute;
+	width: 30px;
+	height: 18px;
+	background: linear-gradient(45deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 240, 240, 0.95) 100%);
+	border: 1px solid rgba(200, 200, 200, 0.6);
+	border-radius: 2px;
+	opacity: 0.85;
+	z-index: 15;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+	transform: translateX(-50%) rotate(-2deg);
+	left: 50%;
+	pointer-events: none;
+}
+
+/* Posicionamento da fita para bordas superiores */
+.scrapbook-text.top-left::before,
+.scrapbook-text.top-right::before,
+.scrapbook-text.center::before {
+	top: -6px;
+}
+
+/* Posicionamento da fita para bordas inferiores */
+.scrapbook-text.bottom-left::before,
+.scrapbook-text.bottom-right::before {
+	bottom: -6px;
+}
+
+/* Máscara para esconder overflow do texto mas não da fita */
+.scrapbook-text .text-content {
+	position: relative;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.scrapbook-text:hover .text-content,
+.scrapbook-text.expanded .text-content {
+	white-space: normal;
+	text-overflow: unset;
+	overflow: visible;
+}
+
+/* Efeito de hover mais suave */
+.scrapbook-text:hover::after {
+	background: rgba(0, 0, 0, 0.15);
+	transform: rotate(1deg) scale(1.02);
+}
+
+/* Animação sutil de oscilação */
+@keyframes subtleFloat {
+	0%, 100% { transform: rotate(var(--rotation, 0deg)) translateY(0px); }
+	50% { transform: rotate(var(--rotation, 0deg)) translateY(-1px); }
+}
+
+/* Animação para estado hovering */
+.scrapbook-text.hovering {
+    animation: subtlePulse 2s ease-in-out infinite;
+}
+
+@keyframes subtlePulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.95; }
+}
+
+/* Enhanced responsive design for text expansion */
+@media (max-width: 1200px) {
+    .scrapbook-text {
+        font-size: 20px;
+        max-width: 160px;
+    }
+    
+    .scrapbook-text:hover,
+    .scrapbook-text.expanded {
+        max-width: 240px;
+        font-size: 18px;
+        padding: 12px 16px;
+    }
+}
+
+@media (max-width: 900px) {
+    .scrapbook-text {
+        font-size: 18px;
+        max-width: 140px;
+        padding: 8px 14px;
+    }
+    
+    .scrapbook-text:hover,
+    .scrapbook-text.expanded {
+        max-width: 200px;
+        font-size: 16px;
+        padding: 10px 14px;
+    }
+
+    .scrapbook-text.top-left,
+    .scrapbook-text.top-right {
+        top: 20px;
+    }
+
+    .scrapbook-text.top-left,
+    .scrapbook-text.bottom-left {
+        left: 20px;
+    }
+
+    .scrapbook-text.top-right,
+    .scrapbook-text.bottom-right {
+        right: 20px;
+    }
+
+    .scrapbook-text.bottom-left,
+    .scrapbook-text.bottom-right {
+        bottom: 20px;
+    }
+}
+
+@media (max-width: 600px) {
+    .scrapbook-text {
+        font-size: 16px;
+        max-width: 120px;
+        padding: 6px 10px;
+    }
+    
+    .scrapbook-text:hover,
+    .scrapbook-text.expanded {
+        max-width: 160px;
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+
+    .scrapbook-text.top-left,
+    .scrapbook-text.top-right {
+        top: 15px;
+    }
+
+    .scrapbook-text.top-left,
+    .scrapbook-text.bottom-left {
+        left: 15px;
+    }
+
+    .scrapbook-text.top-right,
+    .scrapbook-text.bottom-right {
+        right: 15px;
+    }
+
+    .scrapbook-text.bottom-left,
+    .scrapbook-text.bottom-right {
+        bottom: 15px;
+    }
+}

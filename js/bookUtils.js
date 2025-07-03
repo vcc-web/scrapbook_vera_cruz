@@ -1,11 +1,11 @@
 const scrapbookTexts = [
-    "Memories that last forever", "Beautiful moments captured", "Life's precious treasures",
-    "Sweet memories", "Unforgettable times", "Special moments", "Happy days", "Love & laughter",
-    "Family first", "Together forever", "Making memories", "Blessed moments", "Pure joy",
-    "Adventures await", "Dream big", "Cherished times", "Wonderful memories", "Life is beautiful",
-    "Smile always", "Heart full of love", "Creating memories", "Golden moments", "Happiness",
-    "Forever grateful", "Magical times", "Love wins", "Perfect moments", "Sunshine days",
-    "Captured hearts", "Endless love", "Treasure trove", "Sweet dreams", "Joyful hearts"
+    "Memories that last forever", "Beautiful moments captured in time", "Life's precious treasures and special gifts",
+    "Sweet memories of love", "Unforgettable times we shared together", "Special moments with family", "Happy days filled with laughter", "Love & laughter with dear friends",
+    "Family first, always and forever", "Together forever in our hearts", "Making memories that will never fade", "Blessed moments of pure happiness", "Pure joy in simple things",
+    "Adventures await those who dare to dream", "Dream big and reach for the stars", "Cherished times with loved ones", "Wonderful memories of childhood", "Life is beautiful when shared with others",
+    "Smile always, even through difficult times", "Heart full of love and gratitude", "Creating memories one day at a time", "Golden moments in the sunset", "Happiness is found in small things",
+    "Forever grateful for these blessings", "Magical times under starry skies", "Love wins over everything else", "Perfect moments frozen in time", "Sunshine days and peaceful nights",
+    "Captured hearts and stolen glances", "Endless love that knows no bounds", "Treasure trove of precious memories", "Sweet dreams and hopeful tomorrows", "Joyful hearts celebrating life together"
 ];
 
 
@@ -30,12 +30,18 @@ function getRandomLayout() {
     return layouts[Math.floor(Math.random() * layouts.length)];
 }
 
+function getRandomPostItColor() {
+    const colors = ['post-it-yellow', 'post-it-pink', 'post-it-blue', 'post-it-green', 'post-it-orange', 'post-it-purple'];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+
 function createScrapbookPage(imageSrc, imageAlt, page, book) {
 
     const rotation = getRandomRotation();
     const pattern = getRandomPattern();
     const text = getRandomText();
     const layout = getRandomLayout();
+    const postItColor = getRandomPostItColor();
 
     var pageElement = $('<div />', {
         'class': `own-size page pattern-${pattern}`,
@@ -48,8 +54,8 @@ function createScrapbookPage(imageSrc, imageAlt, page, book) {
                 css: { transform: `rotate(${rotation}deg)` }
             }),
             $('<div />', {
-                'class': `scrapbook-text ${layout}`,
-                text: text
+                'class': `scrapbook-text ${layout} ${postItColor}`,
+                html: `<div class="text-content">${text}</div>`
             })
         )
     );
