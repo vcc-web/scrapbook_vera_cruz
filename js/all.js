@@ -1,6 +1,6 @@
 (function ($) {
 
-    var samplePath = 'vera-cruz';
+    window.book;
 
     // Why this?  Chrome has the fault:
     // http://code.google.com/p/chromium/issues/detail?id=128488
@@ -85,6 +85,8 @@
             return;
         }
 
+        optimizeFlipbookPerformance();
+
         flipbook.turn({
             elevation: 50,
             acceleration: !isChrome(),
@@ -97,9 +99,11 @@
 
                 turning: function (e, page, view) {
 
-                    var book = $(this),
-                        currentPage = book.turn('page'),
+                    window.book = $(this);
+
+                    var currentPage = book.turn('page'),
                         pages = book.turn('pages');
+
 
                     if (currentPage > 3 && currentPage < pages - 3) {
 
@@ -186,9 +190,9 @@
                 },
 
                 missing: function (e, pages) {
-                    console.log(pages)
-                    for (var i = 0; i < pages.length; i++)
+                    for (var i = 0; i < pages.length; i++) {
                         addPage(pages[i], $(this));
+                    }
                 }
 
             }

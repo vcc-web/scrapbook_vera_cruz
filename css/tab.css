@@ -1,0 +1,58 @@
+
+.tabs-container {
+    position: absolute;
+    margin: auto;
+    height: 782px;
+    width: 960px;
+    pointer-events: none; /* Permite interação com as páginas */
+}
+
+.scrapbook-tab {
+    position: absolute;
+    width: 25%;
+    height: 100%;
+    top: 0;
+    transition: all 1.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    z-index: 100;
+    background-color: #f8f8f8;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    pointer-events: auto;
+    will-change: transform, transform-origin, left, top;
+    backface-visibility: hidden;
+}
+
+.scrapbook-tab.open.odd {
+    transform: rotateY(-30deg);
+    transform-origin: left center;
+    right: -25%;
+}
+
+.scrapbook-tab.open.even {
+    transform: rotateY(30deg);
+    transform-origin: right center;
+    left: -25%;
+}
+
+.scrapbook-tab-label {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%) rotate(90deg);
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+}
+
+.page-wrapper > div {
+    will-change: overflow;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+}
+
+.scrapbook-text-wrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
