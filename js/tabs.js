@@ -2,7 +2,7 @@ class TabPoolManager {
     constructor() {
         this.tabPool = [];
         this.activeTabs = new Map();
-        this.setupPool(3); // Cria 3 abas para reutilização
+        this.setupPool(2);
         this.setupEventListeners();
     }
 
@@ -27,8 +27,14 @@ class TabPoolManager {
     createTabElement() {
         const tab = document.createElement('div');
         tab.className = 'scrapbook-tab';
-        tab.innerHTML = '<div class="scrapbook-tab-label">Scrapbook</div>';
+        tab.innerHTML = '<div class="scrapbook-tab-bg"><div class="scrapbook-tab-label">Scrapbook</div></div>';
         tab.style.display = 'none';
+
+        // Add click event listener
+        tab.addEventListener('click', (e) => {
+            this.handleTabClick(tab, e);
+        });
+
         return tab;
     }
 
@@ -57,8 +63,16 @@ class TabPoolManager {
     assignTabToPage(page) {
         if (this.tabPool.length === 0) return;
 
+        if (window.book.turn('page') < 2) {
+            console.log('Book has less than 2 pages, skipping tab assignment');
+            return;
+        };
+
         const tab = this.tabPool.pop();
         tab.dataset.page = page.number;
+
+
+
         if (parseInt(page.number) % 2 === 0) {
             tab.classList.add('even');
             tab.classList.remove('odd');
@@ -66,13 +80,40 @@ class TabPoolManager {
             tab.classList.add('odd');
             tab.classList.remove('even');
         }
-        tab.classList.add('open');
+        // tab.classList.add('open');
         tab.style.display = 'block';
+
+        this.updateTabStyle(tab, page);
+
         this.activeTabs.set(page.number, tab);
+    }
+
+    updateTabStyle(tab, page) {
+        const pageRect = page.element.getBoundingClientRect();
+        const patternClass = Array.from(page.element.classList).find(c => c.startsWith('pattern-'));
+
+        // Configuração do pseudo-elemento ::before
+        this.setTabBackground(tab, page.element, patternClass, pageRect);
+    }
+
+    setTabBackground(tab, pageElement, patternClass, pageRect) {
+
+        let bgEl = tab.firstElementChild;
+        Array.from(bgEl.classList).filter(c => c.startsWith('pattern-')).forEach(c => bgEl.classList.remove(c));
+
+        if (patternClass && bgEl) {
+            bgEl.classList.add(patternClass);
+
+            // Força repaint para sincronização perfeita
+            // tab.style.animation = 'none';
+            // void tab.offsetHeight; // Trigger reflow
+            // tab.style.animation = '';
+        }
     }
 
     releaseTab(tab, pageNumber) {
         tab.style.display = 'none';
+        tab.classList.remove('clicked'); // Remove clicked state when releasing
         delete tab.dataset.page;
         this.activeTabs.delete(pageNumber);
         this.tabPool.push(tab);
@@ -93,6 +134,17 @@ class TabPoolManager {
             }));
     }
 
+    handleTabClick(tab, event) {
+        event.stopPropagation();
+
+        // Simply toggle clicked state - allow multiple tabs to be open
+        if (tab.classList.contains('clicked')) {
+            tab.classList.remove('clicked');
+        } else {
+            tab.classList.add('clicked');
+        }
+    }
+
     setupEventListeners() {
         // Atualização durante animações
         $('.flipbook').on('turned', () => {
@@ -105,6 +157,15 @@ class TabPoolManager {
         });
         resizeObserver.observe(document.querySelector('.flipbook-viewport'));
 
+        // Close tabs when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.scrapbook-tab')) {
+                this.activeTabs.forEach((tab) => {
+                    tab.classList.remove('clicked');
+                });
+            }
+        });
+
         // Atualização inicial
         requestAnimationFrame(() => this.updateTabsForVisiblePages());
     }
@@ -112,5 +173,6 @@ class TabPoolManager {
 
 // Inicialização
 $(document).ready(() => {
+
     window.tabManager = new TabPoolManager();
 });

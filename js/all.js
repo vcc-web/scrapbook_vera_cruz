@@ -99,7 +99,7 @@
 
                 turning: function (e, page, view) {
 
-                    window.book = $(this);
+                    var book = $(this);
 
                     var currentPage = book.turn('page'),
                         pages = book.turn('pages');
@@ -199,6 +199,7 @@
         });
 
         flipbook.addClass('animated');
+        window.book = flipbook;
     }
 
     var flipbook = $('.flipbook');

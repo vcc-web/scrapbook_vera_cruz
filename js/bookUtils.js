@@ -36,7 +36,7 @@ function getRandomPostItColor() {
 }
 
 function getRandomTab() {
-	return Math.random() < 12; // 25% chance of true, 75% chance of false
+	return Math.random() < 0.05; // 25% chance of true, 75% chance of false
 }
 
 function createScrapbookPage(imageSrc, imageAlt, page, book) {

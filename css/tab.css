@@ -1,36 +1,102 @@
-
 .tabs-container {
     position: absolute;
     margin: auto;
     height: 782px;
     width: 960px;
     pointer-events: none; /* Permite interação com as páginas */
+    perspective: 1000px; /* Add 3D perspective for realistic rotation */
+    transform-style: preserve-3d;
+}
+
+.scrapbook-tab-bg {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform: rotateY(180deg);
 }
 
 .scrapbook-tab {
     position: absolute;
+    /* left: 50%; */
     width: 25%;
     height: 100%;
     top: 0;
-    transition: all 1.3s cubic-bezier(0.25, 0.1, 0.25, 1);
-    z-index: 100;
-    background-color: #f8f8f8;
+    transition: all 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+    z-index: 54;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
     pointer-events: auto;
-    will-change: transform, transform-origin, left, top;
-    backface-visibility: hidden;
+    will-change: transform, transform-origin, left, top, box-shadow;
+    transform-style: preserve-3d;
 }
 
+
 .scrapbook-tab.open.odd {
-    transform: rotateY(-30deg);
+    transform: rotateY(-30deg) skewY(10deg);
     transform-origin: left center;
     right: -25%;
 }
 
 .scrapbook-tab.open.even {
-    transform: rotateY(30deg);
+    transform: rotateY(30deg) skewY(-10deg);
     transform-origin: right center;
     left: -25%;
+}
+
+/* Closed state: flat, original position */
+.scrapbook-tab.odd {
+    transform: rotateY(0deg);
+    transform-origin: right center; /* Rotate around binding edge */
+    right: 0;
+    cursor: pointer;
+}
+
+.scrapbook-tab.even {
+    transform: rotateY(0deg);
+    transform-origin: left center; /* Rotate around binding edge */
+    left: 0;
+    cursor: pointer;
+}
+
+/* Hover effect for visual feedback */
+.scrapbook-tab.odd:hover:not(.clicked) {
+    transform: rotateY(10deg);
+    transform-origin: right center;
+}
+
+.scrapbook-tab.even:hover:not(.clicked) {
+    transform: rotateY(-10deg);
+    transform-origin: left center;
+}
+
+/* Clicked state: fully opened like a page rotating around binding */
+.scrapbook-tab.odd.clicked {
+    transform: rotateY(150deg);
+    transform-origin: right center; /* Rotate around right edge (binding) */
+    box-shadow: -5px 5px 15px rgba(0,0,0,0.3);
+    z-index: 55;
+}
+
+.scrapbook-tab.even.clicked {
+    transform: rotateY(-150deg);
+    transform-origin: left center; /* Rotate around left edge (binding) */
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+    z-index: 55;
+}
+
+/* Add a subtle gradient overlay for depth effect when clicked */
+.scrapbook-tab.clicked::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, 
+        rgba(255,255,255,0.1) 0%, 
+        rgba(255,255,255,0.05) 50%, 
+        rgba(0,0,0,0.1) 100%);
+    pointer-events: none;
+    z-index: 1;
 }
 
 .scrapbook-tab-label {
