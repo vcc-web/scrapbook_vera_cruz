@@ -75,6 +75,37 @@ function createScrapbookPage(imageSrc, imageAlt, page, book) {
 	book.turn('addPage', pageElement, page);
 }
 
+function createTreePage(page, book) {
+	var pageElement = $('<div />', {
+		'class': 'own-size page tree-page',
+		'data-page': page
+	}).append(
+		$('<div />', {
+			'class': 'tree-page-content',
+		}).append(
+			$('<div />', {
+				'class': 'tree-page-title',
+				html: '<h2>Árvore Mágica</h2>'
+			}),
+			$('<div />', {
+				'class': 'tree-page-description',
+				html: '<p>Clique aqui para ver a árvore interativa</p>'
+			}),
+			$('<button />', {
+				'class': 'tree-page-button',
+				html: '🌳 Abrir Árvore',
+				click: function() {
+					if (window.showTreePage) {
+						window.showTreePage();
+					}
+				}
+			})
+		)
+	);
+
+	book.turn('addPage', pageElement, page);
+}
+
 function optimizeFlipbookPerformance() {
 	const flipbook = document.querySelector('.flipbook');
 	if (flipbook) {

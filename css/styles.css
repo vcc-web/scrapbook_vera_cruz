@@ -34,9 +34,6 @@ body {
 	height: 800px;
 }
 
-.flipbook .cover {
-	background: #fff;
-}
 
 .flipbook .page {
 	-webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);

@@ -66,12 +66,14 @@ class TabPoolManager {
         if (window.book.turn('page') < 2) {
             console.log('Book has less than 2 pages, skipping tab assignment');
             return;
-        };
+        }
+        if (page.element.dataset.hasTab === "false") {
+            console.log(`Page ${page.number} has tab disabled, skipping`);
+            return;
+        }
 
-        const tab = this.tabPool.pop();
-        tab.dataset.page = page.number;
-
-
+            const tab = this.tabPool.pop();
+            tab.dataset.page = page.number;
 
         if (parseInt(page.number) % 2 === 0) {
             tab.classList.add('even');

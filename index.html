@@ -8,14 +8,18 @@
     <link rel="shortcut icon" href="#!" type="image/x-icon">
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap"
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Marcellus&display=swap"
         rel="stylesheet">
 
     <link rel="stylesheet" href="css/pattern-styles.css">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/text-styles.css">
     <link rel="stylesheet" href="css/all.css">
+    <link rel="stylesheet" href="css/cover.css">
     <link rel="stylesheet" href="css/tab.css">
+    <link rel="stylesheet" href="css/tree.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
@@ -36,6 +40,14 @@
         <div class="container">
             <div class="flipbook turn-flipbook animated sj-book sj-book-transform">
                 <div depth="5" class="hard">
+                    <div class="cover">
+                        <img src="img/logo_col.png" alt="">
+                        <img id="esp" src="img/esp.png" alt="">
+                        <div class="col-text">
+                            <h1 id="col-name">Colégio Vera Cruz</h1>
+                            <span id="col-slogan">Educação para a Verdade</span>
+                        </div>
+                    </div>
                     <div class="side"></div>
                 </div>
                 <div depth="5" class="hard front-side">
@@ -50,12 +62,26 @@
         </div>
 
         <div class="tabs-container"></div>
+
+        <!-- Tree Special Page Overlay -->
+        <div class="tree-page-overlay" id="treePageOverlay">
+            <div class="tree-page-container">
+                <button class="tree-close-btn" id="treeCloseBtn">&times;</button>
+                <div class="tree-canvas-container">
+                    <canvas id="treeCanvas"></canvas>
+                </div>
+                <div class="tree-nav-hint">
+                    Clique nas seções da árvore para coletar folhas • Clique nos destinos para devolver folhas
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="js/bookUtils.js"></script>
     <script src="js/textInteraction.js"></script>
     <script src="js/all.js"></script>
     <script src="js/tabs.js"></script>
+    <script src="js/tree.js"></script>
 </body>
 
 </html>

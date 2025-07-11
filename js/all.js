@@ -64,8 +64,21 @@
         // Pages 1 and last are usually covers/hard, skip scrapbook for those
         if (page < 2 || page > imageFiles.length + 1) return;
 
-        // Index in imageFiles is (page - 2)
-        const imgIndex = page - 2;
+        // Check if this is the tree page (center of book)
+        const totalPages = 56;
+        const centerPage = Math.floor(totalPages / 2); // page 28
+        
+        if (page === centerPage) {
+            createTreePage(page, book);
+            return;
+        }
+
+        // Index in imageFiles is (page - 2), but skip center page
+        let imgIndex = page - 2;
+        if (page > centerPage) {
+            imgIndex -= 1; // Adjust for skipped tree page
+        }
+        
         if (imgIndex >= 0 && imgIndex < imageFiles.length) {
             createScrapbookPage(imageFiles[imgIndex], imageFiles[imgIndex], page, book);
         }
