@@ -28,43 +28,8 @@ class AmbientAudio {
     }
 
     createAudioControls() {
-        const controls = document.createElement('div');
-        controls.className = 'audio-controls';
-        controls.innerHTML = `
-            <div class="audio-header">
-                <h4>🎵 Ambiente Sonoro</h4>
-                <button class="audio-toggle">🔊</button>
-            </div>
-            <div class="audio-content">
-                <div class="volume-control">
-                    <label>Volume:</label>
-                    <input type="range" class="volume-slider" min="0" max="1" step="0.1" value="0.3">
-                    <span class="volume-value">30%</span>
-                </div>
-                <div class="sound-effects">
-                    <h5>Efeitos Sonoros:</h5>
-                    <div class="effect-buttons">
-                        <button class="effect-btn" data-effect="page-turn">📖 Virar Página</button>
-                        <button class="effect-btn" data-effect="camera-click">📸 Foto</button>
-                        <button class="effect-btn" data-effect="magic-sparkle">✨ Magia</button>
-                        <button class="effect-btn" data-effect="collect-treasure">💎 Tesouro</button>
-                    </div>
-                </div>
-                <div class="ambient-themes">
-                    <h5>Ambientes:</h5>
-                    <div class="theme-buttons">
-                        <button class="ambient-btn active" data-theme="sunset">🌅 Pôr do Sol</button>
-                        <button class="ambient-btn" data-theme="ocean">🌊 Oceano</button>
-                        <button class="ambient-btn" data-theme="forest">🌲 Floresta</button>
-                        <button class="ambient-btn" data-theme="rain">🌧️ Chuva</button>
-                        <button class="ambient-btn" data-theme="cafe">☕ Café</button>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(controls);
-        this.addAudioEvents(controls);
+        // Remove controles de áudio da interface do usuário
+        // O áudio será controlado apenas via métodos JS, sem elementos visíveis
     }
 
     addAudioEvents(controls) {
@@ -323,9 +288,9 @@ class AmbientAudio {
         });
 
         // Escuta eventos de interação
-        $('.flipbook').on('turned', () => {
-            this.playEffect('page-turn');
-        });
+        // $('.flipbook').on('turned', () => {
+        //     this.playEffect('page-turn');
+        // });
 
         document.addEventListener('tab-clicked', () => {
             this.playEffect('magic-sparkle');

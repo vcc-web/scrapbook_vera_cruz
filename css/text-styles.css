@@ -27,11 +27,11 @@
 	line-height: 1.3;
 	cursor: pointer;
 	transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-	z-index: 10;
+	z-index: 50;
+	pointer-events: auto;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	transform-style: preserve-3d;
-	animation: subtleFloat 6s ease-in-out infinite;
 	/* Removido overflow: hidden para permitir fita visível */
 }
 
@@ -49,6 +49,8 @@
 	min-height: auto;
 	padding: 15px 22px;
 	font-size: 20px;
+	outline: 2px solid #fffde7;
+	box-shadow: 0 8px 25px rgba(0,0,0,0.25), 0 3px 10px rgba(0,0,0,0.15), 0 0 0 4px #fffde744, inset 0 1px 0 rgba(255,255,255,0.4);
 }
 
 .scrapbook-text.expanded {
@@ -65,6 +67,8 @@
 	min-height: auto;
 	padding: 15px 22px;
 	font-size: 20px;
+	outline: 2px solid #ffe082;
+	box-shadow: 0 8px 25px rgba(0,0,0,0.25), 0 3px 10px rgba(0,0,0,0.15), 0 0 0 4px #ffe08244, inset 0 1px 0 rgba(255,255,255,0.4);
 }
 
 /* Posicionamento e cores específicas */
@@ -237,95 +241,95 @@
 
 /* Animação para estado hovering */
 .scrapbook-text.hovering {
-    animation: subtlePulse 2s ease-in-out infinite;
+	animation: subtlePulse 2s ease-in-out infinite;
 }
 
 @keyframes subtlePulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.95; }
+	0%, 100% { opacity: 1; }
+	50% { opacity: 0.95; }
 }
 
 /* Enhanced responsive design for text expansion */
 @media (max-width: 1200px) {
-    .scrapbook-text {
-        font-size: 20px;
-        max-width: 160px;
-    }
-    
-    .scrapbook-text:hover,
-    .scrapbook-text.expanded {
-        max-width: 240px;
-        font-size: 18px;
-        padding: 12px 16px;
-    }
+	.scrapbook-text {
+		font-size: 20px;
+		max-width: 160px;
+	}
+	
+	.scrapbook-text:hover,
+	.scrapbook-text.expanded {
+		max-width: 240px;
+		font-size: 18px;
+		padding: 12px 16px;
+	}
 }
 
 @media (max-width: 900px) {
-    .scrapbook-text {
-        font-size: 18px;
-        max-width: 140px;
-        padding: 8px 14px;
-    }
-    
-    .scrapbook-text:hover,
-    .scrapbook-text.expanded {
-        max-width: 200px;
-        font-size: 16px;
-        padding: 10px 14px;
-    }
+	.scrapbook-text {
+		font-size: 18px;
+		max-width: 140px;
+		padding: 8px 14px;
+	}
+	
+	.scrapbook-text:hover,
+	.scrapbook-text.expanded {
+		max-width: 200px;
+		font-size: 16px;
+		padding: 10px 14px;
+	}
 
-    .scrapbook-text.top-left,
-    .scrapbook-text.top-right {
-        top: 20px;
-    }
+	.scrapbook-text.top-left,
+	.scrapbook-text.top-right {
+		top: 20px;
+	}
 
-    .scrapbook-text.top-left,
-    .scrapbook-text.bottom-left {
-        left: 20px;
-    }
+	.scrapbook-text.top-left,
+	.scrapbook-text.bottom-left {
+		left: 20px;
+	}
 
-    .scrapbook-text.top-right,
-    .scrapbook-text.bottom-right {
-        right: 20px;
-    }
+	.scrapbook-text.top-right,
+	.scrapbook-text.bottom-right {
+		right: 20px;
+	}
 
-    .scrapbook-text.bottom-left,
-    .scrapbook-text.bottom-right {
-        bottom: 20px;
-    }
+	.scrapbook-text.bottom-left,
+	.scrapbook-text.bottom-right {
+		bottom: 20px;
+	}
 }
 
 @media (max-width: 600px) {
-    .scrapbook-text {
-        font-size: 16px;
-        max-width: 120px;
-        padding: 6px 10px;
-    }
-    
-    .scrapbook-text:hover,
-    .scrapbook-text.expanded {
-        max-width: 160px;
-        font-size: 14px;
-        padding: 8px 12px;
-    }
+	.scrapbook-text {
+		font-size: 16px;
+		max-width: 120px;
+		padding: 6px 10px;
+	}
+	
+	.scrapbook-text:hover,
+	.scrapbook-text.expanded {
+		max-width: 160px;
+		font-size: 14px;
+		padding: 8px 12px;
+	}
 
-    .scrapbook-text.top-left,
-    .scrapbook-text.top-right {
-        top: 15px;
-    }
+	.scrapbook-text.top-left,
+	.scrapbook-text.top-right {
+		top: 15px;
+	}
 
-    .scrapbook-text.top-left,
-    .scrapbook-text.bottom-left {
-        left: 15px;
-    }
+	.scrapbook-text.top-left,
+	.scrapbook-text.bottom-left {
+		left: 15px;
+	}
 
-    .scrapbook-text.top-right,
-    .scrapbook-text.bottom-right {
-        right: 15px;
-    }
+	.scrapbook-text.top-right,
+	.scrapbook-text.bottom-right {
+		right: 15px;
+	}
 
-    .scrapbook-text.bottom-left,
-    .scrapbook-text.bottom-right {
-        bottom: 15px;
-    }
+	.scrapbook-text.bottom-left,
+	.scrapbook-text.bottom-right {
+		bottom: 15px;
+	}
 }

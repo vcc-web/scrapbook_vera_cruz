@@ -35,8 +35,8 @@ class ScrapbookAudio {
             // Configura eventos globais apenas para áudio
             this.setupAudioEvents();
 
-            // Exibe splash screen com tema do colégio
-            this.showSplashScreen();
+            // Adiciona contador de páginas
+            this.addPageCounter();
 
             this.isInitialized = true;
             console.log('✨ Sistema de áudio inicializado com sucesso!');
@@ -85,135 +85,41 @@ class ScrapbookAudio {
         });
     }
 
-    showSplashScreen() {
-        const splash = document.createElement('div');
-        splash.className = 'scrapbook-splash';
-        splash.innerHTML = `
-            <div class="splash-content">
-                <div class="splash-logo">
-                    <h1>🎵 Sistema de Áudio</h1>
-                    <p>Ambiente sonoro para suas memórias</p>
-                </div>
-                <div class="splash-features">
-                    <div class="feature">� Sons Ambientais</div>
-                    <div class="feature">🔊 Controle de Volume</div>
-                    <div class="feature">� Efeitos Sonoros</div>
-                    <div class="feature">🎭 Temas Musicais</div>
-                </div>
-                <div class="splash-shortcuts">
-                    <h3>Controle:</h3>
-                    <div class="shortcut">Ctrl+M - Painel de Áudio</div>
-                </div>
-            </div>
-        `;
+    addPageCounter() {
+        // Cria o elemento do contador
+        const counter = document.createElement('div');
+        counter.className = 'page-counter';
+        counter.style.position = 'fixed';
+        counter.style.bottom = '32px';
+        counter.style.right = '32px';
+        counter.style.background = 'rgba(44,62,50,0.85)';
+        counter.style.color = '#f4f1e8';
+        counter.style.fontFamily = 'Montserrat, Arial, sans-serif';
+        counter.style.fontSize = '1.1em';
+        counter.style.padding = '10px 22px';
+        counter.style.borderRadius = '18px';
+        counter.style.boxShadow = '0 2px 12px rgba(33,56,34,0.13)';
+        counter.style.zIndex = '9999';
+        counter.style.userSelect = 'none';
+        counter.textContent = 'Página 1 de 1';
+        document.body.appendChild(counter);
 
-        document.body.appendChild(splash);
-
-        // Remove splash após 3 segundos
-        setTimeout(() => {
-            splash.style.opacity = '0';
-            setTimeout(() => splash.remove(), 500);
-        }, 3000);
-
-        // Adiciona estilos do splash com cores do colégio
-        this.addSplashStyles();
-    }
-
-    addSplashStyles() {
-        const style = document.createElement('style');
-        style.textContent = `
-            .scrapbook-splash {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100vw;
-                height: 100vh;
-                background: linear-gradient(135deg, #213822 0%, #2d4a2e 50%, #1a2f1d 100%);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 10000;
-                color: #f4f1e8;
-                transition: opacity 0.5s ease;
+        // Função para atualizar o contador
+        function updateCounter() {
+            if (window.book && typeof window.book.turn === 'function') {
+                const current = window.book.turn('page');
+                const total = window.book.turn('pages');
+                counter.textContent = `Página ${current} de ${total}`;
             }
+        }
 
-            .splash-content {
-                text-align: center;
-                animation: splash-appear 1s ease-out;
-            }
+        // Atualiza ao virar página
+        if (window.book && typeof window.book.bind === 'function') {
+            window.book.bind('turned', updateCounter);
+        }
 
-            .splash-logo h1 {
-                font-size: 2.5em;
-                margin: 0 0 10px 0;
-                text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-                animation: glow 2s infinite ease-in-out;
-                color: #e8dcc6;
-            }
-
-            .splash-logo p {
-                font-size: 1.1em;
-                margin: 0 0 30px 0;
-                opacity: 0.9;
-                color: #f0ebe0;
-            }
-
-            .splash-features {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 15px;
-                margin-bottom: 30px;
-                max-width: 400px;
-            }
-
-            .feature {
-                background: rgba(139, 127, 102, 0.2);
-                padding: 12px;
-                border-radius: 10px;
-                font-size: 14px;
-                backdrop-filter: blur(5px);
-                border: 1px solid rgba(244, 241, 232, 0.1);
-                color: #f4f1e8;
-            }
-
-            .splash-shortcuts h3 {
-                margin: 0 0 15px 0;
-                font-size: 1.1em;
-                color: #e8dcc6;
-            }
-
-            .shortcut {
-                background: rgba(139, 127, 102, 0.3);
-                padding: 8px 15px;
-                margin: 5px;
-                border-radius: 20px;
-                display: inline-block;
-                font-size: 12px;
-                font-family: monospace;
-                border: 1px solid rgba(244, 241, 232, 0.2);
-                color: #f4f1e8;
-            }
-
-            @keyframes splash-appear {
-                0% {
-                    opacity: 0;
-                    transform: scale(0.8) translateY(50px);
-                }
-                100% {
-                    opacity: 1;
-                    transform: scale(1) translateY(0);
-                }
-            }
-
-            @keyframes glow {
-                0%, 100% {
-                    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-                }
-                50% {
-                    text-shadow: 2px 2px 20px rgba(232, 220, 198, 0.6);
-                }
-            }
-        `;
-        document.head.appendChild(style);
+        // Atualiza ao carregar
+        setTimeout(updateCounter, 1200);
     }
 
     // Método para controlar áudio via atalho

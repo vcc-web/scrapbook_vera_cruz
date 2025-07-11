@@ -62,14 +62,10 @@ function createScrapbookPage(imageSrc, imageAlt, page, book) {
 				css: { transform: `rotate(${rotation}deg)` }
 			}),
 			$('<div />', {
-				class: 'scrapbook-text-wrapper',
-			}).append(
-				$('<div />', {
 					'class': `scrapbook-text ${layout} ${postItColor}`,
 					html: `<div class="text-content">${text}</div>`
 				})
 			)
-		)
 	);
 
 	book.turn('addPage', pageElement, page);

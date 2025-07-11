@@ -90,11 +90,8 @@ class Tree {
         this.H = 800;
         this.branches = [];
         this.leaves = [];
-        this.flyingLeaves = []; // Folhas que estão voando
-        this.storedLeaves = { 1: [], 2: [], 3: [] }; // Folhas armazenadas por seção
         this.darkTheme = false;
         this.debug = false;
-        this.decaying = false;
         this.floorY = 685;
         this.gravity = 0.098;
         this.loopDelay = 500;
@@ -118,7 +115,6 @@ class Tree {
     }
     get allBranchesComplete() {
         const { branches, maxGenerations } = this;
-
         return branches.filter(b => {
             const isLastGen = b.generation === maxGenerations;
             return b.progress >= 1 && isLastGen;
@@ -126,12 +122,6 @@ class Tree {
     }
     get allLeavesComplete() {
         return !!this.leaves.length && this.leaves.every(leaf => leaf.progress === 1);
-    }
-    get allFlyingLeavesComplete() {
-        return this.flyingLeaves.length === 0;
-    }
-    get totalStoredLeaves() {
-        return this.storedLeaves[1].length + this.storedLeaves[2].length + this.storedLeaves[3].length;
     }
     get debugInfo() {
         return [
@@ -171,44 +161,81 @@ class Tree {
         this.darkTheme = mq.matches;
     }
     draw() {
-        const { c, W, H, debug, branches, leaves, flyingLeaves, storedLeaves, sectionTargets } = this;
+        const { c, W, H, debug, branches, leaves } = this;
 
         c.clearRect(0, 0, W, H);
 
-        // debug info
-        if (debug === true) {
-            const lightness = this.darkTheme ? 90 : 10;
-            const foreground = `hsl(223,10%,${lightness}%)`;
-            c.fillStyle = foreground;
-            c.strokeStyle = foreground;
-
-            const textX = 24;
-
-            this.debugInfo.forEach((d, i) => {
-                c.fillText(`${d.item}: ${d.value}`, textX, 24 * (i + 1));
-            });
-        }
-
-        // Removido: indicadores visuais das seções e pontos de destino
-
-        // Desenhar divisões das seções na árvore (linhas de referência)
-        c.strokeStyle = 'rgba(200, 200, 200, 0.3)';
-        c.lineWidth = 1;
-        c.setLineDash([2, 2]);
+        // Draw simple 2D soil with grass
+        const soilY = 700;
+        const soilHeight = 60;
+        const soilWidth = 420;
         
-        // Seção 1: esquerda (x < 350)
+        c.save();
         c.beginPath();
-        c.moveTo(350, 0);
-        c.lineTo(350, H);
-        c.stroke();
+        c.ellipse(W / 2, soilY, soilWidth, soilHeight, 0, 0, 2 * Math.PI);
+        c.clip();
         
-        // Seção 3: direita (x > 450)
+        // Draw soil base (brown gradient)
+        const soilGradient = c.createLinearGradient(W / 2, soilY + soilHeight, W / 2, soilY - soilHeight);
+        soilGradient.addColorStop(0, '#3e2723');  // Dark brown at bottom
+        soilGradient.addColorStop(0.5, '#5d4037'); // Medium brown
+        soilGradient.addColorStop(1, '#8d6e63');   // Light brown at top
+        c.fillStyle = soilGradient;
+        c.fillRect(W / 2 - soilWidth, soilY - soilHeight, soilWidth * 2, soilHeight * 2);
+        
+        // Draw grass layer on top (simple green gradient)
+        const grassY = soilY - 25;
+        const grassHeight = 35;
+        const grassGradient = c.createLinearGradient(W / 2, grassY + grassHeight, W / 2, grassY - grassHeight);
+        grassGradient.addColorStop(0, '#2e7d32');  // Dark green at bottom
+        grassGradient.addColorStop(0.3, '#388e3c'); // Medium green
+        grassGradient.addColorStop(0.7, '#4caf50'); // Bright green
+        grassGradient.addColorStop(1, '#66bb6a');   // Light green at top
+        c.fillStyle = grassGradient;
+        
+        // Draw grass as an ellipse on top of soil
         c.beginPath();
-        c.moveTo(450, 0);
-        c.lineTo(450, H);
-        c.stroke();
+        c.ellipse(W / 2, grassY, soilWidth * 0.9, grassHeight, 0, 0, 2 * Math.PI);
+        c.fill();
         
-        c.setLineDash([]);
+        // Add small flowers scattered on the grass
+        const flowers = [
+            { x: W / 2 - 120, y: grassY - 15, color: '#ff6b6b' }, // Red
+            { x: W / 2 - 60, y: grassY - 20, color: '#ffd93d' },  // Yellow
+            { x: W / 2 - 20, y: grassY - 18, color: '#ff6b6b' },  // Red
+            { x: W / 2 + 40, y: grassY - 12, color: '#a8e6cf' },  // Light green
+            { x: W / 2 + 90, y: grassY - 22, color: '#ffd93d' },  // Yellow
+            { x: W / 2 + 140, y: grassY - 16, color: '#ff6b6b' }, // Red
+            { x: W / 2 - 150, y: grassY - 8, color: '#a8e6cf' },  // Light green
+            { x: W / 2 - 30, y: grassY - 10, color: '#ffd93d' },  // Yellow
+            { x: W / 2 + 70, y: grassY - 25, color: '#ff6b6b' },  // Red
+            { x: W / 2 + 110, y: grassY - 8, color: '#a8e6cf' }   // Light green
+        ];
+        
+        flowers.forEach(flower => {
+            // Draw flower center
+            c.beginPath();
+            c.arc(flower.x, flower.y, 2, 0, 2 * Math.PI);
+            c.fillStyle = flower.color;
+            c.fill();
+            
+            // Draw petals around the center
+            for (let i = 0; i < 6; i++) {
+                const angle = (i * 60) * Math.PI / 180;
+                const petalX = flower.x + Math.cos(angle) * 4;
+                const petalY = flower.y + Math.sin(angle) * 4;
+                c.beginPath();
+                c.arc(petalX, petalY, 1.5, 0, 2 * Math.PI);
+                c.fillStyle = flower.color;
+                c.globalAlpha = 0.8;
+                c.fill();
+                c.globalAlpha = 1;
+            }
+        });
+        
+        c.restore();
+
+        // ...existing code...
 
         // branches com cores baseadas na geração
         branches.forEach(b => {
@@ -239,16 +266,7 @@ class Tree {
             c.globalAlpha = 1;
         });
 
-        // folhas voando
-        flyingLeaves.forEach(leaf => {
-            c.fillStyle = leaf.color;
-            c.globalAlpha = leaf.opacity;
-            c.beginPath();
-            c.arc(leaf.x, leaf.y, leaf.size, 0, 2 * Math.PI);
-            c.fill();
-            c.closePath();
-            c.globalAlpha = 1;
-        });
+        // ...existing code...
 
         // folhas armazenadas nos pontos de destino
         // Indicadores visuais e folhas armazenadas removidos conforme solicitado
@@ -369,57 +387,6 @@ class Tree {
                 }
             });
         }
-
-        // Árvore apenas cresce, sem decaimento
-    }
-    
-    updateFlyingLeaves() {
-        this.flyingLeaves = this.flyingLeaves.filter(leaf => {
-            // Mover folha em direção ao destino
-            const dx = leaf.targetX - leaf.x;
-            const dy = leaf.targetY - leaf.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            if (distance < 5) {
-                // Folha chegou ao destino
-                if (leaf.returning) {
-                    // Folha retornando à árvore - adicionar de volta às folhas
-                    this.leaves.push({
-                        x: leaf.originalX,
-                        y: leaf.originalY,
-                        size: leaf.size,
-                        color: leaf.color,
-                        progress: 1,
-                        growthSpeed: 0.02,
-                        section: leaf.section
-                    });
-                } else {
-                    // Folha indo para o ponto de destino - armazenar na seção
-                    this.storedLeaves[leaf.section].push({
-                        size: leaf.size,
-                        color: leaf.color,
-                        originalX: leaf.originalX,
-                        originalY: leaf.originalY,
-                        section: leaf.section
-                    });
-                }
-                return false;
-            }
-            
-            // Mover folha
-            leaf.x += dx * leaf.speed;
-            leaf.y += dy * leaf.speed;
-            
-            // Manter opacidade para folhas retornando
-            if (!leaf.returning) {
-                leaf.opacity = Math.max(0.5, leaf.opacity - 0.005);
-            }
-            
-            // Adicionar rotação suave
-            leaf.rotation += leaf.rotationSpeed;
-            
-            return leaf.opacity > 0;
-        });
     }
     
     getLeafSection(x) {
@@ -455,44 +422,7 @@ class Tree {
             y: (event.clientY - rect.top) * scaleY
         };
     }
-    decay() {
-        if (this.fruit.length) {
-            // fruit fall
-            this.fruit = this.fruit.filter(f => f.decayTime > 0);
-
-            this.fruit.forEach(f => {
-                if (f.timeUntilFall <= 0) {
-                    f.y += f.yVelocity;
-                    f.yVelocity += this.gravity;
-
-                    const bottom = this.floorY - f.r;
-
-                    if (f.y >= bottom) {
-                        f.y = bottom;
-                        f.yVelocity *= -f.restitution;
-                    }
-
-                    --f.decayTime;
-
-                } else if (!f.decaying) {
-                    --f.timeUntilFall;
-                }
-            });
-        }
-        if (this.allFruitFalling || !this.fruit.length) {
-            // branch decay
-            this.branches = this.branches.filter(b => b.progress > 0);
-
-            this.branches.forEach(b => {
-                if (b.generation === this.lastGeneration) b.progress -= b.decaySpeed;
-            });
-        }
-        if (!this.branches.length && !this.fruit.length) {
-            // back to the trunk
-            this.decaying = false;
-            this.loopEnd = Utils.dateValue;
-        }
-    }
+    // ...existing code...
     init() {
         this.setupCanvas();
         this.setupThemeDetection();
@@ -505,9 +435,6 @@ class Tree {
 
         // Apenas crescimento, sem decaimento
         this.grow();
-        
-        // Atualizar folhas voando
-        this.updateFlyingLeaves();
 
         // Continua o loop se ainda há crescimento ou folhas voando E se a animação deve continuar
         const shouldContinue = (!this.allBranchesComplete || !this.allLeavesComplete || !this.allFlyingLeavesComplete) && this.animationRunning;
