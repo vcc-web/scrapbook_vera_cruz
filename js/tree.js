@@ -444,57 +444,6 @@ class Tree {
         window.dispatchEvent(event);
     }
     
-    getClickedTargetSection(x, y) {
-        // Verificar se clicou em algum ponto de destino
-        for (const section of [1, 2, 3]) {
-            const target = this.sectionTargets[section];
-            const distance = Math.sqrt((x - target.x) ** 2 + (y - target.y) ** 2);
-            if (distance < 30) { // Raio de 30 pixels ao redor do ponto
-                return section;
-            }
-        }
-        return null;
-    }
-    
-    returnStoredLeaves(section) {
-        const stored = this.storedLeaves[section];
-        if (stored.length === 0) {
-            console.log(`Nenhuma folha da seção ${section} para retornar`);
-            return;
-        }
-        
-        console.log(`Retornando ${stored.length} folhas da seção ${section}`);
-        
-        // Transformar folhas armazenadas em folhas voadoras retornando
-        stored.forEach(leaf => {
-            this.flyingLeaves.push({
-                x: this.sectionTargets[section].x,
-                y: this.sectionTargets[section].y,
-                originalX: leaf.originalX,
-                originalY: leaf.originalY,
-                targetX: leaf.originalX + Utils.randomInt(-5, 5),
-                targetY: leaf.originalY + Utils.randomInt(-5, 5),
-                size: leaf.size,
-                color: leaf.color,
-                opacity: 1,
-                speed: 0.03 + Math.random() * 0.02,
-                rotation: 0,
-                rotationSpeed: (Math.random() - 0.5) * 0.2,
-                returning: true,
-                section: leaf.section
-            });
-        });
-        
-        // Limpar folhas da seção
-        this.storedLeaves[section] = [];
-        
-        // Reiniciar o loop de animação se estava parado
-        if (!this.animationRunning && this.flyingLeaves.length > 0) {
-            console.log('Reiniciando loop de animação para folhas retornando');
-            this.animationRunning = true;
-            this.run();
-        }
-    }
     
     getCanvasCoordinates(event) {
         const rect = this.C.getBoundingClientRect();
