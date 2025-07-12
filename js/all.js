@@ -48,7 +48,7 @@
         "6.jpg", "7.jpg", "8.jpg", "9.jpg", "aline.jpg", "ana_beatriz.jpg", "ana_j.jpg", 
         "andrea.jpg", "andreia.jpg", "babies.jpg", "barbara.jpg", "bruna.jpg", "carol.jpg", 
         "dona_bete.jpg", "dona_maria_ferreira.jpg", "erica.jpg", "fernanda.jpg", 
-        "fernanda_stuart.jpg", "flavio.jpg", "giovana.jpg", "gustavo.jpg", "icone.jpg", 
+        "fernanda_stuart.jpg", "flavio.jpg", "giovana_isabela.jpg", "gustavo.jpg", "icone.jpg", 
         "IMG-20250626-WA0019.jpg", "IMG-20250626-WA0020.jpg", "IMG-20250626-WA0021.jpg", 
         "isabel.jpg", "junia.jpg", "laura.jpg", "lhara.jpg", "logo.jpg", "logo_col.png", 
         "luiz.jpg", "marcela.jpg", "maria_carolina.jpg", "marina.jpg", "matheus.jpg", "nagila.jpg", 

@@ -143,6 +143,11 @@
 	transform: translate(-50%, -50%) rotate(3deg) scale(1.05);
 }
 
+.scrapbook-text:hover,
+.scrapbook-text.expanded {
+	max-width: 350px;
+}
+
 /* Variações adicionais de cores para post-it */
 .scrapbook-text.post-it-yellow {
 	background: linear-gradient(135deg, #ffeb3b 0%, #fff176 100%);

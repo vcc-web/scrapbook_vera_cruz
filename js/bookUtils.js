@@ -56,26 +56,23 @@ function getRandomPostItColor() {
 	return colors[Math.floor(Math.random() * colors.length)];
 }
 
-function getRandomTab() {
-	return Math.random() < 0.05; // 25% chance of true, 75% chance of false
-}
-
 
 function createScrapbookPage(imageSrc, imageAlt, page, book) {
 	const rotation = getRandomRotation();
 	const pattern = getRandomPattern();
 	const layout = getRandomLayout();
 	const postItColor = getRandomPostItColor();
-	const hasTab = getRandomTab();
 	const postItText = getPostItTextForImage(imageSrc);
 
 	var pageElement = $('<div />', {
 		'class': `own-size page pattern-${pattern}`,
 		'data-layout': layout,
-		'data-has-tab': hasTab,
+		'data-has-tab': false,
+		css: { overflow: 'visible' } // Allow overflow for scrapbook text
 	}).append(
 		$('<div />', {
 			'class': 'scrapbook-content',
+			css: { overflow: 'visible' } // Allow overflow for scrapbook text
 		}).append(
 			$('<img />', {
 				src: `img/${imageSrc}`,
@@ -90,7 +87,8 @@ function createScrapbookPage(imageSrc, imageAlt, page, book) {
 		pageElement.find('.scrapbook-content').append(
 			$('<div />', {
 				'class': `scrapbook-text ${layout} ${postItColor}`,
-				html: `<div class="text-content">${postItText}</div>`
+				html: `<div class="text-content">${postItText}</div>`,
+				css: { overflow: 'visible' } // Allow overflow for scrapbook text
 			})
 		);
 	}
