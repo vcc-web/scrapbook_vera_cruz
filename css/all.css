@@ -125,8 +125,6 @@
     background-position: -500px 0 !important;
 }
 
-
-
 .sj-book .p76 {
     background-position: -500px 0 !important;
 }
@@ -185,60 +183,6 @@
     font-size: 11px;
 }
 
-.sj-book .table-contents {
-    font-size: 16px;
-    width: 300px;
-    margin: 80px auto;
-    color: #ccc;
-}
-
-.sj-book .table-contents li {
-    list-style: none;
-    line-height: 25px;
-}
-
-.sj-book .table-contents span {
-    float: right;
-}
-
-.sj-book .table-contents a {
-    float: left;
-    width: 100%;
-    clear: both;
-    text-decoration: none;
-    color: #333;
-    margin: 2px 0;
-    padding: 0 10px;
-}
-
-.sj-book .table-contents a:hover {
-    background: #CAD1EE;
-    float: left;
-    width: 100%;
-    clear: both;
-    text-decoration: none;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    -o-border-radius: 10px;
-    -ms-border-radius: 10px;
-    border-radius: 10px;
-}
-
-.sj-book .book-content .capital,
-.sj-book .book-content .no-indent {
-    text-indent: 0;
-}
-
-.sj-book .capital:first-letter {
-    display: block;
-    float: left;
-    font-size: 300%;
-    line-height: 70%;
-    margin-right: 6px;
-    margin-top: 7px;
-    margin-left: 18px;
-}
-
 .ie8 .sj-book .even,
 .ie9 .sj-book .even {
     background-color: white;
@@ -253,4 +197,47 @@
     background-image: url(../pics/gradient-page-right.jpg);
     background-position: left top;
     background-repeat: repeat-y;
+}
+
+/* Video control button styles for scrapbook videos */
+.scrapbook-video-controls {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 16px;
+    z-index: 10;
+}
+.scrapbook-video-btn {
+    background: rgba(255,255,255,0.85);
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    font-size: 2.5rem;
+    color: #213822;
+    pointer-events: all;
+}
+.scrapbook-video-btn:hover {
+    background: #fbc153;
+    color: #213822;
+    box-shadow: 0 4px 16px rgba(251,193,83,0.25);
+}
+.scrapbook-video-btn .material-symbols-rounded {
+    font-size: 2.5rem;
+    line-height: 1;
+    pointer-events: none;
+}
+.scrapbook-video-btn:active {
+    background: #ffe6b0;
+}
+.scrapbook-video-btn:focus {
+    outline: 2px solid #fbc153;
 }

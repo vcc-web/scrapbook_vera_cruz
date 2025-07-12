@@ -9,10 +9,10 @@ function loadScrapbookJsonData() {
 		url: 'frases-vera-cruz.json',
 		dataType: 'json',
 		async: false,
-		success: function(data) {
+		success: function (data) {
 			scrapbookJsonData = data;
 		},
-		error: function() {
+		error: function () {
 			scrapbookJsonData = [];
 		}
 	});
@@ -72,91 +72,93 @@ function createScrapbookPage(imageSrc, imageAlt, page, book, isFirstPage = false
 	const audioMatch = audioFiles.find(aud => aud.replace(/\.[^.]+$/, '').toLowerCase() === imgBase);
 
 	let $media;
-	if (isFirstPage) {
+	if (isFirstPage || isLastPage) {
+		const videoSrc = isFirstPage ? 'img/comeco_col.mp4' : 'img/niver_col.mp4';
 		$media = $('<video />', {
-			src: 'img/comeco_col.mp4',
-			autoplay: true,
+			src: videoSrc,
 			muted: true,
 			loop: false,
 			controls: false,
-			css: { width: '100%', borderRadius: '10px', boxShadow: '0 0 20px rgba(80,60,20,0.3)' }
-		});
-		$media.on('ended', function() {
-			if (!$media.next('.restart-video-btn').length) {
-				var $btn = $('<span />', {
-					class: 'restart-video-btn material-symbols-rounded',
-					html: 'replay',
-					css: {
-						position: 'absolute',
-						left: '50%',
-						top: '50%',
-						transform: 'translate(-50%, -50%)',
-						fontSize: '48px',
-						background: 'rgba(255,255,255,0.75)',
-						color: '#99693b',
-						borderRadius: '50%',
-						padding: '16px',
-						cursor: 'pointer',
-						boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
-						zIndex: 10,
-						userSelect: 'none',
-						border: '2px solid #b38c43',
-						display: 'flex',
-						alignItems: 'center',
-						justifyContent: 'center',
-						pointerEvents: 'all'
-					},
-					click: function() {
-						$media[0].currentTime = 0;
-						$media[0].play();
-						$(this).remove();
-					}
-				});
-				$media.parent().css('position', 'relative').append($btn);
+			css: {
+				height: '100%',
+				borderRadius: '10px',
+				padding: '1%',
+				background: 'white',
+				boxShadow: '0 0 20px rgba(80,60,20,0.3)'
 			}
 		});
-	} else if (isLastPage) {
-		$media = $('<video />', {
-			src: 'img/niver_col.mp4',
-			autoplay: true,
-			muted: true,
-			loop: false,
-			controls: false,
-			css: { width: '100%', borderRadius: '10px', boxShadow: '0 0 20px rgba(80,60,20,0.3)' }
+
+		// Create video controls container
+		const $controls = $('<div />', {
+			class: 'scrapbook-video-controls'
 		});
-		$media.on('ended', function() {
-			if (!$media.next('.restart-video-btn').length) {
-				var $btn = $('<span />', {
-					class: 'restart-video-btn material-symbols-rounded',
-					html: 'replay',
-					css: {
-						position: 'absolute',
-						left: '50%',
-						top: '50%',
-						transform: 'translate(-50%, -50%)',
-						fontSize: '48px',
-						background: 'rgba(255,255,255,0.85)',
-						color: '#99693b',
-						borderRadius: '50%',
-						padding: '16px',
-						cursor: 'pointer',
-						boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
-						zIndex: 10,
-						userSelect: 'none',
-						border: '2px solid #b38c43',
-						display: 'flex',
-						alignItems: 'center',
-						justifyContent: 'center'
-					},
-					click: function() {
-						$media[0].currentTime = 0;
-						$media[0].play();
-						$(this).remove();
-					}
-				});
-				$media.parent().css('position', 'relative').append($btn);
+		// Play button
+		const $playBtn = $('<button />', {
+			class: 'scrapbook-video-btn',
+			type: 'button',
+			html: '<span class="material-symbols-rounded">play_arrow</span>',
+			click: function (e) {
+				e.stopPropagation();
+				$media.find('video')[0].play();
+				$playBtn.hide();
 			}
 		});
+		$controls.append($playBtn);
+
+		// Replay button (hidden initially)
+		const $replayBtn = $('<button />', {
+			class: 'scrapbook-video-btn',
+			type: 'button',
+			html: '<span class="material-symbols-rounded">replay</span>',
+			css: { display: 'none' },
+			click: function (e) {
+				e.stopPropagation();
+				const video = $media.find('video')[0];
+				video.currentTime = 0;
+				video.play();
+				$replayBtn.hide();
+			}
+		});
+		$controls.append($replayBtn);
+
+		let $video = $media.find('video');
+		if ($video.length === 0 && $media.is('video')) {
+			$video = $media;
+		}
+		$video.on('ended', function () {
+			$replayBtn.show();
+			$playBtn.hide();
+		});
+		$video.on('pause', function () {
+			if (this.currentTime === 0 || this.ended) {
+				$playBtn.show();
+				$replayBtn.hide();
+			}
+		});
+		$video.on('play', function () {
+			$playBtn.hide();
+		});
+
+		// Hide replay button and show play button when video is paused or stopped
+		$media.find('video').on('pause', function () {
+			if (this.currentTime === 0 || this.ended) {
+				$playBtn.show();
+				$replayBtn.hide();
+			}
+		});
+		// Hide play button when playing
+		$media.find('video').on('play', function () {
+			$playBtn.hide();
+		});
+
+
+
+		// Container for video and controls
+		const $videoContainer = $('<div />', {
+			css: { position: 'relative', width: '100%', height: '100%' }
+		});
+		$videoContainer.append($media, $controls);
+		$media = $videoContainer;
 	} else {
 		$media = $('<img />', {
 			src: `img/${imageSrc}`,
@@ -165,7 +167,7 @@ function createScrapbookPage(imageSrc, imageAlt, page, book, isFirstPage = false
 		});
 		if (audioMatch) {
 			$media.css('cursor', 'pointer');
-			$media.on('click', function(e) {
+			$media.on('click', function (e) {
 				e.stopPropagation();
 				$('.scrapbook-audio').remove();
 				var $audio = $('<audio />', {

@@ -153,3 +153,19 @@
     background-size: 70px 70px;
     transform: rotate(90deg);
 }
+
+.flipbook .back-cover {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 90%;
+    height: 100%;
+    margin: auto;
+}
+
+.flipbook .back-cover span {
+    font-family: 'Marcellus', cursive;
+    font-size: 18px;
+    color: #b38c43;
+}
