@@ -203,7 +203,7 @@ function createTreePage(page, book) {
 		}).append(
 			$('<div />', {
 				'class': 'tree-page-title',
-				html: '<h2>Árvore do Colégio</h2>'
+				html: '<h2>A vida do Colégio</h2>'
 			}),
 			$('<button />', {
 				'class': 'tree-page-button',

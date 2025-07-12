@@ -9,8 +9,7 @@ function isOnTreePages() {
         const currentPage = window.book.turn('page');
         const totalPages = window.book.turn('pages');
         const centerPage = Math.floor(totalPages / 2);
-        
-        // Show tree on pages 28-29 (center of 56-page book)
+
         return currentPage === centerPage || currentPage === centerPage + 1;
     }
     return false;
@@ -20,7 +19,7 @@ function isOnTreePages() {
 function initTreePageOverlay() {
     treePageOverlay = document.getElementById('treePageOverlay');
     treeCloseBtn = document.getElementById('treeCloseBtn');
-    
+
     if (treeCloseBtn) {
         treeCloseBtn.addEventListener('click', hideTreePage);
     }
@@ -31,7 +30,26 @@ function showTreePage() {
     if (treePageOverlay && !treePageActive) {
         treePageActive = true;
         treePageOverlay.classList.add('active');
-        
+
+        // Show global scrapbook tabs when tree page opens
+        if (window.tabManager && window.tabManager.tabPool) {
+            window.tabManager.tabPool.forEach(tab => {
+                tab.style.display = 'block';
+                tab.classList.add('tree-tab-active');
+                tab.style.backgroundColor = '#f8f5f0';
+            });
+
+            window.tabManager.tabPool[0].classList.add('even');
+            window.tabManager.tabPool[1].classList.add('odd');
+
+            setTimeout(() => {
+                window.tabManager.tabPool.forEach(tab => {
+                    tab.classList.add('clicked');
+                })
+            }, 200);
+
+        }
+
         // Initialize tree if not already done
         if (!window.treeInstance) {
             window.treeInstance = new Tree("#treeCanvas");
@@ -48,9 +66,23 @@ window.showTreePage = showTreePage;
 // Hide tree page overlay
 function hideTreePage() {
     if (treePageOverlay && treePageActive) {
-        treePageActive = false;
-        treePageOverlay.classList.remove('active');
-        
+
+        // Hide global scrapbook tabs when tree page closes
+        if (window.tabManager && window.tabManager.tabPool) {
+            window.tabManager.tabPool.forEach(tab => {
+                tab.classList.remove('clicked');
+
+                setTimeout(() => {
+                    window.tabManager.releaseTab(tab, tab.dataset.page);
+                }, 1300);
+            });
+        }
+
+        setTimeout(() => {
+            treePageActive = false;
+            treePageOverlay.classList.remove('active');
+        }, 1300);
+
         // Pause animation
         if (window.treeInstance) {
             window.treeInstance.pauseAnimation();
@@ -61,7 +93,7 @@ function hideTreePage() {
 window.addEventListener("DOMContentLoaded", () => {
     // Initialize tree page overlay first
     initTreePageOverlay();
-    
+
     // Check if we should show tree page immediately
     setTimeout(() => {
         if (isOnTreePages()) {
@@ -89,14 +121,14 @@ class Tree {
         this.animationSpeed = 1.0; // Multiplicador de velocidade global
         this.clickRadius = 80; // Raio de detecção de clique
         this.animationRunning = false; // Controla se a animação está rodando
-        
+
         // Pontos de destino para cada seção
         this.sectionTargets = {
             1: { x: 100, y: 100 },   // Canto superior esquerdo
             2: { x: 400, y: 50 },    // Centro superior
             3: { x: 700, y: 100 }    // Canto superior direito
         };
-        
+
         // Áreas das seções da árvore (será calculado depois)
         this.treeSections = {};
 
@@ -158,12 +190,12 @@ class Tree {
         const soilY = 700;
         const soilHeight = 60;
         const soilWidth = 420;
-        
+
         c.save();
         c.beginPath();
         c.ellipse(W / 2, soilY, soilWidth, soilHeight, 0, 0, 2 * Math.PI);
         c.clip();
-        
+
         // Draw soil base (brown gradient)
         const soilGradient = c.createLinearGradient(W / 2, soilY + soilHeight, W / 2, soilY - soilHeight);
         soilGradient.addColorStop(0, '#3e2723');  // Dark brown at bottom
@@ -171,7 +203,7 @@ class Tree {
         soilGradient.addColorStop(1, '#8d6e63');   // Light brown at top
         c.fillStyle = soilGradient;
         c.fillRect(W / 2 - soilWidth, soilY - soilHeight, soilWidth * 2, soilHeight * 2);
-        
+
         // Draw grass layer on top (simple green gradient)
         const grassY = soilY - 25;
         const grassHeight = 35;
@@ -181,12 +213,12 @@ class Tree {
         grassGradient.addColorStop(0.7, '#4caf50'); // Bright green
         grassGradient.addColorStop(1, '#66bb6a');   // Light green at top
         c.fillStyle = grassGradient;
-        
+
         // Draw grass as an ellipse on top of soil
         c.beginPath();
         c.ellipse(W / 2, grassY, soilWidth * 0.9, grassHeight, 0, 0, 2 * Math.PI);
         c.fill();
-        
+
         // Add small flowers scattered on the grass
         const flowers = [
             { x: W / 2 - 120, y: grassY - 15, color: '#ff6b6b' }, // Red
@@ -200,14 +232,14 @@ class Tree {
             { x: W / 2 + 70, y: grassY - 25, color: '#ff6b6b' },  // Red
             { x: W / 2 + 110, y: grassY - 8, color: '#a8e6cf' }   // Light green
         ];
-        
+
         flowers.forEach(flower => {
             // Draw flower center
             c.beginPath();
             c.arc(flower.x, flower.y, 2, 0, 2 * Math.PI);
             c.fillStyle = flower.color;
             c.fill();
-            
+
             // Draw petals around the center
             for (let i = 0; i < 6; i++) {
                 const angle = (i * 60) * Math.PI / 180;
@@ -221,7 +253,7 @@ class Tree {
                 c.globalAlpha = 1;
             }
         });
-        
+
         c.restore();
 
         // ...existing code...
@@ -377,20 +409,20 @@ class Tree {
             });
         }
     }
-    
+
     getLeafSection(x) {
         if (x < 350) return 1;      // Seção esquerda
         if (x > 450) return 3;      // Seção direita
         return 2;                   // Seção central
     }
-    
+
     getClickedSection(x) {
         return this.getLeafSection(x);
     }
-    
+
     handleClick(x, y) {
         console.log(`Processando clique em (${x}, ${y})`);
-        
+
         // Determinar qual seção foi clicada
         const clickedSection = this.getClickedSection(x);
         console.log(`Seção clicada: ${clickedSection}`);
@@ -399,13 +431,13 @@ class Tree {
         const event = new CustomEvent('treeSectionClicked', { detail: { section: clickedSection } });
         window.dispatchEvent(event);
     }
-    
-    
+
+
     getCanvasCoordinates(event) {
         const rect = this.C.getBoundingClientRect();
         const scaleX = this.W / rect.width;
         const scaleY = this.H / rect.height;
-        
+
         return {
             x: (event.clientX - rect.left) * scaleX,
             y: (event.clientY - rect.top) * scaleY
@@ -427,7 +459,7 @@ class Tree {
 
         // Continua o loop se ainda há crescimento ou folhas voando E se a animação deve continuar
         const shouldContinue = (!this.allBranchesComplete || !this.allLeavesComplete || !this.allFlyingLeavesComplete) && this.animationRunning;
-        
+
         if (shouldContinue) {
             requestAnimationFrame(this.run.bind(this));
         } else {
@@ -439,7 +471,7 @@ class Tree {
             this.animationRunning = false;
         }
     }
-    
+
     // Métodos de controle da animação
     startAnimation() {
         if (!this.animationRunning) {
@@ -448,12 +480,12 @@ class Tree {
             this.run();
         }
     }
-    
+
     pauseAnimation() {
         console.log('Pausando animação da árvore');
         this.animationRunning = false;
     }
-    
+
     setupCanvas() {
         const { C, c, W, H, S } = this;
 
@@ -476,7 +508,7 @@ class Tree {
             mq.addEventListener("change", this.detectTheme.bind(this));
         }
     }
-    
+
     setupClickHandler() {
         this.C.addEventListener('click', (event) => {
             console.log('Clique detectado no canvas');
@@ -485,7 +517,7 @@ class Tree {
             console.log('Total de folhas na árvore:', this.leaves.length);
             this.handleClick(coords.x, coords.y);
         });
-        
+
         // Adicionar cursor pointer para indicar interatividade
         this.C.style.cursor = 'pointer';
     }

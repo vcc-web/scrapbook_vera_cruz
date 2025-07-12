@@ -27,7 +27,7 @@ class TabPoolManager {
     createTabElement() {
         const tab = document.createElement('div');
         tab.className = 'scrapbook-tab';
-        tab.innerHTML = '<div class="scrapbook-tab-bg"><div class="scrapbook-tab-label">Scrapbook</div></div>';
+        tab.innerHTML = '<div class="scrapbook-tab-bg"><div class="scrapbook-tab-label"></div></div>';
         tab.style.display = 'none';
 
         // Add click event listener
