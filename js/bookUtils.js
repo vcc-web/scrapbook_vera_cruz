@@ -59,6 +59,75 @@ function getRandomPostItColor() {
 
 
 
+function createScrapbookVideo(videoSrc) {
+	const $video = $('<video />', {
+		src: videoSrc,
+		muted: true,
+		loop: false,
+		controls: false,
+		css: {
+			height: '100%',
+			borderRadius: '10px',
+			padding: '1%',
+			background: 'white',
+			boxShadow: '0 0 20px rgba(80,60,20,0.3)'
+		}
+	});
+
+	// Create video controls container
+	const $controls = $('<div />', {
+		class: 'scrapbook-video-controls'
+	});
+	// Play button
+	const $playBtn = $('<button />', {
+		class: 'scrapbook-video-btn',
+		type: 'button',
+		html: '<span class="material-symbols-rounded">play_arrow</span>',
+		click: function (e) {
+			e.stopPropagation();
+			$video[0].play();
+			$playBtn.hide();
+		}
+	});
+	$controls.append($playBtn);
+
+	// Replay button (hidden initially)
+	const $replayBtn = $('<button />', {
+		class: 'scrapbook-video-btn',
+		type: 'button',
+		html: '<span class="material-symbols-rounded">replay</span>',
+		css: { display: 'none' },
+		click: function (e) {
+			e.stopPropagation();
+			$video[0].currentTime = 0;
+			$video[0].play();
+			$replayBtn.hide();
+		}
+	});
+	$controls.append($replayBtn);
+
+	$video.on('ended', function () {
+		$replayBtn.show();
+		$playBtn.hide();
+	});
+	$video.on('pause', function () {
+		if (this.currentTime === 0 || this.ended) {
+			$playBtn.show();
+			$replayBtn.hide();
+		}
+	});
+	$video.on('play', function () {
+		$playBtn.hide();
+	});
+
+	// Container for video and controls
+	const $videoContainer = $('<div />', {
+		css: { position: 'relative', width: '100%', height: '100%' }
+	});
+	$videoContainer.append($video, $controls);
+	return $videoContainer;
+}
+
 function createScrapbookPage(imageSrc, imageAlt, page, book, isFirstPage = false, isLastPage = false) {
 	const rotation = getRandomRotation();
 	const pattern = getRandomPattern();
@@ -74,91 +143,7 @@ function createScrapbookPage(imageSrc, imageAlt, page, book, isFirstPage = false
 	let $media;
 	if (isFirstPage || isLastPage) {
 		const videoSrc = isFirstPage ? 'img/comeco_col.mp4' : 'img/niver_col.mp4';
-		$media = $('<video />', {
-			src: videoSrc,
-			muted: true,
-			loop: false,
-			controls: false,
-			css: {
-				height: '100%',
-				borderRadius: '10px',
-				padding: '1%',
-				background: 'white',
-				boxShadow: '0 0 20px rgba(80,60,20,0.3)'
-			}
-		});
-
-		// Create video controls container
-		const $controls = $('<div />', {
-			class: 'scrapbook-video-controls'
-		});
-		// Play button
-		const $playBtn = $('<button />', {
-			class: 'scrapbook-video-btn',
-			type: 'button',
-			html: '<span class="material-symbols-rounded">play_arrow</span>',
-			click: function (e) {
-				e.stopPropagation();
-				$media.find('video')[0].play();
-				$playBtn.hide();
-			}
-		});
-		$controls.append($playBtn);
-
-		// Replay button (hidden initially)
-		const $replayBtn = $('<button />', {
-			class: 'scrapbook-video-btn',
-			type: 'button',
-			html: '<span class="material-symbols-rounded">replay</span>',
-			css: { display: 'none' },
-			click: function (e) {
-				e.stopPropagation();
-				const video = $media.find('video')[0];
-				video.currentTime = 0;
-				video.play();
-				$replayBtn.hide();
-			}
-		});
-		$controls.append($replayBtn);
-
-		let $video = $media.find('video');
-		if ($video.length === 0 && $media.is('video')) {
-			$video = $media;
-		}
-		$video.on('ended', function () {
-			$replayBtn.show();
-			$playBtn.hide();
-		});
-		$video.on('pause', function () {
-			if (this.currentTime === 0 || this.ended) {
-				$playBtn.show();
-				$replayBtn.hide();
-			}
-		});
-		$video.on('play', function () {
-			$playBtn.hide();
-		});
-
-		// Hide replay button and show play button when video is paused or stopped
-		$media.find('video').on('pause', function () {
-			if (this.currentTime === 0 || this.ended) {
-				$playBtn.show();
-				$replayBtn.hide();
-			}
-		});
-		// Hide play button when playing
-		$media.find('video').on('play', function () {
-			$playBtn.hide();
-		});
-
-
-
-		// Container for video and controls
-		const $videoContainer = $('<div />', {
-			css: { position: 'relative', width: '100%', height: '100%' }
-		});
-		$videoContainer.append($media, $controls);
-		$media = $videoContainer;
+		$media = createScrapbookVideo(videoSrc);
 	} else {
 		$media = $('<img />', {
 			src: `img/${imageSrc}`,
