@@ -42,20 +42,19 @@
 
     // List of image files for scrapbook pages
     const imageFiles = [
-        "", "1.jpg", "10.jpg", "11.jpg", "12.jpg", "13.jpg", "14.jpg", "15.jpg", "16.jpg", "17.jpg", 
-        "18.jpg", "19.jpg", "2.jpg", "20.jpg", "21.jpg", "22.jpg", "23.jpg", "24.jpg", "25.jpg", 
-        "26.jpg", "27.jpg", "28.jpg", "29.jpg", "3.jpg", "30.jpg", "31.jpg", "4.jpg", "5.jpg", 
-        "6.jpg", "7.jpg", "8.jpg", "9.jpg", "aline.jpg", "ana_beatriz.jpg", "ana_j.jpg", 
-        "andrea.jpg", "andreia.jpg", "babies.jpg", "barbara.jpg", "bruna.jpg", "carol.jpg", 
-        "dona_bete.jpg", "dona_maria_ferreira.jpg", "erica.jpg", "fernanda.jpg", 
-        "fernanda_stuart.jpg", "flavio.jpg", "giovana_isabela.jpg", "gustavo.jpg", "icone.jpg", 
-        "IMG-20250626-WA0019.jpg", "IMG-20250626-WA0020.jpg", "IMG-20250626-WA0021.jpg", 
-        "isabel.jpg", "junia.jpg", "laura.jpg", "lhara.jpg", "logo.jpg", "logo_col.png", 
-        "luiz.jpg", "marcela.jpg", "maria_carolina.jpg", "marina.jpg", "matheus.jpg", "nagila.jpg", 
-        "regiane.jpg", "regiane_2.jpg", "regiane_3.jpg", "regina.jpg", "rodrigo.jpg", "santos.jpg", 
-        "silvia.jpg", "slane.jpg", "tati.jpg", 
+        "", "1.jpg", "10.jpg", "11.jpg", "12.jpg", "13.jpg", "14.jpg", "15.jpg", "16.jpg", "17.jpg",
+        "18.jpg", "19.jpg", "2.jpg", "20.jpg", "21.jpg", "22.jpg", "23.jpg", "24.jpg", "25.jpg",
+        "26.jpg", "27.jpg", "28.jpg", "29.jpg", "3.jpg", "30.jpg", "31.jpg", "4.jpg", "5.jpg",
+        "6.jpg", "7.jpg", "8.jpg", "9.jpg", "aline.jpg", "ana_beatriz.jpg", "ana_j.jpg",
+        "andrea.jpg", "andreia.jpg", "babies.jpg", "barbara.jpg", "bruna.jpg", "carol.jpg",
+        "dona_bete.jpg", "dona_maria_ferreira.jpg", "erica.jpg", "fernanda.jpg",
+        "fernanda_stuart.jpg", "flavio.jpg", "giovana_isabela.jpg", "gustavo.jpg", "icone.jpg",
+        "IMG-20250626-WA0019.jpg", "IMG-20250626-WA0020.jpg", "IMG-20250626-WA0021.jpg",
+        "isabela.jpg", "junia.jpg", "laura.jpg", "lhara.jpg","luiz.jpg", "marcela.jpg", 
+        "maria_carolina.jpg", "marina.jpg", "matheus.jpg", "nagila.jpg","regiane.jpg", "regiane_2.jpg", 
+        "regiane_3.jpg", "regina.jpg", "rodrigo.jpg", "santos.jpg","silvia.jpg", "slane.jpg", "tati.jpg",
         "viviane.jpg", "will.jpg", "zaza.jpg"];
-    
+
     console.log('Image files loaded:', imageFiles);
 
     // Add scrapbook pages using createScrapbookPage from utils.js
@@ -66,7 +65,7 @@
         // Check if this is the tree page (center of book)
         const totalPages = 76;
         const centerPage = Math.floor(totalPages / 2);
-        
+
         if (page === centerPage) {
             createTreePage(page, book);
             return;
@@ -77,9 +76,11 @@
         if (page > centerPage) {
             imgIndex -= 1; // Adjust for skipped tree page
         }
-        
+
         if (imgIndex >= 0 && imgIndex < imageFiles.length) {
-            createScrapbookPage(imageFiles[imgIndex], imageFiles[imgIndex], page, book);
+            createScrapbookPage(
+                imageFiles[imgIndex], imageFiles[imgIndex],
+                page, book, imgIndex === 1, imgIndex === imageFiles.length - 1);
         }
     }
 

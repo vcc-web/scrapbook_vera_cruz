@@ -57,38 +57,147 @@ function getRandomPostItColor() {
 }
 
 
-function createScrapbookPage(imageSrc, imageAlt, page, book) {
+
+
+function createScrapbookPage(imageSrc, imageAlt, page, book, isFirstPage = false, isLastPage = false) {
 	const rotation = getRandomRotation();
 	const pattern = getRandomPattern();
 	const layout = getRandomLayout();
 	const postItColor = getRandomPostItColor();
 	const postItText = getPostItTextForImage(imageSrc);
 
+	// Check if there is a matching audio file
+	const audioFiles = ['marcela.opus', 'marlene.opus', 'slane.opus', 'valeska.opus', 'will.opus'];
+	const imgBase = imageSrc.replace(/\.[^.]+$/, '').toLowerCase();
+	const audioMatch = audioFiles.find(aud => aud.replace(/\.[^.]+$/, '').toLowerCase() === imgBase);
+
+	let $media;
+	if (isFirstPage) {
+		$media = $('<video />', {
+			src: 'img/comeco_col.mp4',
+			autoplay: true,
+			muted: true,
+			loop: false,
+			controls: false,
+			css: { width: '100%', borderRadius: '10px', boxShadow: '0 0 20px rgba(80,60,20,0.3)' }
+		});
+		$media.on('ended', function() {
+			if (!$media.next('.restart-video-btn').length) {
+				var $btn = $('<span />', {
+					class: 'restart-video-btn material-symbols-rounded',
+					html: 'replay',
+					css: {
+						position: 'absolute',
+						left: '50%',
+						top: '50%',
+						transform: 'translate(-50%, -50%)',
+						fontSize: '48px',
+						background: 'rgba(255,255,255,0.75)',
+						color: '#99693b',
+						borderRadius: '50%',
+						padding: '16px',
+						cursor: 'pointer',
+						boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+						zIndex: 10,
+						userSelect: 'none',
+						border: '2px solid #b38c43',
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+						pointerEvents: 'all'
+					},
+					click: function() {
+						$media[0].currentTime = 0;
+						$media[0].play();
+						$(this).remove();
+					}
+				});
+				$media.parent().css('position', 'relative').append($btn);
+			}
+		});
+	} else if (isLastPage) {
+		$media = $('<video />', {
+			src: 'img/niver_col.mp4',
+			autoplay: true,
+			muted: true,
+			loop: false,
+			controls: false,
+			css: { width: '100%', borderRadius: '10px', boxShadow: '0 0 20px rgba(80,60,20,0.3)' }
+		});
+		$media.on('ended', function() {
+			if (!$media.next('.restart-video-btn').length) {
+				var $btn = $('<span />', {
+					class: 'restart-video-btn material-symbols-rounded',
+					html: 'replay',
+					css: {
+						position: 'absolute',
+						left: '50%',
+						top: '50%',
+						transform: 'translate(-50%, -50%)',
+						fontSize: '48px',
+						background: 'rgba(255,255,255,0.85)',
+						color: '#99693b',
+						borderRadius: '50%',
+						padding: '16px',
+						cursor: 'pointer',
+						boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+						zIndex: 10,
+						userSelect: 'none',
+						border: '2px solid #b38c43',
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center'
+					},
+					click: function() {
+						$media[0].currentTime = 0;
+						$media[0].play();
+						$(this).remove();
+					}
+				});
+				$media.parent().css('position', 'relative').append($btn);
+			}
+		});
+	} else {
+		$media = $('<img />', {
+			src: `img/${imageSrc}`,
+			alt: imageAlt,
+			css: { transform: `rotate(${rotation}deg)` }
+		});
+		if (audioMatch) {
+			$media.css('cursor', 'pointer');
+			$media.on('click', function(e) {
+				e.stopPropagation();
+				$('.scrapbook-audio').remove();
+				var $audio = $('<audio />', {
+					class: 'scrapbook-audio',
+					src: `audio/${audioMatch}`,
+					autoplay: true
+				}).css({ display: 'none' });
+				$(this).parent().append($audio);
+			});
+		}
+	}
+
 	var pageElement = $('<div />', {
 		'class': `own-size page pattern-${pattern}`,
 		'data-layout': layout,
 		'data-has-tab': false,
-		css: { overflow: 'visible' } // Allow overflow for scrapbook text
+		css: { overflow: 'visible' }
 	}).append(
 		$('<div />', {
 			'class': 'scrapbook-content',
-			css: { overflow: 'visible' } // Allow overflow for scrapbook text
+			css: { overflow: 'visible' }
 		}).append(
-			$('<img />', {
-				src: `img/${imageSrc}`,
-				alt: imageAlt,
-				css: { transform: `rotate(${rotation}deg)` }
-			})
+			$media
 		)
 	);
 
-	// Only add post-it if there is a matching text
-	if (postItText) {
+	if (postItText && !isFirstPage && !isLastPage) {
 		pageElement.find('.scrapbook-content').append(
 			$('<div />', {
 				'class': `scrapbook-text ${layout} ${postItColor}`,
 				html: `<div class="text-content">${postItText}</div>`,
-				css: { overflow: 'visible' } // Allow overflow for scrapbook text
+				css: { overflow: 'visible' }
 			})
 		);
 	}
