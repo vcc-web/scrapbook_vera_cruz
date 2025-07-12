@@ -53,12 +53,12 @@
 
 
 .sj-book .p1,
-.sj-book .p55 {
+.sj-book .p75 {
     background: linear-gradient(to right, #fbc153 5%, #213822 0.5%, #213822 100%);
 }
 
 .sj-book .p2,
-.sj-book .p56 {
+.sj-book .p76 {
     background: linear-gradient(to left, #fbc153 5%, #213822 0.5%, #213822 100%);
 }
 
@@ -127,7 +127,7 @@
 
 
 
-.sj-book .p56 {
+.sj-book .p76 {
     background-position: -500px 0 !important;
 }
 

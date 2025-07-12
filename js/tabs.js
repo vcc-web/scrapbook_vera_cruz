@@ -159,15 +159,6 @@ class TabPoolManager {
         });
         resizeObserver.observe(document.querySelector('.flipbook-viewport'));
 
-        // Close tabs when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.scrapbook-tab')) {
-                this.activeTabs.forEach((tab) => {
-                    tab.classList.remove('clicked');
-                });
-            }
-        });
-
         // Atualização inicial
         requestAnimationFrame(() => this.updateTabsForVisiblePages());
     }

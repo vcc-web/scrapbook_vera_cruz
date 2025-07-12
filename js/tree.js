@@ -24,17 +24,6 @@ function initTreePageOverlay() {
     if (treeCloseBtn) {
         treeCloseBtn.addEventListener('click', hideTreePage);
     }
-    
-    // Listen for book page changes
-    if (window.book) {
-        window.book.bind('turned', function(event, page, view) {
-            if (isOnTreePages()) {
-                showTreePage();
-            } else {
-                hideTreePage();
-            }
-        });
-    }
 }
 
 // Show tree page overlay

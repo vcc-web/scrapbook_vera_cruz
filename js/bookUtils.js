@@ -1,12 +1,23 @@
-const scrapbookTexts = [
-	"Memories that last forever", "Beautiful moments captured in time", "Life's precious treasures and special gifts",
-	"Sweet memories of love", "Unforgettable times we shared together", "Special moments with family", "Happy days filled with laughter", "Love & laughter with dear friends",
-	"Family first, always and forever", "Together forever in our hearts", "Making memories that will never fade", "Blessed moments of pure happiness", "Pure joy in simple things",
-	"Adventures await those who dare to dream", "Dream big and reach for the stars", "Cherished times with loved ones", "Wonderful memories of childhood", "Life is beautiful when shared with others",
-	"Smile always, even through difficult times", "Heart full of love and gratitude", "Creating memories one day at a time", "Golden moments in the sunset", "Happiness is found in small things",
-	"Forever grateful for these blessings", "Magical times under starry skies", "Love wins over everything else", "Perfect moments frozen in time", "Sunshine days and peaceful nights",
-	"Captured hearts and stolen glances", "Endless love that knows no bounds", "Treasure trove of precious memories", "Sweet dreams and hopeful tomorrows", "Joyful hearts celebrating life together"
-];
+
+// Load frases-vera-cruz.json once and keep in memory
+let scrapbookJsonData = [];
+
+function loadScrapbookJsonData() {
+	if (scrapbookJsonData.length > 0) return scrapbookJsonData;
+	// Synchronous fetch for simplicity (assumes local file)
+	$.ajax({
+		url: 'frases-vera-cruz.json',
+		dataType: 'json',
+		async: false,
+		success: function(data) {
+			scrapbookJsonData = data;
+		},
+		error: function() {
+			scrapbookJsonData = [];
+		}
+	});
+	return scrapbookJsonData;
+}
 
 
 function getRandomRotation() {
@@ -21,8 +32,18 @@ function getRandomPattern() {
 	return pattern; // patterns 1-156
 }
 
-function getRandomText() {
-	return scrapbookTexts[Math.floor(Math.random() * scrapbookTexts.length)];
+
+// Returns the post-it text for a given imageSrc (filename only, e.g. "matheus.jpg")
+function getPostItTextForImage(imageSrc) {
+	const data = loadScrapbookJsonData();
+	// Try to match by foto field (should be "img/filename.jpg")
+	const imgPath = `img/${imageSrc}`;
+	const entry = data.find(e => e.foto && e.foto.toLowerCase() === imgPath.toLowerCase());
+	if (!entry) return null;
+	// Prefer mensagem, fallback to frase
+	if (entry.mensagem && entry.mensagem.trim()) return entry.mensagem;
+	if (entry.frase && entry.frase.trim()) return entry.frase;
+	return null;
 }
 
 function getRandomLayout() {
@@ -39,14 +60,14 @@ function getRandomTab() {
 	return Math.random() < 0.05; // 25% chance of true, 75% chance of false
 }
 
-function createScrapbookPage(imageSrc, imageAlt, page, book) {
 
+function createScrapbookPage(imageSrc, imageAlt, page, book) {
 	const rotation = getRandomRotation();
 	const pattern = getRandomPattern();
-	const text = getRandomText();
 	const layout = getRandomLayout();
 	const postItColor = getRandomPostItColor();
 	const hasTab = getRandomTab();
+	const postItText = getPostItTextForImage(imageSrc);
 
 	var pageElement = $('<div />', {
 		'class': `own-size page pattern-${pattern}`,
@@ -60,13 +81,19 @@ function createScrapbookPage(imageSrc, imageAlt, page, book) {
 				src: `img/${imageSrc}`,
 				alt: imageAlt,
 				css: { transform: `rotate(${rotation}deg)` }
-			}),
-			$('<div />', {
-					'class': `scrapbook-text ${layout} ${postItColor}`,
-					html: `<div class="text-content">${text}</div>`
-				})
-			)
+			})
+		)
 	);
+
+	// Only add post-it if there is a matching text
+	if (postItText) {
+		pageElement.find('.scrapbook-content').append(
+			$('<div />', {
+				'class': `scrapbook-text ${layout} ${postItColor}`,
+				html: `<div class="text-content">${postItText}</div>`
+			})
+		);
+	}
 
 	book.turn('addPage', pageElement, page);
 }
@@ -74,27 +101,20 @@ function createScrapbookPage(imageSrc, imageAlt, page, book) {
 function createTreePage(page, book) {
 	var pageElement = $('<div />', {
 		'class': 'own-size page tree-page',
-		'data-page': page
+		'data-page': page,
+		'data-has-tab': false
 	}).append(
 		$('<div />', {
 			'class': 'tree-page-content',
 		}).append(
 			$('<div />', {
 				'class': 'tree-page-title',
-				html: '<h2>Árvore Mágica</h2>'
-			}),
-			$('<div />', {
-				'class': 'tree-page-description',
-				html: '<p>Clique aqui para ver a árvore interativa</p>'
+				html: '<h2>Árvore do Colégio</h2>'
 			}),
 			$('<button />', {
 				'class': 'tree-page-button',
 				html: '🌳 Abrir Árvore',
-				click: function() {
-					if (window.showTreePage) {
-						window.showTreePage();
-					}
-				}
+				'onClick': "showTreePage()",
 			})
 		)
 	);

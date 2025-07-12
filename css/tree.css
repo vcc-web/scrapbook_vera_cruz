@@ -8,10 +8,8 @@
 /* Tree special page overlay */
 .tree-page-overlay {
 	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100vw;
-	height: 100vh;
+	width: 960px;
+    height: 782px;
 	background: transparent;
 	background-image: 
 		radial-gradient(circle at 20% 20%, rgba(255,255,255,0.3) 0%, transparent 50%),
@@ -31,10 +29,10 @@
 
 .tree-page-container {
 	position: relative;
-	width: 1000px;
-	height: 800px;
+	width: 960px;
+	height: 782px;
 	background: #f8f5f0;
-	border-radius: 10px;
+	/* border-radius: 10px; */
 	box-shadow: 
 		0 0 30px rgba(0,0,0,0.3),
 		inset 0 0 20px rgba(255,255,255,0.5);
@@ -155,6 +153,7 @@ canvas {
 	cursor: pointer;
 	box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
 	transition: all 0.3s ease;
+	pointer-events: all;
 }
 
 .tree-page-button:hover {
