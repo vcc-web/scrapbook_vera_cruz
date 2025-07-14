@@ -33,10 +33,22 @@ function showTreePage() {
 
         // Show global scrapbook tabs when tree page opens
         if (window.tabManager && window.tabManager.tabPool) {
-            window.tabManager.tabPool.forEach(tab => {
+            window.tabManager.tabPool.forEach((tab, idx) => {
                 tab.style.display = 'block';
                 tab.classList.add('tree-tab-active');
-                tab.style.backgroundColor = '#f8f5f0';
+
+                // Add image to tab if not already present
+                if (!tab.querySelector('.tree-tab-img')) {
+                    const img = document.createElement('img');
+                    img.className = 'tree-tab-img';
+                    img.src = `img/tree-tab-${idx + 1}.png`;
+                    img.alt = `Seção ${idx + 1}`;
+                    img.style.width = '32px';
+                    img.style.height = '32px';
+                    img.style.marginRight = '8px';
+                    img.style.verticalAlign = 'middle';
+                    tab.insertBefore(img, tab.firstChild);
+                }
             });
 
             window.tabManager.tabPool[0].classList.add('even');
@@ -47,7 +59,6 @@ function showTreePage() {
                     tab.classList.add('clicked');
                 })
             }, 200);
-
         }
 
         // Initialize tree if not already done
@@ -71,6 +82,10 @@ function hideTreePage() {
         if (window.tabManager && window.tabManager.tabPool) {
             window.tabManager.tabPool.forEach(tab => {
                 tab.classList.remove('clicked');
+
+                // Remove tree tab image if present
+                const img = tab.querySelector('.tree-tab-img');
+                if (img) img.remove();
 
                 setTimeout(() => {
                     window.tabManager.releaseTab(tab, tab.dataset.page);

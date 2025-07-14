@@ -68,7 +68,6 @@ class TabPoolManager {
             return;
         }
         if (page.element.dataset.hasTab === "false") {
-            console.log(`Page ${page.number} has tab disabled, skipping`);
             return;
         }
 
