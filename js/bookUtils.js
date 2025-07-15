@@ -32,13 +32,76 @@ function getRandomPattern() {
 }
 
 
-// Returns the post-it text for a given imageSrc (filename only, e.g. "matheus.jpg")
+// Returns the post-it text for a given imageSrc (filename in format "iX - <nome>.jpg")
 function getPostItTextForImage(imageSrc) {
 	const data = loadScrapbookJsonData();
-	// Try to match by foto field (should be "img/filename.jpg")
-	const imgPath = `img/${imageSrc}`;
-	const entry = data.find(e => e.foto && e.foto.toLowerCase() === imgPath.toLowerCase());
-	if (!entry) return null;
+	
+	// Extract person name from format "iX - <nome>.jpg"
+	let personName = null;
+	
+	// Check if it's in the format "iX - <nome>.jpg"
+	const match = imageSrc.match(/^i\d+\s*-\s*(.+)\.jpg$/i);
+	if (match) {
+		personName = match[1].trim();
+	} else {
+		// If not in "iX - <nome>.jpg" format, try to use the filename without extension
+		personName = imageSrc.replace(/\.(jpg|jpeg|png|gif)$/i, '');
+	}
+	
+	if (!personName) return null;
+	
+	console.log(`Searching for person: "${personName}" from image: "${imageSrc}"`);
+	
+	// Try to find entry by foto field matching the person name
+	const entry = data.find(e => {
+		if (!e.foto) return false;
+		
+		// Remove common prefixes and normalize for comparison
+		const fotoName = e.foto.toLowerCase()
+			.replace(/^img\//, '')
+			.replace(/\.(jpg|jpeg|png|gif)$/i, '')
+			.trim();
+		
+		const searchName = personName.toLowerCase().trim();
+		
+		// Direct match
+		if (fotoName === searchName) {
+			console.log(`Direct match found: ${fotoName} === ${searchName}`);
+			return true;
+		}
+		
+		// Try matching with underscores replaced by spaces
+		if (fotoName.replace(/_/g, ' ') === searchName) {
+			console.log(`Underscore match found: ${fotoName.replace(/_/g, ' ')} === ${searchName}`);
+			return true;
+		}
+		
+		// Try matching with spaces replaced by underscores
+		if (fotoName === searchName.replace(/ /g, '_')) {
+			console.log(`Space match found: ${fotoName} === ${searchName.replace(/ /g, '_')}`);
+			return true;
+		}
+		
+		// Try matching without special characters and spaces
+		const normalizedFoto = fotoName.replace(/[^a-z0-9]/g, '');
+		const normalizedSearch = searchName.replace(/[^a-z0-9]/g, '');
+		if (normalizedFoto === normalizedSearch) {
+			console.log(`Normalized match found: ${normalizedFoto} === ${normalizedSearch}`);
+			return true;
+		}
+		
+		return false;
+	});
+	
+	if (!entry) {
+		console.log(`No entry found for person: "${personName}" from image: "${imageSrc}"`);
+		// Show available foto fields for debugging
+		console.log('Available foto fields:', data.map(e => e.foto).filter(f => f));
+		return null;
+	}
+	
+	console.log(`Found entry for ${personName}:`, entry.autor);
+	
 	// Prefer mensagem, fallback to frase
 	if (entry.mensagem && entry.mensagem.trim()) return entry.mensagem;
 	if (entry.frase && entry.frase.trim()) return entry.frase;
@@ -446,7 +509,7 @@ function createScrapbookPage(imageSrc, imageAlt, page, book, isFirstPage = false
 		return;
 	} else {
 		$media = $('<img />', {
-			src: `img/${imageSrc}`,
+			src: `iorder/${imageSrc}`,
 			alt: imageAlt,
 			css: { transform: `rotate(${rotation}deg)` }
 		});
