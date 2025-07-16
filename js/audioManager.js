@@ -116,6 +116,12 @@ class AudioManager {
     findAudioForImage(imageSrc) {
         console.log(`[AudioManager] findAudioForImage called with: ${imageSrc}`);
         
+        // Special case for slane image - return multiple audio files
+        if (imageSrc.includes('i27 - slane.jpg') || imageSrc.includes('slane.jpg')) {
+            console.log(`[AudioManager] Special case: slane image detected, returning multiple audio files`);
+            return ['valeska.opus', 'slane.opus']; // waleska first (will be on top)
+        }
+        
         // Extract base name from image (remove path and extension)
         const imgBase = imageSrc.replace(/^.*\//, '').replace(/\.[^.]+$/, '').toLowerCase();
         
@@ -363,16 +369,82 @@ class AudioManager {
             uniqueId: uniqueId
         });
         
-        const audioFile = this.findAudioForImage(imageSrc);
-        if (!audioFile) {
+        const audioResult = this.findAudioForImage(imageSrc);
+        if (!audioResult) {
             console.log(`[AudioManager] No audio file found in createAudioControls for ${imageSrc}`);
             return null;
         }
 
-        console.log(`[AudioManager] Creating audio controls for ${imageSrc} -> ${audioFile}`);
-
-        // Use the new system with data attributes
-        return this.createAudioControlsWithDataAttributes(audioFile);
+        // Handle multiple audio files
+        if (Array.isArray(audioResult)) {
+            console.log(`[AudioManager] Creating multiple audio controls for ${imageSrc}:`, audioResult);
+            
+            // Create container for multiple audio controls
+            const $multipleControlsContainer = $('<div />', {
+                class: 'multiple-audio-controls',
+                css: {
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '10px'
+                }
+            });
+            
+            const audioControls = [];
+            
+            // Create controls for each audio file
+            audioResult.forEach((audioFile, index) => {
+                console.log(`[AudioManager] Creating controls for audio ${index + 1}: ${audioFile}`);
+                
+                const controls = this.createAudioControlsWithDataAttributes(audioFile);
+                
+                if (controls) {
+                    // Add label for each audio
+                    const audioName = audioFile.replace(/\.[^.]+$/, '');
+                    const $audioLabel = $('<div />', {
+                        class: 'audio-label',
+                        text: audioName.charAt(0).toUpperCase() + audioName.slice(1),
+                        css: {
+                            fontSize: '12px',
+                            fontWeight: 'bold',
+                            color: '#666',
+                            marginBottom: '5px',
+                            textAlign: 'center'
+                        }
+                    });
+                    
+                    // Create individual audio container
+                    const $audioContainer = $('<div />', {
+                        class: 'individual-audio-container',
+                        css: {
+                            border: '1px solid rgba(0,0,0,0.1)',
+                            borderRadius: '8px',
+                            padding: '10px',
+                            backgroundColor: 'rgba(255,255,255,0.9)'
+                        }
+                    });
+                    
+                    $audioContainer.append($audioLabel);
+                    $audioContainer.append(controls.$audio);
+                    $audioContainer.append(controls.$controls);
+                    
+                    $multipleControlsContainer.append($audioContainer);
+                    audioControls.push(controls);
+                }
+            });
+            
+            return {
+                $audio: $('<div />'), // Empty div for compatibility
+                $controls: $multipleControlsContainer,
+                audioId: `multiple-${uniqueId}`,
+                audioFile: audioResult,
+                isMultiple: true,
+                audioControls: audioControls
+            };
+        } else {
+            // Single audio file - existing logic
+            console.log(`[AudioManager] Creating single audio controls for ${imageSrc} -> ${audioResult}`);
+            return this.createAudioControlsWithDataAttributes(audioResult);
+        }
     }
     // Play audio
     playAudio(audioId) {
@@ -590,7 +662,9 @@ class AudioManager {
         }
 
         // Generate unique ID for this audio instance
-        const audioId = this.generateAudioId(audioMatch);
+        const audioId = Array.isArray(audioMatch) ? 
+            this.generateAudioId(audioMatch.join('_')) : 
+            this.generateAudioId(audioMatch);
         
         console.log(`[AudioManager] Using audio ID: ${audioId}`);
 
@@ -605,12 +679,19 @@ class AudioManager {
         console.log(`[AudioManager] Successfully created audio controls:`, {
             imageSrc: imageSrc,
             audioFile: audioMatch,
-            audioId: audioId
+            audioId: audioId,
+            isMultiple: controls.isMultiple || false
         });
 
         // Add controls to the container
-        container.append(controls.$audio);
-        container.append(controls.$controls);
+        if (controls.isMultiple) {
+            // For multiple audio controls, just add the container
+            container.append(controls.$controls);
+        } else {
+            // For single audio controls, add both audio and controls
+            container.append(controls.$audio);
+            container.append(controls.$controls);
+        }
         
         // Add has-audio class to container
         container.addClass('has-audio');

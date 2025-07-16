@@ -349,6 +349,74 @@
     appearance: none;
 }
 
+/* Multiple Audio Controls Styles */
+.multiple-audio-controls {
+    position: absolute;
+    bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+.scrapbook-content:hover .multiple-audio-controls {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.individual-audio-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 20px;
+    padding: 6px 12px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+    min-width: 200px;
+    justify-content: flex-start;
+}
+
+.audio-label {
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-right: 8px;
+    min-width: 50px;
+    text-align: left;
+    flex-shrink: 0;
+    width: 25%;
+}
+
+/* Multiple audio controls - ensure proper spacing */
+.multiple-audio-controls .scrapbook-audio-controls {
+    position: relative;
+    bottom: auto;
+    opacity: 1;
+    transform: none;
+    margin: 0;
+    flex: 1;
+    min-width: 0;
+}
+
+.multiple-audio-controls .scrapbook-audio-btn {
+    width: 32px;
+    height: 32px;
+}
+
+.multiple-audio-controls .scrapbook-audio-btn .material-symbols-rounded {
+    font-size: 18px;
+}
+
+.multiple-audio-controls .volume-slider {
+    width: 60px;
+}
+
 .volume-slider::-webkit-slider-thumb {
     width: 16px;
     height: 16px;
