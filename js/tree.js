@@ -31,34 +31,41 @@ function showTreePage() {
         treePageActive = true;
         treePageOverlay.classList.add('active');
 
-        // Show global scrapbook tabs when tree page opens
-        if (window.tabManager && window.tabManager.tabPool) {
-            window.tabManager.tabPool.forEach((tab, idx) => {
-                tab.style.display = 'block';
-                tab.classList.add('tree-tab-active');
-
-                // Add image to tab if not already present
-                if (!tab.querySelector('.tree-tab-img')) {
-                    const img = document.createElement('img');
-                    img.className = 'tree-tab-img';
-                    img.src = `img/tree-tab-${idx + 1}.png`;
-                    img.alt = `Seção ${idx + 1}`;
-                    img.style.width = '32px';
-                    img.style.height = '32px';
-                    img.style.marginRight = '8px';
-                    img.style.verticalAlign = 'middle';
-                    tab.insertBefore(img, tab.firstChild);
+        // Hide all normal tabs when tree page opens
+        if (window.tabManager) {
+            window.tabManager.hideNormalTabs();
+            
+            // Define the tree sections data
+            const treeSectionsData = [
+                {
+                    id: 1,
+                    image: 'img/tree-tab-1.png',
+                    alt: 'Seção 1',
+                    onClick: (e) => handleTreeSectionClick(e, 1)
+                },
+                {
+                    id: 2,
+                    image: 'img/tree-tab-2.png',
+                    alt: 'Seção 2',
+                    onClick: (e) => handleTreeSectionClick(e, 2)
+                },
+                {
+                    id: 3,
+                    image: 'img/tree-tab-3.png',
+                    alt: 'Seção 3',
+                    onClick: (e) => handleTreeSectionClick(e, 3)
                 }
-            });
+            ];
 
-            window.tabManager.tabPool[0].classList.add('even');
-            window.tabManager.tabPool[1].classList.add('odd');
+            // Ensure we have enough tabs available
+            window.tabManager.ensureMinimumTabs(treeSectionsData.length);
 
-            setTimeout(() => {
-                window.tabManager.tabPool.forEach(tab => {
-                    tab.classList.add('clicked');
-                })
-            }, 200);
+            // Acquire tabs for tree sections
+            const treeTabs = window.tabManager.acquireTabsForTree(treeSectionsData);
+            console.log(`Acquired ${treeTabs.length} tabs for tree page`);
+
+            // Activate the tabs with animation
+            window.tabManager.activateTreeTabs();
         }
 
         // Initialize tree if not already done
@@ -71,6 +78,27 @@ function showTreePage() {
     }
 }
 
+// Handle tree section clicks
+function handleTreeSectionClick(event, sectionId) {
+    event.stopPropagation();
+    
+    // Toggle the clicked state of the specific tab
+    const tab = event.currentTarget;
+    if (tab.classList.contains('clicked')) {
+        tab.classList.remove('clicked');
+    } else {
+        tab.classList.add('clicked');
+    }
+    
+    // Dispatch custom event for tree interaction
+    const treeEvent = new CustomEvent('treeSectionClicked', { 
+        detail: { section: sectionId } 
+    });
+    window.dispatchEvent(treeEvent);
+    
+    console.log(`Tree section ${sectionId} clicked`);
+}
+
 // Expose showTreePage globally
 window.showTreePage = showTreePage;
 
@@ -79,18 +107,16 @@ function hideTreePage() {
     if (treePageOverlay && treePageActive) {
 
         // Hide global scrapbook tabs when tree page closes
-        if (window.tabManager && window.tabManager.tabPool) {
-            window.tabManager.tabPool.forEach(tab => {
-                tab.classList.remove('clicked');
-
-                // Remove tree tab image if present
-                const img = tab.querySelector('.tree-tab-img');
-                if (img) img.remove();
-
-                setTimeout(() => {
-                    window.tabManager.releaseTab(tab, tab.dataset.page);
-                }, 1300);
-            });
+        if (window.tabManager) {
+            // Use the robust tree tab release method (already has timing built-in)
+            window.tabManager.releaseTreeTabs();
+            
+            // Restore normal tabs after tree tabs are released
+            setTimeout(() => {
+                window.tabManager.showNormalTabs();
+            }, 1350);
+            
+            console.log('Tree tabs release initiated');
         }
 
         setTimeout(() => {

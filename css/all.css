@@ -241,3 +241,216 @@
 .scrapbook-video-btn:focus {
     outline: 2px solid #fbc153;
 }
+
+/* Audio Controls Styles */
+.scrapbook-audio-controls {
+    position: absolute;
+    bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 25px;
+    padding: 8px 12px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+.scrapbook-content:hover .scrapbook-audio-controls {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.scrapbook-audio-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0;
+    position: relative;
+}
+
+.scrapbook-audio-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.scrapbook-audio-btn:active {
+    transform: scale(0.95);
+}
+
+.scrapbook-audio-btn .material-symbols-rounded {
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.scrapbook-audio-btn.play-btn {
+    background: rgba(76, 175, 80, 0.9);
+    color: white;
+}
+
+.scrapbook-audio-btn.play-btn:hover {
+    background: rgba(76, 175, 80, 1);
+}
+
+.scrapbook-audio-btn.pause-btn {
+    background: rgba(255, 193, 7, 0.9);
+    color: white;
+}
+
+.scrapbook-audio-btn.pause-btn:hover {
+    background: rgba(255, 193, 7, 1);
+}
+
+.scrapbook-audio-btn.stop-btn {
+    background: rgba(244, 67, 54, 0.9);
+    color: white;
+}
+
+.scrapbook-audio-btn.stop-btn:hover {
+    background: rgba(244, 67, 54, 1);
+}
+
+.scrapbook-audio-btn.volume-btn {
+    background: rgba(96, 125, 139, 0.9);
+    color: white;
+}
+
+.scrapbook-audio-btn.volume-btn:hover {
+    background: rgba(96, 125, 139, 1);
+}
+
+.volume-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.volume-slider {
+    width: 80px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.volume-slider::-webkit-slider-track {
+    background: rgba(255, 255, 255, 0.3);
+    height: 4px;
+    border-radius: 2px;
+}
+
+.volume-slider::-moz-range-track {
+    background: rgba(255, 255, 255, 0.3);
+    height: 4px;
+    border-radius: 2px;
+}
+
+/* Audio indicator for images with audio */
+.has-audio {
+    position: relative;
+    pointer-events: all;
+}
+
+.has-audio::before {
+    content: '🎵';
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 24px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    opacity: 0.8;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .scrapbook-audio-controls {
+        bottom: 10px;
+        right: 10px;
+        padding: 6px 8px;
+        gap: 6px;
+    }
+    
+    .scrapbook-audio-btn {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .scrapbook-audio-btn .material-symbols-rounded {
+        font-size: 18px;
+    }
+    
+    .volume-slider {
+        width: 60px;
+    }
+    
+    .has-audio::before {
+        width: 35px;
+        height: 35px;
+        font-size: 20px;
+    }
+}

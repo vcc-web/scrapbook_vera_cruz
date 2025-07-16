@@ -129,11 +129,9 @@ function createOracaoPage(imgSrc, page, book) {
 	// Define your prayers and images here
 	const oracoes = {
 		'1': {
-			img: 'img/oracao1.jpg',
 			texto1: 'Vinde Espírito Santo, vinde por meio da poderosa intercessão do Imaculado Coração de Maria, vossa amadíssima Esposa e nossa mãe.'
 		},
 		'2': {
-			img: 'img/oracao2.jpg',
 			texto1: 'O Anjo do Senhor anunciou a Maria, e ela concebeu do Espírito Santo.',
 			texto2: 'Ave Maria, cheia de graça, o Senhor é convosco; bendita sois vós entre as mulheres e bendito é o fruto do vosso ventre, Jesus. Santa Maria, Mãe de Deus, rogai por nós, pecadores, agora e na hora de nossa morte. Amém.',
 			texto3: 'Eis aqui a serva do Senhor. Faça-se em mim segundo a vossa palavra.',
@@ -145,7 +143,6 @@ function createOracaoPage(imgSrc, page, book) {
 			texto9: 'Glória ao Pai, ao Filho e ao Espírito Santo, como era no princípio, agora e sempre, por todos os séculos dos séculos. Amém.'
 		},
 		'3': {
-			img: 'img/oracao3.jpg',
 			texto1: 'Ó Sangue e Água que jorrastes do Coração de Jesus como uma fonte de misericórdia para nós, eu confio em Vós.',
 			texto2: 'Ó Sangue e Água que jorrastes do Coração de Jesus como uma fonte de misericórdia para nós, eu confio em Vós.',
 			texto3: 'Ó Sangue e Água que jorrastes do Coração de Jesus como uma fonte de misericórdia para nós, eu confio em Vós.'
@@ -154,22 +151,8 @@ function createOracaoPage(imgSrc, page, book) {
 	};
 
 	const dados = oracoes[pageNum] || {
-		img: 'img/oracao-default.jpg',
 		texto: 'Oração padrão: Coloque sua oração personalizada aqui.'
 	};
-
-	// Cria o elemento da página
-	const $img = $('<img />', {
-		src: dados.img,
-		alt: `Oração ${pageNum}`,
-		css: {
-			width: '80%',
-			borderRadius: '12px',
-			margin: '24px auto',
-			display: 'block',
-			boxShadow: '0 2px 12px rgba(80,60,20,0.18)'
-		}
-	});
 
 	// Monta os textos em spans
 	const $textContent = $('<div />', { class: 'text-content' });
@@ -181,7 +164,14 @@ function createOracaoPage(imgSrc, page, book) {
 		const span = $('<span />', {
 			class: 'oracao-span',
 			id: `oracao-span-${pageNum}-${idx + 1}`,
-			text: '' // Inicialmente vazio para animação
+			text: '', // Inicialmente vazio para animação
+			css: {
+				display: 'block',
+				marginBottom: '4px',
+				lineHeight: '1.5',
+				opacity: '0.3', // Começa semi-transparente
+				transition: 'opacity 0.3s ease-in-out'
+			}
 		});
 		$textContent.append(span);
 	});
@@ -189,34 +179,79 @@ function createOracaoPage(imgSrc, page, book) {
 	const $texto = $('<div />', {
 		class: 'oracao-texto',
 		css: {
-			margin: '32px auto',
+			margin: '18px auto',
 			fontSize: '1.3rem',
 			textAlign: 'center',
 			maxWidth: '90%',
 			color: '#213822',
 			fontFamily: 'serif',
 			borderRadius: '8px',
-			padding: '18px',
 			boxShadow: '0 1px 8px rgba(251,193,83,0.08)'
 		}
 	}).append($textContent);
 
-	// Função para animar texto letra por letra
+	// Função para animar texto letra por letra de forma sequencial
 	function animateOracaoText() {
-		textoFields.forEach((field, idx) => {
+		let currentSpanIndex = 0;
+		
+		function animateSpan(spanIndex) {
+			if (spanIndex >= textoFields.length) return; // Terminou todos os spans
+			
+			const field = textoFields[spanIndex];
 			const text = dados[field];
-			const span = document.getElementById(`oracao-span-${pageNum}-${idx + 1}`);
-			if (!span) return;
+			const span = document.getElementById(`oracao-span-${pageNum}-${spanIndex + 1}`);
+			
+			if (!span) {
+				// Se não encontrou o span, pula para o próximo
+				setTimeout(() => animateSpan(spanIndex + 1), 100);
+				return;
+			}
+			
+			// Marca este span como ativo (mais opaco)
+			span.style.opacity = '0.7';
+			
 			let i = 0;
+			
 			function typeLetter() {
 				if (i <= text.length) {
-					span.textContent = text.substring(0, i);
+					// Adiciona cursor piscante durante a digitação
+					const displayText = text.substring(0, i);
+					const cursor = i < text.length ? '<span style="animation: blink 1s infinite;">|</span>' : '';
+					span.innerHTML = displayText + cursor;
+					
 					i++;
-					setTimeout(typeLetter, 18 + Math.random() * 32);
+					// Velocidade variável para parecer mais humano
+					const delay = 8 + Math.random() * 12;
+					setTimeout(typeLetter, delay);
+				} else {
+					// Terminou este span, remove cursor e torna totalmente visível
+					span.innerHTML = text;
+					span.style.opacity = '1';
+					
+					// Pequena pausa antes do próximo span
+					setTimeout(() => animateSpan(spanIndex + 1), 800);
 				}
 			}
-			setTimeout(typeLetter, idx * 600); // Delay entre spans
-		});
+			
+			// Inicia a animação deste span
+			typeLetter();
+		}
+		
+		// Adiciona CSS para animação do cursor
+		if (!document.getElementById('cursor-blink-style')) {
+			const style = document.createElement('style');
+			style.id = 'cursor-blink-style';
+			style.textContent = `
+				@keyframes blink {
+					0%, 50% { opacity: 1; }
+					51%, 100% { opacity: 0; }
+				}
+			`;
+			document.head.appendChild(style);
+		}
+		
+		// Inicia a animação do primeiro span
+		animateSpan(0);
 	}
 
 	// Cria o elemento da página
@@ -228,11 +263,8 @@ function createOracaoPage(imgSrc, page, book) {
 	}).append(
 		$('<div />', {
 			class: 'oracao-content',
-			css: { overflow: 'visible', paddingTop: '48px' }
-		}).append(
-			$img,
-			$texto
-		)
+			css: { overflow: 'visible' }
+		}).append($texto)
 	);
 
 	book.turn('addPage', pageElement, page);
@@ -495,9 +527,44 @@ function createScrapbookPage(imageSrc, imageAlt, page, book, isFirstPage = false
 	const postItText = getPostItTextForImage(imageSrc);
 
 	// Check if there is a matching audio file
-	const audioFiles = ['marcela.opus', 'marlene.opus', 'slane.opus', 'valeska.opus', 'will.opus'];
+	const audioFiles = ['marcela.opus', 'maria_ferreira.opus', 'slane.opus', 'valeska.opus', 'will.opus'];
 	const imgBase = imageSrc.replace(/\.[^.]+$/, '').toLowerCase();
-	const audioMatch = audioFiles.find(aud => aud.replace(/\.[^.]+$/, '').toLowerCase() === imgBase);
+	
+	// Try multiple matching strategies
+	let audioMatch = audioFiles.find(aud => aud.replace(/\.[^.]+$/, '').toLowerCase() === imgBase);
+	
+	// If no direct match, try with person name extraction from "iX - <nome>.jpg" format
+	if (!audioMatch) {
+		const match = imageSrc.match(/^.*?i\d+\s*-\s*(.+)\.jpg$/i);
+		if (match) {
+			const personName = match[1].trim().toLowerCase();
+			audioMatch = audioFiles.find(aud => aud.replace(/\.[^.]+$/, '').toLowerCase() === personName);
+			
+			// If still no match, try normalized comparison
+			if (!audioMatch) {
+				const normalizedPerson = personName.replace(/[^a-z0-9]/g, '');
+				audioMatch = audioFiles.find(aud => {
+					const normalizedAudio = aud.replace(/\.[^.]+$/, '').toLowerCase().replace(/[^a-z0-9]/g, '');
+					return normalizedAudio === normalizedPerson;
+				});
+			}
+		}
+	}
+	
+	console.log(`[BookUtils] Audio matching details:`, {
+		imageSrc: imageSrc,
+		imgBase: imgBase,
+		audioFiles: audioFiles,
+		audioMatch: audioMatch
+	});
+
+	console.log(`[BookUtils] createScrapbookPage called:`, {
+		imageSrc: imageSrc,
+		imgBase: imgBase,
+		audioMatch: audioMatch,
+		isFirstPage: isFirstPage,
+		isLastPage: isLastPage
+	});
 
 	let $media;
 	if (isFirstPage) {
@@ -513,18 +580,15 @@ function createScrapbookPage(imageSrc, imageAlt, page, book, isFirstPage = false
 			alt: imageAlt,
 			css: { transform: `rotate(${rotation}deg)` }
 		});
-		if (audioMatch) {
-			console.log('Adding audio for image:', imageSrc, 'audio:', audioMatch);
-			$media.css('cursor', 'pointer');
-			$media.on('click', function (e) {
-				e.stopPropagation();
-				$('.scrapbook-audio').remove();
-				var $audio = $('<audio />', {
-					class: 'scrapbook-audio',
-					src: `audio/${audioMatch}`,
-					autoplay: true
-				}).css({ display: 'none' });
-				$(this).parent().append($audio);
+		
+		// Use the AudioManager for audio controls if available
+		if (window.audioManager && audioMatch) {
+			console.log(`[BookUtils] Adding audio controls for image: ${imageSrc}, audio: ${audioMatch}`);
+			$media.addClass('has-audio');
+		} else {
+			console.log(`[BookUtils] No audio controls added:`, {
+				hasAudioManager: !!window.audioManager,
+				audioMatch: audioMatch
 			});
 		}
 	}
@@ -542,6 +606,29 @@ function createScrapbookPage(imageSrc, imageAlt, page, book, isFirstPage = false
 			$media
 		)
 	);
+
+	// Add audio controls if AudioManager is available and audio file exists
+	if (window.audioManager && audioMatch && !isFirstPage && !isLastPage) {
+		console.log(`[BookUtils] Adding audio controls to page:`, {
+			imageSrc: imageSrc,
+			audioMatch: audioMatch,
+			fullImagePath: `iorder/${imageSrc}`
+		});
+		
+		const scrapbookContent = pageElement.find('.scrapbook-content');
+		console.log(`[BookUtils] Scrapbook content found:`, scrapbookContent.length > 0);
+		
+		// Pass the image source as it is used in the src attribute
+		const success = window.audioManager.checkAndAddAudioControls(scrapbookContent, `iorder/${imageSrc}`);
+		console.log(`[BookUtils] Audio controls added successfully:`, success);
+	} else {
+		console.log(`[BookUtils] Audio controls not added:`, {
+			hasAudioManager: !!window.audioManager,
+			audioMatch: audioMatch,
+			isFirstPage: isFirstPage,
+			isLastPage: isLastPage
+		});
+	}
 
 	if (postItText && !isFirstPage && !isLastPage) {
 		pageElement.find('.scrapbook-content').append(

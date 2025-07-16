@@ -259,4 +259,14 @@
 
     loadFlipbook(flipbook);
 
+    // Initialize AudioManager
+    console.log('[AudioManager] Checking if AudioManager is available...');
+    if (typeof AudioManager !== 'undefined') {
+        console.log('[AudioManager] AudioManager class found, initializing...');
+        window.audioManager = new AudioManager();
+        console.log('[AudioManager] AudioManager initialized successfully:', window.audioManager);
+    } else {
+        console.error('[AudioManager] AudioManager class not found! Check if audioManager.js is loaded.');
+    }
+
 })(jQuery);
