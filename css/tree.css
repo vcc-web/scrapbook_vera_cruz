@@ -167,3 +167,83 @@ canvas {
 .tree-page-button:active {
 	transform: translateY(0);
 }
+
+/* Seções clicáveis da árvore - indicadores visuais */
+.tree-canvas-container {
+	position: relative;
+}
+
+.tree-sections-guide {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 100%;
+	display: flex;
+	pointer-events: none;
+	z-index: 1;
+}
+
+.tree-section-indicator {
+	flex: 1;
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	padding: 10px;
+	opacity: 0;
+	transition: opacity 0.3s ease-in-out;
+}
+
+.tree-section-indicator span {
+	background: rgba(139, 69, 19, 0.8);
+	color: white;
+	padding: 5px 10px;
+	border-radius: 20px;
+	font-size: 12px;
+	font-weight: bold;
+	text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+	box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.tree-section-indicator.left span {
+	background: rgba(139, 69, 19, 0.8);
+}
+
+.tree-section-indicator.center span {
+	background: rgba(85, 139, 47, 0.8);
+}
+
+.tree-section-indicator.right span {
+	background: rgba(139, 47, 85, 0.8);
+}
+
+.tree-canvas-container:hover .tree-section-indicator {
+	opacity: 1;
+}
+
+.tree-canvas-container::after {
+	content: '';
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	right: 10px;
+	height: 30px;
+	background: linear-gradient(to right, 
+		rgba(139, 69, 19, 0.1) 0%, 
+		rgba(139, 69, 19, 0.1) 33%, 
+		transparent 33%, 
+		transparent 66%, 
+		rgba(139, 69, 19, 0.1) 66%, 
+		rgba(139, 69, 19, 0.1) 100%);
+	pointer-events: none;
+	border-radius: 5px;
+	opacity: 0.7;
+}
+
+.tree-canvas-container canvas {
+	cursor: pointer;
+}
+
+.tree-canvas-container canvas:hover {
+	filter: brightness(1.05);
+}

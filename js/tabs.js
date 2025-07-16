@@ -249,18 +249,17 @@ class TabPoolManager {
             existingImg.remove();
         }
         
-        // Create new image
-        const img = document.createElement('img');
-        img.className = 'tree-tab-img';
-        img.src = imageSrc;
-        img.alt = altText;
-        img.style.width = '32px';
-        img.style.height = '32px';
-        img.style.marginRight = '8px';
-        img.style.verticalAlign = 'middle';
-        
-        // Insert at the beginning of the tab
-        tab.insertBefore(img, tab.firstChild);
+        // Only create new image if imageSrc is provided
+        if (imageSrc) {
+            const img = document.createElement('img');
+            img.className = 'tree-tab-img';
+            img.src = imageSrc;
+            img.alt = altText;
+            img.style.verticalAlign = 'middle';
+            
+            // Insert at the beginning of the tab
+            tab.insertBefore(img, tab.firstChild);
+        }
     }
     
     activateTreeTabs() {
@@ -403,6 +402,38 @@ class TabPoolManager {
                 this.tabPool.push(tab);
             }
         }
+    }
+
+    // Method to update tree tabs with patron saint images
+    updateTreeTabsWithPatron(patronImage, sectionId) {
+        console.log(`Updating tree tabs with patron image: ${patronImage} for section ${sectionId}`);
+        
+        this.treeTabs.forEach(tab => {
+            const img = tab.querySelector('.tree-tab-img');
+            if (img) {
+                // Update image source directly without loading state
+                img.src = patronImage;
+                img.alt = `Patrono da Seção ${sectionId}`;
+                
+                // Add section data attribute for styling
+                tab.setAttribute('data-section', sectionId);
+                
+                // Remove any previous effects
+                tab.classList.remove('patron-selected');
+            } else {
+                // If no image exists, create one
+                const newImg = document.createElement('img');
+                newImg.className = 'tree-tab-img';
+                newImg.src = patronImage;
+                newImg.alt = `Patrono da Seção ${sectionId}`;
+                
+                // Add section data attribute for styling
+                tab.setAttribute('data-section', sectionId);
+                
+                // Insert at the beginning of the tab
+                tab.insertBefore(newImg, tab.firstChild);
+            }
+        });
     }
 }
 

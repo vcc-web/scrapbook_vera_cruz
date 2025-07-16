@@ -225,7 +225,7 @@
 
     $(document).on("keydown", function (e) {
 
-        var previous = 37, next = 39, esc = 27;
+        var previous = 37, next = 39;
 
         switch (e.keyCode) {
             case previous:
@@ -239,12 +239,6 @@
 
                 //right arrow
                 $(".flipbook").turn("next");
-                e.preventDefault();
-
-                break;
-            case esc:
-
-                $(".flipbook-viewport").zoom("zoomOut");
                 e.preventDefault();
 
                 break;

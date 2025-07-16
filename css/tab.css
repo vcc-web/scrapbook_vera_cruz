@@ -110,6 +110,62 @@
     color: #333;
 }
 
+/* Estilos para imagens nas abas da árvore */
+.tree-tab-img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85%;
+    height: 85%;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+    filter: brightness(0.95) contrast(1.08) saturate(1.05);
+    border: 2px solid rgba(255,255,255,0.3);
+    opacity: 1;
+}
+
+/* Estado de carregamento */
+.tree-tab-img[style*="opacity: 0.5"] {
+    transition: opacity 0.3s ease-in-out, filter 0.3s ease-in-out;
+}
+
+/* Efeito para quando o patrono é selecionado */
+.scrapbook-tab.patron-selected .tree-tab-img {
+    transform: translate(-50%, -50%) scale(1.06);
+    box-shadow: 0 8px 24px rgba(255, 215, 0, 0.3), 0 0 0 3px rgba(255, 215, 0, 0.5);
+    filter: brightness(1.15) contrast(1.25) saturate(1.2);
+}
+
+/* Efeito hover para as imagens */
+.scrapbook-tab:hover .tree-tab-img {
+    transform: translate(-50%, -50%) scale(1.03);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    filter: brightness(1.08) contrast(1.15) saturate(1.1);
+}
+
+/* Efeito para aba clicada */
+.scrapbook-tab.clicked .tree-tab-img {
+    transform: translate(-50%, -50%) scale(0.97);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    filter: brightness(0.85) contrast(1.4) saturate(1.3);
+}
+
+/* Bordas especiais para cada seção */
+.scrapbook-tab[data-section="1"] .tree-tab-img {
+    border-color: rgba(139, 69, 19, 0.6); /* São Bento - marrom */
+}
+
+.scrapbook-tab[data-section="2"] .tree-tab-img {
+    border-color: rgba(85, 139, 47, 0.6); /* São Josemaría Escrivá - verde */
+}
+
+.scrapbook-tab[data-section="3"] .tree-tab-img {
+    border-color: rgba(139, 47, 85, 0.6); /* Santa Teresinha - rosa */
+}
+
 .page-wrapper > div {
     will-change: overflow;
     backface-visibility: hidden;

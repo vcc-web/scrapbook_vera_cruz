@@ -35,24 +35,24 @@ function showTreePage() {
         if (window.tabManager) {
             window.tabManager.hideNormalTabs();
             
-            // Define the tree sections data
+            // Define the tree sections data with patron saints (sem imagens iniciais)
             const treeSectionsData = [
                 {
                     id: 1,
-                    image: 'img/tree-tab-1.png',
-                    alt: 'Seção 1',
+                    image: null, // Sem imagem inicial
+                    alt: 'São Bento',
                     onClick: (e) => handleTreeSectionClick(e, 1)
                 },
                 {
                     id: 2,
-                    image: 'img/tree-tab-2.png',
-                    alt: 'Seção 2',
+                    image: null, // Sem imagem inicial
+                    alt: 'São Josemaría Escrivá',
                     onClick: (e) => handleTreeSectionClick(e, 2)
                 },
                 {
                     id: 3,
-                    image: 'img/tree-tab-3.png',
-                    alt: 'Seção 3',
+                    image: null, // Sem imagem inicial
+                    alt: 'Santa Teresinha',
                     onClick: (e) => handleTreeSectionClick(e, 3)
                 }
             ];
@@ -468,8 +468,30 @@ class Tree {
         const clickedSection = this.getClickedSection(x);
         console.log(`Seção clicada: ${clickedSection}`);
 
+        // Mapear seções para imagens dos patronos
+        const patronImages = {
+            1: 'img/st_bento.jpg',      // Seção esquerda - São Bento
+            2: 'img/st_escriva.jpg',    // Seção central - São Josemaría Escrivá
+            3: 'img/st_teresinha.jpg'   // Seção direita - Santa Teresinha
+        };
+
+        // Mostrar a imagem do patrono nas abas de forma duplicada
+        if (window.tabManager && patronImages[clickedSection]) {
+            const patronImage = patronImages[clickedSection];
+            
+            // Usar o método dedicado do TabManager para atualizar as abas da árvore
+            window.tabManager.updateTreeTabsWithPatron(patronImage, clickedSection);
+            
+            console.log(`Imagem do patrono da seção ${clickedSection} mostrada em todas as abas`);
+        }
+
         // Sinal global para outros scripts
-        const event = new CustomEvent('treeSectionClicked', { detail: { section: clickedSection } });
+        const event = new CustomEvent('treeSectionClicked', { 
+            detail: { 
+                section: clickedSection,
+                patronImage: patronImages[clickedSection]
+            } 
+        });
         window.dispatchEvent(event);
     }
 

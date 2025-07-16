@@ -229,7 +229,7 @@ function createOracaoPage(imgSrc, page, book) {
 					span.style.opacity = '1';
 					
 					// Pequena pausa antes do próximo span
-					setTimeout(() => animateSpan(spanIndex + 1), 800);
+					setTimeout(() => animateSpan(spanIndex + 1), 500);
 				}
 			}
 			
@@ -258,8 +258,14 @@ function createOracaoPage(imgSrc, page, book) {
 	const pageElement = $('<div />', {
 		class: 'own-size page oracao-page',
 		'data-page': page,
-		'data-has-tab': true,
-		css: { overflow: 'visible', position: 'relative', background: '#fffbe6' }
+		'data-has-tab': false,
+		css: { 
+			overflow: 'visible', 
+			position: 'relative', 
+			background: '#fffbe6',
+			display: 'flex',
+			alignItems: 'center',
+		}
 	}).append(
 		$('<div />', {
 			class: 'oracao-content',
@@ -326,6 +332,9 @@ window.videoEventManager = {
 				if (playPromise !== undefined) {
 					playPromise.then(() => {
 						$(endPlayBtn).hide();
+						$(endReplayBtn).hide();
+						// Rotate flipbook when video starts
+						rotateFlipbook(true);
 					}).catch(error => {
 						console.error('Error playing end video:', error);
 					});
@@ -339,14 +348,33 @@ window.videoEventManager = {
 				const playPromise = endVideo.play();
 				if (playPromise !== undefined) {
 					playPromise.then(() => {
+						$(endPlayBtn).hide();
 						$(endReplayBtn).hide();
+						// Rotate flipbook when video replays
+						rotateFlipbook(true);
 					}).catch(error => {
 						console.error('Error replaying end video:', error);
 					});
 				}
 			};
 			
-			console.log('End video listeners attached');
+			// Add event listener for when video ends
+			endVideo.addEventListener('ended', function() {
+				$(endReplayBtn).show();
+				$(endPlayBtn).hide();
+				rotateFlipbook(false);
+			});
+			
+			// Add event listener for when video is paused
+			endVideo.addEventListener('pause', function() {
+				if (this.currentTime === 0 || this.ended) {
+					$(endPlayBtn).show();
+					$(endReplayBtn).hide();
+					rotateFlipbook(false);
+				}
+			});
+			
+			console.log('End video listeners attached with rotation');
 		}
 	}
 };
@@ -374,6 +402,136 @@ const videoObserver = new MutationObserver(function(mutations) {
 // Start observing when DOM is ready
 $(document).ready(function() {
 	videoObserver.observe(document.body, { childList: true, subtree: true });
+	
+	// Add page change listener to reset flipbook rotation and pause videos
+	$(document).on('turned', '.flipbook', function() {
+		// Pause any playing videos when page changes
+		const startVideo = document.getElementById('start-video');
+		const endVideo = document.getElementById('end-video');
+		
+		if (startVideo && !startVideo.paused) {
+			startVideo.pause();
+			$('#start-video-play').show();
+			$('#start-video-replay').hide();
+		}
+		
+		if (endVideo && !endVideo.paused) {
+			endVideo.pause();
+			$('#end-video-play').show();
+			$('#end-video-replay').hide();
+		}
+		
+		// Small delay to ensure page has finished turning
+		setTimeout(() => {
+			// Check if the current page has an end video that's playing
+			const currentEndVideo = document.getElementById('end-video');
+			if (currentEndVideo && !currentEndVideo.paused && !currentEndVideo.ended) {
+				// Video is playing, keep rotation
+				rotateFlipbook(true);
+			} else {
+				// Reset rotation when page changes
+				rotateFlipbook(false);
+			}
+		}, 100);
+	});
+	
+	// Add listener for when page is about to turn
+	$(document).on('turning', '.flipbook', function() {
+		// Pause any playing videos when page starts turning
+		const startVideo = document.getElementById('start-video');
+		const endVideo = document.getElementById('end-video');
+		
+		if (startVideo && !startVideo.paused) {
+			startVideo.pause();
+			$('#start-video-play').show();
+			$('#start-video-replay').hide();
+		}
+		
+		if (endVideo && !endVideo.paused) {
+			endVideo.pause();
+			$('#end-video-play').show();
+			$('#end-video-replay').hide();
+		}
+		
+		// Small delay to check video state after page starts turning
+		setTimeout(() => {
+			// Check if the current page has an end video that's playing
+			const currentEndVideo = document.getElementById('end-video');
+			if (currentEndVideo && !currentEndVideo.paused && !currentEndVideo.ended) {
+				// Video is playing, keep rotation
+				rotateFlipbook(true);
+			}
+		}, 300);
+	});
+	
+	// Add keyboard listener for arrow keys
+	$(document).on('keydown', function(e) {
+		// Check if arrow keys are pressed (left arrow = 37, right arrow = 39)
+		if (e.keyCode === 37 || e.keyCode === 39) {
+			// Pause any playing videos when navigating with arrow keys
+			const startVideo = document.getElementById('start-video');
+			const endVideo = document.getElementById('end-video');
+			
+			if (startVideo && !startVideo.paused) {
+				startVideo.pause();
+				$('#start-video-play').show();
+				$('#start-video-replay').hide();
+			}
+			
+			if (endVideo && !endVideo.paused) {
+				endVideo.pause();
+				$('#end-video-play').show();
+				$('#end-video-replay').hide();
+			}
+			
+			// Small delay to check video state after navigation
+			setTimeout(() => {
+				// Check if the current page has an end video that's playing
+				const currentEndVideo = document.getElementById('end-video');
+				if (currentEndVideo && !currentEndVideo.paused && !currentEndVideo.ended) {
+					// Video is playing, keep rotation
+					rotateFlipbook(true);
+				} else {
+					// Reset rotation when navigating with arrow keys
+					rotateFlipbook(false);
+				}
+			}, 100);
+		}
+	});
+	
+	// Add click listener for page navigation
+	$(document).on('click', '.flipbook', function(e) {
+		// If clicking on page area (not on video controls), pause videos and check video state after navigation
+		if (!$(e.target).closest('.scrapbook-video-controls').length) {
+			// Pause any playing videos when clicking to navigate
+			const startVideo = document.getElementById('start-video');
+			const endVideo = document.getElementById('end-video');
+			
+			if (startVideo && !startVideo.paused) {
+				startVideo.pause();
+				$('#start-video-play').show();
+				$('#start-video-replay').hide();
+			}
+			
+			if (endVideo && !endVideo.paused) {
+				endVideo.pause();
+				$('#end-video-play').show();
+				$('#end-video-replay').hide();
+			}
+			
+			setTimeout(() => {
+				// Check if the current page has an end video that's playing
+				const currentEndVideo = document.getElementById('end-video');
+				if (currentEndVideo && !currentEndVideo.paused && !currentEndVideo.ended) {
+					// Video is playing, keep rotation
+					rotateFlipbook(true);
+				} else {
+					// Reset rotation
+					rotateFlipbook(false);
+				}
+			}, 200);
+		}
+	});
 });
 
 function createStartVideoPage() {
@@ -456,11 +614,14 @@ function createEndVideoPage() {
 		controls: false,
 		preload: 'metadata',
 		css: {
-			height: '100%',
+			padding: '2%',
+			height: '50%',
+			objectFit: 'cover',
 			borderRadius: '10px',
-			padding: '1%',
 			background: 'white',
-			boxShadow: '0 0 20px rgba(80,60,20,0.3)'
+			boxShadow: '0 0 20px rgba(80,60,20,0.3)',
+			transform: 'rotate(90deg)', // Vídeo em paisagem
+			transformOrigin: 'center center'
 		}
 	});
 	
@@ -492,17 +653,27 @@ function createEndVideoPage() {
 	$playBtn.show();
 	$replayBtn.hide();
 	
-	// Video events for UI updates
-	$video.off('ended pause play').on('ended', function () {
+	// Video events for UI updates and book rotation
+	$video.off('ended pause play').on('play', function () {
+		$playBtn.hide();
+		$replayBtn.hide();
+		// Rotate the entire flipbook when video starts
+		rotateFlipbook(true);
+	}).on('ended', function () {
 		$replayBtn.show();
 		$playBtn.hide();
+		// Rotate back when video ends
+		rotateFlipbook(false);
 	}).on('pause', function () {
 		if (this.currentTime === 0 || this.ended) {
 			$playBtn.show();
 			$replayBtn.hide();
+			// Rotate back when paused at beginning or end
+			rotateFlipbook(false);
 		}
-	}).on('play', function () {
-		$playBtn.hide();
+	}).on('loadedmetadata', function() {
+		// Reset UI when video loads
+		$playBtn.show();
 		$replayBtn.hide();
 	});
 	
@@ -512,10 +683,47 @@ function createEndVideoPage() {
 	}, 100);
 	
 	const $videoContainer = $('<div />', {
-		css: { position: 'relative', width: '100%', height: '100%' }
+		css: { 
+			position: 'relative', 
+			width: '100%', 
+			height: '100%',
+			display: 'flex',
+			justifyContent: 'center',
+			alignItems: 'center'
+		}
 	});
 	$videoContainer.append($video, $controls);
 	return $videoContainer;
+}
+
+// Function to rotate the entire flipbook for landscape video viewing
+function rotateFlipbook(rotate) {
+	const $flipbook = $('.flipbook');
+	const $viewport = $('.flipbook-viewport');
+	
+	if (rotate) {
+		// Rotate the flipbook 90 degrees clockwise
+		$flipbook.css({
+			transform: 'rotate(-90deg) translateX(20%)',
+			transformOrigin: 'center center',
+			transition: 'transform 0.8s ease-in-out'
+		});
+		
+		// Adjust viewport if needed
+		$viewport.css({
+			transition: 'all 0.8s ease-in-out'
+		});
+		
+		console.log('Flipbook rotated for landscape video');
+	} else {
+		// Rotate back to normal
+		$flipbook.css({
+			transform: 'rotate(0deg) translateX(0)',
+			transition: 'transform 0.8s ease-in-out'
+		});
+		
+		console.log('Flipbook rotated back to normal');
+	}
 }
 
 
