@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="css/cover.css">
     <link rel="stylesheet" href="css/tab.css">
     <link rel="stylesheet" href="css/tree.css">
+    <link rel="stylesheet" href="css/loading.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
@@ -127,8 +128,20 @@
         </div>
 
         <div class="tabs-container"></div>
+        
+        <!-- Tela de Carregamento -->
+        <div class="loading-screen" id="loadingScreen">
+            <div class="loading-container">
+                <div class="loading-logo">
+                    <img src="img/logo_col.png" alt="Colégio Vera Cruz">
+                </div>
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Carregando memórias</div>
+            </div>
+        </div>
     </div>
 
+    <script src="js/loading.js"></script>
     <script src="js/bookUtils.js"></script>
     <script src="js/textInteraction.js"></script>
     <script src="js/audioManager.js"></script>
