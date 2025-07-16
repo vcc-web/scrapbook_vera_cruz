@@ -358,21 +358,8 @@ window.videoEventManager = {
 				}
 			};
 			
-			// Add event listener for when video ends
-			endVideo.addEventListener('ended', function() {
-				$(endReplayBtn).show();
-				$(endPlayBtn).hide();
-				rotateFlipbook(false);
-			});
-			
-			// Add event listener for when video is paused
-			endVideo.addEventListener('pause', function() {
-				if (this.currentTime === 0 || this.ended) {
-					$(endPlayBtn).show();
-					$(endReplayBtn).hide();
-					rotateFlipbook(false);
-				}
-			});
+			// Event listeners are managed in the page creation functions
+			// to avoid conflicts with existing listeners
 			
 			console.log('End video listeners attached with rotation');
 		}
@@ -405,17 +392,17 @@ $(document).ready(function() {
 	
 	// Add page change listener to reset flipbook rotation and pause videos
 	$(document).on('turned', '.flipbook', function() {
-		// Pause any playing videos when page changes
+		// Pause any playing videos when page changes (but don't interfere with ended videos)
 		const startVideo = document.getElementById('start-video');
 		const endVideo = document.getElementById('end-video');
 		
-		if (startVideo && !startVideo.paused) {
+		if (startVideo && !startVideo.paused && !startVideo.ended) {
 			startVideo.pause();
 			$('#start-video-play').show();
 			$('#start-video-replay').hide();
 		}
 		
-		if (endVideo && !endVideo.paused) {
+		if (endVideo && !endVideo.paused && !endVideo.ended) {
 			endVideo.pause();
 			$('#end-video-play').show();
 			$('#end-video-replay').hide();
@@ -437,17 +424,17 @@ $(document).ready(function() {
 	
 	// Add listener for when page is about to turn
 	$(document).on('turning', '.flipbook', function() {
-		// Pause any playing videos when page starts turning
+		// Pause any playing videos when page starts turning (but don't interfere with ended videos)
 		const startVideo = document.getElementById('start-video');
 		const endVideo = document.getElementById('end-video');
 		
-		if (startVideo && !startVideo.paused) {
+		if (startVideo && !startVideo.paused && !startVideo.ended) {
 			startVideo.pause();
 			$('#start-video-play').show();
 			$('#start-video-replay').hide();
 		}
 		
-		if (endVideo && !endVideo.paused) {
+		if (endVideo && !endVideo.paused && !endVideo.ended) {
 			endVideo.pause();
 			$('#end-video-play').show();
 			$('#end-video-replay').hide();
@@ -468,17 +455,17 @@ $(document).ready(function() {
 	$(document).on('keydown', function(e) {
 		// Check if arrow keys are pressed (left arrow = 37, right arrow = 39)
 		if (e.keyCode === 37 || e.keyCode === 39) {
-			// Pause any playing videos when navigating with arrow keys
+			// Pause any playing videos when navigating with arrow keys (but don't interfere with ended videos)
 			const startVideo = document.getElementById('start-video');
 			const endVideo = document.getElementById('end-video');
 			
-			if (startVideo && !startVideo.paused) {
+			if (startVideo && !startVideo.paused && !startVideo.ended) {
 				startVideo.pause();
 				$('#start-video-play').show();
 				$('#start-video-replay').hide();
 			}
 			
-			if (endVideo && !endVideo.paused) {
+			if (endVideo && !endVideo.paused && !endVideo.ended) {
 				endVideo.pause();
 				$('#end-video-play').show();
 				$('#end-video-replay').hide();
@@ -503,17 +490,17 @@ $(document).ready(function() {
 	$(document).on('click', '.flipbook', function(e) {
 		// If clicking on page area (not on video controls), pause videos and check video state after navigation
 		if (!$(e.target).closest('.scrapbook-video-controls').length) {
-			// Pause any playing videos when clicking to navigate
+			// Pause any playing videos when clicking to navigate (but don't interfere with ended videos)
 			const startVideo = document.getElementById('start-video');
 			const endVideo = document.getElementById('end-video');
 			
-			if (startVideo && !startVideo.paused) {
+			if (startVideo && !startVideo.paused && !startVideo.ended) {
 				startVideo.pause();
 				$('#start-video-play').show();
 				$('#start-video-replay').hide();
 			}
 			
-			if (endVideo && !endVideo.paused) {
+			if (endVideo && !endVideo.paused && !endVideo.ended) {
 				endVideo.pause();
 				$('#end-video-play').show();
 				$('#end-video-replay').hide();
@@ -581,14 +568,17 @@ function createStartVideoPage() {
 	
 	// Video events for UI updates
 	$video.off('ended pause play').on('ended', function () {
+		console.log('Start video ended - showing replay button');
 		$replayBtn.show();
 		$playBtn.hide();
 	}).on('pause', function () {
+		console.log('Start video paused - currentTime:', this.currentTime, 'ended:', this.ended);
 		if (this.currentTime === 0 || this.ended) {
 			$playBtn.show();
 			$replayBtn.hide();
 		}
 	}).on('play', function () {
+		console.log('Start video playing - hiding all buttons');
 		$playBtn.hide();
 		$replayBtn.hide();
 	});
@@ -655,16 +645,19 @@ function createEndVideoPage() {
 	
 	// Video events for UI updates and book rotation
 	$video.off('ended pause play').on('play', function () {
+		console.log('End video playing - hiding all buttons');
 		$playBtn.hide();
 		$replayBtn.hide();
 		// Rotate the entire flipbook when video starts
 		rotateFlipbook(true);
 	}).on('ended', function () {
+		console.log('End video ended - showing replay button');
 		$replayBtn.show();
 		$playBtn.hide();
 		// Rotate back when video ends
 		rotateFlipbook(false);
 	}).on('pause', function () {
+		console.log('End video paused - currentTime:', this.currentTime, 'ended:', this.ended);
 		if (this.currentTime === 0 || this.ended) {
 			$playBtn.show();
 			$replayBtn.hide();
@@ -672,6 +665,7 @@ function createEndVideoPage() {
 			rotateFlipbook(false);
 		}
 	}).on('loadedmetadata', function() {
+		console.log('End video metadata loaded - resetting UI');
 		// Reset UI when video loads
 		$playBtn.show();
 		$replayBtn.hide();
