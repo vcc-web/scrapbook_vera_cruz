@@ -41,12 +41,28 @@ function getRandomRotation() {
 	return Math.random() * 40 - 20; // -20 to 20 degrees
 }
 
-function getRandomPattern() {
-	let pattern;
-	do {
-		pattern = Math.floor(Math.random() * 156) + 1;
-	} while (pattern === 56 || pattern === 57 || pattern === 11);
-	return pattern; // patterns 1-156
+// Variable to store the last used background
+let lastUsedBackground = null;
+
+function getRandomBackground() {
+	const backgrounds = ['bg1.jpg', 'bg2.jpg', 'bg3.jpg', 'bg4.jpg', 'bg5.jpg', 'bg6.jpg'];
+	
+	// If this is the first call, just return a random background
+	if (!lastUsedBackground) {
+		lastUsedBackground = backgrounds[Math.floor(Math.random() * backgrounds.length)];
+		return lastUsedBackground;
+	}
+	
+	// Filter out the last used background to avoid consecutive duplicates
+	const availableBackgrounds = backgrounds.filter(bg => bg !== lastUsedBackground);
+	
+	// Select a random background from the available options
+	const selectedBackground = availableBackgrounds[Math.floor(Math.random() * availableBackgrounds.length)];
+	
+	// Update the last used background
+	lastUsedBackground = selectedBackground;
+	
+	return selectedBackground;
 }
 
 
@@ -857,11 +873,11 @@ function rotateFlipbook(rotate) {
 
 function createScrapbookPage(imageSrc, imageAlt, page, book, isFirstPage = false, isLastPage = false) {
 	const rotation = getRandomRotation();
-	const pattern = getRandomPattern();
 	const layout = getRandomLayout();
 	const postItColor = getRandomPostItColor();
 	const postItText = getPostItTextForImage(imageSrc);
 	const fixedText = getFixedTextForImage(imageSrc);
+	const backgroundImage = getRandomBackground();
 
 	// Check if there is a matching audio file
 	const audioFiles = ['marcela.opus', 'maria_ferreira.opus', 'slane.opus', 'valeska.opus', 'will.opus'];
@@ -931,14 +947,38 @@ function createScrapbookPage(imageSrc, imageAlt, page, book, isFirstPage = false
 	}
 
 	var pageElement = $('<div />', {
-		'class': `own-size page pattern-${pattern}`,
+		'class': `own-size page`,
 		'data-layout': layout,
 		'data-has-tab': false,
-		css: { overflow: 'visible' }
+		css: { 
+			overflow: 'visible',
+			backgroundImage: `url('img/${backgroundImage}')`,
+			backgroundSize: 'cover',
+			backgroundPosition: 'center',
+			backgroundRepeat: 'no-repeat',
+			position: 'relative'
+		}
 	}).append(
 		$('<div />', {
+			'class': 'background-overlay',
+			css: {
+				position: 'absolute',
+				top: 0,
+				left: 0,
+				right: 0,
+				bottom: 0,
+				// backgroundColor: 'rgba(255, 255, 255, 0.7)',
+				// backdropFilter: 'blur(1px)',
+				zIndex: 1
+			}
+		}),
+		$('<div />', {
 			'class': 'scrapbook-content',
-			css: { overflow: 'visible' }
+			css: { 
+				overflow: 'visible',
+				position: 'relative',
+				zIndex: 2
+			}
 		}).append(
 			$media
 		)

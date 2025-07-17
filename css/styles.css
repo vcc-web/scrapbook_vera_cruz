@@ -124,6 +124,8 @@ body {
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 	filter: sepia(5%) saturate(110%) brightness(105%);
 	transition: transform 0.3s ease;
+	position: relative;
+	z-index: 10;
 }
 
 /* Page overflow management for text expansion */
