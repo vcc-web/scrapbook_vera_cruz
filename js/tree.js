@@ -152,6 +152,7 @@ class Tree {
         this.H = 800;
         this.branches = [];
         this.leaves = [];
+        this.fallingLeaves = [];
         this.darkTheme = false;
         this.debug = false;
         this.floorY = 685;
@@ -162,6 +163,18 @@ class Tree {
         this.animationSpeed = 1.0; // Multiplicador de velocidade global
         this.clickRadius = 80; // Raio de detecção de clique
         this.animationRunning = false; // Controla se a animação está rodando
+        
+        // Ciclo das folhas
+        this.cycleStarted = false;
+        this.cyclePhase = 'growing'; // 'growing', 'yellowing', 'falling', 'regrowing'
+        this.cycleTimer = 0;
+        this.cycleDelayAfterGrowth = 8000; // 8 segundos após crescimento completo
+        this.yellowingDuration = 4000; // 4 segundos para amarelar
+        this.fallingDuration = 5000; // 5 segundos para cair
+        this.regrowthDelay = 2000; // 2 segundos de pausa antes de rebrotar
+        this.regrowthDuration = 6000; // 6 segundos para rebrotar gradualmente
+        this.regrowthStartTime = 0;
+        this.regrowthLeaves = []; // Array para armazenar folhas durante rebrotamento
 
         // Pontos de destino para cada seção
         this.sectionTargets = {
@@ -317,12 +330,58 @@ class Tree {
             c.closePath();
         });
 
-        // folhas verdes fixas com cor fixa
+        // folhas com ciclo de vida
         leaves.forEach(leaf => {
-            c.fillStyle = leaf.color;
-            c.globalAlpha = leaf.progress;
+            if (leaf.cyclePhase === 'falling') {
+                // Folhas caindo não são renderizadas aqui (serão renderizadas em fallingLeaves)
+                return;
+            }
+            
+            let currentColor = leaf.color;
+            let alpha = leaf.progress;
+            
+            // Se está amarelando, interpolar entre verde e amarelo
+            if (leaf.cyclePhase === 'yellowing') {
+                const green = leaf.originalColor;
+                const yellowHue = 50; // Tom amarelo
+                const yellowSat = 80;
+                const yellowLum = 60;
+                const yellow = `hsl(${yellowHue}, ${yellowSat}%, ${yellowLum}%)`;
+                
+                // Interpolar cores baseado no yellowProgress
+                const yellowFactor = leaf.yellowProgress;
+                const greenFactor = 1 - yellowFactor;
+                
+                // Extrair valores HSL do verde original
+                const greenMatch = green.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+                if (greenMatch) {
+                    const greenH = parseInt(greenMatch[1]);
+                    const greenS = parseInt(greenMatch[2]);
+                    const greenL = parseInt(greenMatch[3]);
+                    
+                    const newH = Math.round(greenH * greenFactor + yellowHue * yellowFactor);
+                    const newS = Math.round(greenS * greenFactor + yellowSat * yellowFactor);
+                    const newL = Math.round(greenL * greenFactor + yellowLum * yellowFactor);
+                    
+                    currentColor = `hsl(${newH}, ${newS}%, ${newL}%)`;
+                }
+            }
+            
+            c.fillStyle = currentColor;
+            c.globalAlpha = alpha;
             c.beginPath();
             c.arc(leaf.x, leaf.y, leaf.size * leaf.progress, 0, 2 * Math.PI);
+            c.fill();
+            c.closePath();
+            c.globalAlpha = 1;
+        });
+
+        // Renderizar folhas caindo
+        this.fallingLeaves.forEach(leaf => {
+            c.fillStyle = leaf.color;
+            c.globalAlpha = Math.max(0.3, 1 - (leaf.y - leaf.originalY) / 200); // Fade ao cair
+            c.beginPath();
+            c.arc(leaf.x, leaf.y, leaf.size, 0, 2 * Math.PI);
             c.fill();
             c.closePath();
             c.globalAlpha = 1;
@@ -393,11 +452,19 @@ class Tree {
                                     this.leaves.push({
                                         x: leafX,
                                         y: leafY,
+                                        originalX: leafX,
+                                        originalY: leafY,
                                         size: leafSize,
                                         progress: 0,
                                         growthSpeed: (0.02 + Math.random() * 0.02) * this.animationSpeed,
                                         color: `hsl(${hue}, ${sat}%, ${lum}%)`,
-                                        section: this.getLeafSection(leafX)
+                                        originalColor: `hsl(${hue}, ${sat}%, ${lum}%)`,
+                                        section: this.getLeafSection(leafX),
+                                        cyclePhase: 'growing',
+                                        yellowProgress: 0,
+                                        fallSpeed: 0,
+                                        swayAmplitude: Utils.randomInt(10, 25),
+                                        swaySpeed: 0.02 + Math.random() * 0.02
                                     });
                                 }
                             }
@@ -443,12 +510,240 @@ class Tree {
         // Crescimento das folhas
         if (!this.allLeavesComplete) {
             this.leaves.forEach(leaf => {
-                if (leaf.progress < 1) {
+                if (leaf.progress < 1 && leaf.cyclePhase === 'growing') {
                     leaf.progress += leaf.growthSpeed;
                     if (leaf.progress > 1) leaf.progress = 1;
                 }
             });
         }
+
+        // Iniciar ciclo das folhas depois que tudo cresceu
+        if (this.allBranchesComplete && this.allLeavesComplete && !this.cycleStarted) {
+            this.cycleStarted = true;
+            this.cycleTimer = Utils.dateValue;
+            console.log('Iniciando ciclo das folhas');
+        }
+
+        // Processar ciclo das folhas
+        if (this.cycleStarted) {
+            const elapsed = Utils.dateValue - this.cycleTimer;
+            
+            switch (this.cyclePhase) {
+                case 'growing':
+                    if (elapsed > this.cycleDelayAfterGrowth) {
+                        this.cyclePhase = 'yellowing';
+                        this.cycleTimer = Utils.dateValue;
+                        console.log('Iniciando fase de amarelamento');
+                    }
+                    break;
+
+                case 'yellowing':
+                    const yellowProgress = Math.min(1, elapsed / this.yellowingDuration);
+                    this.leaves.forEach(leaf => {
+                        leaf.cyclePhase = 'yellowing';
+                        leaf.yellowProgress = yellowProgress;
+                    });
+                    
+                    if (yellowProgress >= 1) {
+                        this.cyclePhase = 'falling';
+                        this.cycleTimer = Utils.dateValue;
+                        this.startFallingLeaves();
+                        console.log('Iniciando fase de queda');
+                    }
+                    break;
+
+                case 'falling':
+                    this.updateFallingLeaves();
+                    
+                    if (elapsed > this.fallingDuration && this.fallingLeaves.length === 0) {
+                        this.cyclePhase = 'regrowing';
+                        this.cycleTimer = Utils.dateValue;
+                        console.log('Iniciando fase de rebrota');
+                    }
+                    break;
+
+                case 'regrowing':
+                    if (elapsed > this.regrowthDelay) {
+                        if (this.regrowthStartTime === 0) {
+                            // Iniciar rebrotamento gradual
+                            this.regrowthStartTime = Utils.dateValue;
+                            this.prepareRegrowthLeaves();
+                            console.log('Iniciando rebrotamento gradual');
+                        }
+                        
+                        const regrowthElapsed = Utils.dateValue - this.regrowthStartTime;
+                        const regrowthProgress = Math.min(1, regrowthElapsed / this.regrowthDuration);
+                        
+                        this.updateRegrowthProgress(regrowthProgress);
+                        
+                        if (regrowthProgress >= 1) {
+                            this.completeRegrowthCycle();
+                            console.log('Rebrotamento completo, reiniciando ciclo');
+                        }
+                    }
+                    break;
+            }
+        }
+    }
+
+    startFallingLeaves() {
+        // Converter folhas da árvore em folhas caindo
+        this.leaves.forEach((leaf, index) => {
+            // Adicionar com um pequeno delay aleatório para parecer mais natural
+            setTimeout(() => {
+                if (leaf.cyclePhase === 'yellowing') {
+                    leaf.cyclePhase = 'falling';
+                    leaf.fallSpeed = 0.5 + Math.random() * 1.5;
+                    leaf.swayOffset = Math.random() * Math.PI * 2;
+                    
+                    // Cor amarelada final
+                    leaf.color = `hsl(${50 + Utils.randomInt(-10, 10)}, 80%, 60%)`;
+                    
+                    this.fallingLeaves.push(leaf);
+                }
+            }, Math.random() * 1000); // Delay de 0-1 segundo
+        });
+        
+        // Limpar folhas da árvore
+        setTimeout(() => {
+            this.leaves = this.leaves.filter(leaf => leaf.cyclePhase !== 'falling');
+        }, 1200);
+    }
+
+    updateFallingLeaves() {
+        this.fallingLeaves.forEach((leaf, index) => {
+            // Movimento de queda com balanço
+            leaf.y += leaf.fallSpeed;
+            leaf.x = leaf.originalX + Math.sin(leaf.y * leaf.swaySpeed + leaf.swayOffset) * leaf.swayAmplitude;
+            
+            // Acelerar levemente a queda
+            leaf.fallSpeed += 0.02;
+            
+            // Remover folha se chegou ao chão
+            if (leaf.y > this.floorY + 50) {
+                this.fallingLeaves.splice(index, 1);
+            }
+        });
+    }
+
+    prepareRegrowthLeaves() {
+        // Criar todas as folhas que vão rebrotar, mas com progress 0
+        this.regrowthLeaves = [];
+        this.leaves = [];
+        
+        this.branches.forEach(b => {
+            if (b.generation >= this.maxGenerations - 6 && b.progress === 1) {
+                const maxTotalLeaves = 3800;
+                if (this.regrowthLeaves.length < maxTotalLeaves) {
+                    let baseLeaves;
+                    if (b.generation <= this.maxGenerations - 4) {
+                        baseLeaves = 3;
+                    } else if (b.generation <= this.maxGenerations - 2) {
+                        baseLeaves = 2;
+                    } else {
+                        baseLeaves = 1;
+                    }
+                    
+                    const numLeaves = Utils.randomInt(baseLeaves, baseLeaves + 1);
+                    for (let i = 0; i < numLeaves; i++) {
+                        const frac = 0.15 + Math.random() * 0.8;
+                        let angle = b.angle + Utils.randomInt(-20, 20);
+                        
+                        if (baseLeaves === 1) {
+                            if (b.x2 < 350) {
+                                angle -= 25 + Utils.randomInt(0, 15);
+                            } else if (b.x2 > 450) {
+                                angle += 25 + Utils.randomInt(0, 15);
+                            }
+                        }
+                        
+                        const leafX = b.x1 + (b.x2 - b.x1) * frac + Utils.randomInt(-6, 6);
+                        const leafY = b.y1 + (b.y2 - b.y1) * frac + Utils.randomInt(-6, 6);
+                        const leafSize = Utils.randomInt(3, 7);
+                        const hue = 120 + Utils.randomInt(-12, 12);
+                        const sat = 60 + Utils.randomInt(-12, 12);
+                        const lum = 30 + Utils.randomInt(0, 25);
+                        
+                        this.regrowthLeaves.push({
+                            x: leafX,
+                            y: leafY,
+                            originalX: leafX,
+                            originalY: leafY,
+                            size: leafSize,
+                            progress: 0,
+                            growthSpeed: (0.02 + Math.random() * 0.02) * this.animationSpeed,
+                            color: `hsl(${hue}, ${sat}%, ${lum}%)`,
+                            originalColor: `hsl(${hue}, ${sat}%, ${lum}%)`,
+                            section: this.getLeafSection(leafX),
+                            cyclePhase: 'growing',
+                            yellowProgress: 0,
+                            fallSpeed: 0,
+                            swayAmplitude: Utils.randomInt(10, 25),
+                            swaySpeed: 0.02 + Math.random() * 0.02,
+                            regrowthOrder: this.calculateRegrowthOrder(leafY) // Ordem baseada na altura (y)
+                        });
+                    }
+                }
+            }
+        });
+        
+        // Ordenar folhas por altura (de baixo para cima)
+        this.regrowthLeaves.sort((a, b) => b.y - a.y);
+        
+        // Atribuir ordem de rebrotamento
+        this.regrowthLeaves.forEach((leaf, index) => {
+            leaf.regrowthOrder = index / this.regrowthLeaves.length;
+        });
+    }
+
+    calculateRegrowthOrder(y) {
+        // Folhas mais baixas (maior y) rebrotam primeiro
+        const maxY = 600; // Aproximadamente a altura máxima das folhas
+        const minY = 200; // Aproximadamente a altura mínima das folhas
+        return (maxY - y) / (maxY - minY);
+    }
+
+    updateRegrowthProgress(progress) {
+        // Adicionar folhas gradualmente de baixo para cima
+        this.regrowthLeaves.forEach(leaf => {
+            // Cada folha começa a crescer quando o progresso global atinge sua ordem
+            if (progress >= leaf.regrowthOrder) {
+                // Calcular progresso local da folha
+                const localProgress = Math.min(1, (progress - leaf.regrowthOrder) / (1 - leaf.regrowthOrder));
+                
+                // Aplicar crescimento suave
+                if (localProgress > 0) {
+                    leaf.progress = Math.min(1, localProgress);
+                    
+                    // Adicionar folha ao array principal se ainda não foi adicionada
+                    if (!this.leaves.includes(leaf) && leaf.progress > 0) {
+                        this.leaves.push(leaf);
+                    }
+                }
+            }
+        });
+    }
+
+    completeRegrowthCycle() {
+        // Garantir que todas as folhas estejam no array principal
+        this.regrowthLeaves.forEach(leaf => {
+            leaf.progress = 1;
+            if (!this.leaves.includes(leaf)) {
+                this.leaves.push(leaf);
+            }
+        });
+        
+        // Resetar variáveis do ciclo
+        this.cyclePhase = 'growing';
+        this.cycleTimer = Utils.dateValue;
+        this.regrowthStartTime = 0;
+        this.regrowthLeaves = [];
+        this.fallingLeaves = [];
+    }
+
+    restartGrowthCycle() {
+        // Método legado - agora usa o sistema gradual
+        this.completeRegrowthCycle();
     }
 
     getLeafSection(x) {
@@ -520,8 +815,13 @@ class Tree {
         // Apenas crescimento, sem decaimento
         this.grow();
 
-        // Continua o loop se ainda há crescimento ou folhas voando E se a animação deve continuar
-        const shouldContinue = (!this.allBranchesComplete || !this.allLeavesComplete || !this.allFlyingLeavesComplete) && this.animationRunning;
+        // Continua o loop se ainda há crescimento, folhas caindo, ou ciclo ativo E se a animação deve continuar
+        const shouldContinue = (
+            !this.allBranchesComplete || 
+            !this.allLeavesComplete || 
+            this.fallingLeaves.length > 0 ||
+            this.cycleStarted
+        ) && this.animationRunning;
 
         if (shouldContinue) {
             requestAnimationFrame(this.run.bind(this));
