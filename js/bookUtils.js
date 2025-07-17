@@ -292,34 +292,24 @@ window.videoEventManager = {
 			startPlayBtn.onclick = function(e) {
 				e.stopPropagation();
 				e.preventDefault();
-				const playPromise = startVideo.play();
-				if (playPromise !== undefined) {
-					playPromise.then(() => {
-						$(startPlayBtn).hide();
-					}).catch(error => {
-						console.error('Error playing start video:', error);
-					});
-				}
+				// Use the new synchronized play function for start video
+				playStartVideoWithAudio(startVideo);
+				$(startPlayBtn).hide();
 			};
 			
 			startReplayBtn.onclick = function(e) {
 				e.stopPropagation();
 				e.preventDefault();
 				startVideo.currentTime = 0;
-				const playPromise = startVideo.play();
-				if (playPromise !== undefined) {
-					playPromise.then(() => {
-						$(startReplayBtn).hide();
-					}).catch(error => {
-						console.error('Error replaying start video:', error);
-					});
-				}
+				// Use the new synchronized play function for start video
+				playStartVideoWithAudio(startVideo);
+				$(startReplayBtn).hide();
 			};
 			
-			console.log('Start video listeners attached');
+			console.log('Start video listeners attached with audio synchronization');
 		}
 		
-		// End video listeners
+		// End video listeners (unchanged behavior)
 		const endPlayBtn = document.getElementById('end-video-play');
 		const endReplayBtn = document.getElementById('end-video-replay');
 		const endVideo = document.getElementById('end-video');
@@ -358,8 +348,21 @@ window.videoEventManager = {
 				}
 			};
 			
-			// Event listeners are managed in the page creation functions
-			// to avoid conflicts with existing listeners
+			// Add event listener for when video ends
+			endVideo.addEventListener('ended', function() {
+				$(endReplayBtn).show();
+				$(endPlayBtn).hide();
+				rotateFlipbook(false);
+			});
+			
+			// Add event listener for when video is paused
+			endVideo.addEventListener('pause', function() {
+				if (this.currentTime === 0 || this.ended) {
+					$(endPlayBtn).show();
+					$(endReplayBtn).hide();
+					rotateFlipbook(false);
+				}
+			});
 			
 			console.log('End video listeners attached with rotation');
 		}
@@ -400,6 +403,8 @@ $(document).ready(function() {
 			startVideo.pause();
 			$('#start-video-play').show();
 			$('#start-video-replay').hide();
+			// Stop synchronized audio when start video is paused
+			stopStartVideoAudio();
 		}
 		
 		if (endVideo && !endVideo.paused && !endVideo.ended) {
@@ -432,6 +437,8 @@ $(document).ready(function() {
 			startVideo.pause();
 			$('#start-video-play').show();
 			$('#start-video-replay').hide();
+			// Stop synchronized audio when start video is paused
+			stopStartVideoAudio();
 		}
 		
 		if (endVideo && !endVideo.paused && !endVideo.ended) {
@@ -463,6 +470,8 @@ $(document).ready(function() {
 				startVideo.pause();
 				$('#start-video-play').show();
 				$('#start-video-replay').hide();
+				// Stop synchronized audio when start video is paused
+				stopStartVideoAudio();
 			}
 			
 			if (endVideo && !endVideo.paused && !endVideo.ended) {
@@ -498,6 +507,8 @@ $(document).ready(function() {
 				startVideo.pause();
 				$('#start-video-play').show();
 				$('#start-video-replay').hide();
+				// Stop synchronized audio when start video is paused
+				stopStartVideoAudio();
 			}
 			
 			if (endVideo && !endVideo.paused && !endVideo.ended) {
@@ -520,6 +531,45 @@ $(document).ready(function() {
 		}
 	});
 });
+
+// Global audio element for start video synchronization
+let startVideoAudio = null;
+
+function initializeStartVideoAudio() {
+	if (!startVideoAudio) {
+		startVideoAudio = new Audio('audio/paradiso.mp3');
+		startVideoAudio.preload = 'metadata';
+		console.log('Start video audio initialized');
+	}
+	return startVideoAudio;
+}
+
+function playStartVideoWithAudio(videoElement) {
+	const audio = initializeStartVideoAudio();
+	
+	// Set audio to start from 58.005 seconds
+	audio.currentTime = 58.005;
+	
+	// Play both video and audio
+	const videoPlayPromise = videoElement.play();
+	const audioPlayPromise = audio.play();
+	
+	if (videoPlayPromise !== undefined && audioPlayPromise !== undefined) {
+		Promise.all([videoPlayPromise, audioPlayPromise]).then(() => {
+			console.log('Start video and audio playing synchronized');
+		}).catch(error => {
+			console.error('Error playing start video with audio:', error);
+		});
+	}
+}
+
+function stopStartVideoAudio() {
+	if (startVideoAudio) {
+		startVideoAudio.pause();
+		startVideoAudio.currentTime = 58.100; // Reset to start position
+		console.log('Start video audio stopped');
+	}
+}
 
 function createStartVideoPage() {
 	const $video = $('<video />', {
@@ -571,14 +621,19 @@ function createStartVideoPage() {
 		console.log('Start video ended - showing replay button');
 		$replayBtn.show();
 		$playBtn.hide();
+		// Stop the synchronized audio when video ends
+		stopStartVideoAudio();
 	}).on('pause', function () {
 		console.log('Start video paused - currentTime:', this.currentTime, 'ended:', this.ended);
 		if (this.currentTime === 0 || this.ended) {
 			$playBtn.show();
 			$replayBtn.hide();
 		}
+		// Stop the synchronized audio when video is paused
+		stopStartVideoAudio();
 	}).on('play', function () {
 		console.log('Start video playing - hiding all buttons');
+		videoElement.muted = true; // Ensure video is muted
 		$playBtn.hide();
 		$replayBtn.hide();
 	});
@@ -645,19 +700,16 @@ function createEndVideoPage() {
 	
 	// Video events for UI updates and book rotation
 	$video.off('ended pause play').on('play', function () {
-		console.log('End video playing - hiding all buttons');
 		$playBtn.hide();
 		$replayBtn.hide();
 		// Rotate the entire flipbook when video starts
 		rotateFlipbook(true);
 	}).on('ended', function () {
-		console.log('End video ended - showing replay button');
 		$replayBtn.show();
 		$playBtn.hide();
 		// Rotate back when video ends
 		rotateFlipbook(false);
 	}).on('pause', function () {
-		console.log('End video paused - currentTime:', this.currentTime, 'ended:', this.ended);
 		if (this.currentTime === 0 || this.ended) {
 			$playBtn.show();
 			$replayBtn.hide();
@@ -665,7 +717,6 @@ function createEndVideoPage() {
 			rotateFlipbook(false);
 		}
 	}).on('loadedmetadata', function() {
-		console.log('End video metadata loaded - resetting UI');
 		// Reset UI when video loads
 		$playBtn.show();
 		$replayBtn.hide();
