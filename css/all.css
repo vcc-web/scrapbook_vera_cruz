@@ -121,8 +121,12 @@
     background-position: right 0;
 }
 
-.sj-book .p2 {
-    background-position: -500px 0 !important;
+.sj-book .p2,
+.sj-book .p65 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .sj-book .p66 {

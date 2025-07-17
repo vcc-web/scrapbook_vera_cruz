@@ -40,31 +40,18 @@
 
     // --- Scrapbook helpers from utils.js ---
     const imageFiles = [
-        "", "video-inicio", "i1.jpg", "i1-1.jpg", "i1-2.jpg", "i2 - rodrigo.jpg", "i3 - regiane.jpg", "i4.jpg", "i5.jpg", 
-        "i6 - babies.jpg", "i7.jpg", "i7 - carol.jpg", "i8 - regina.jpg", "i9 - gustavo.jpg", "i10 - viviane.jpg", "i11 - isabela.jpg", 
-        "i12 - giovana-isabela.jpg", "i13 - laura.jpg", "i14.jpg", "oracao1", "i15.jpg", "i16.jpg", "i17 - bete.jpg", 
-        "i18 - andrea.jpg", "i19 - maria_carolina.jpg", "i20 - aline.jpg", "i21 - tati.jpg", "i22 - maria_ferreira.jpg", 
-        "i23 - matheus.jpg", "i24 - ana_paula.jpg", "i25 - junia.jpg", "i26 - flavio.jpg", "i27 - slane.jpg", 
-        "i28 - bruna.jpg", "i29 - andreia.jpg", "i30 - zaza.jpg", "oracao2", "tree", "i31 - will.jpg", "i32.jpg", "i33 - barbara.jpg", 
-        "i34 - fernanda_stuart.jpg", "i35 - marina.jpg", "i36 - silvia.jpg", "i37 - nagila.jpg", "i38.jpg", "i39.jpg", 
-        "i40 - lhara.jpg", "i41 - michele.jpg", "i42 - marcela.jpg", "i43 - ana_beatriz.jpg", "i44.jpg", "oracao3", "i45 - ana_j.jpg", 
-        "i46.jpg", "i47.jpg", "i48.jpg", "i49.jpg", "i51.jpg", "i52.jpg", "i53.jpg", "i54.jpg", "video-fim"
+        "", "video-inicio", "i1 - inicio.jpg", "i2.jpg", "i3 - regiane.jpg", "i4 - orando.jpg", "i5 - babies.jpg", 
+        "i6 - carol.jpg", "i7 - babies_1.jpg", "i8 - regina.jpg", "i9 - gustavo.jpg", "i10 - viviane.jpg", "i11 - isabela.jpg", 
+        "i12 - giovana-isabela.jpg", "i13 - laura.jpg", "i14.jpg", "oracao1", "i15.jpg", "i16 - coracao.jpg",
+        "i17 - bete.jpg", "i18 - andrea.jpg", "i19 - maria_carolina.jpg", "i20 - aline.jpg", "i21 - tati.jpg", 
+        "i22 - maria_ferreira.jpg", "i23 - matheus.jpg", "i24 - ana_paula.jpg", "i25 - junia.jpg", "i26 - flavio.jpg", 
+        "i27 - slane.jpg", "i28 - bruna.jpg", "i29 - andreia.jpg", "i30 - zaza.jpg", "oracao2", "tree",
+        "i31 - will.jpg", "i32 - missa.jpg", "i33 - barbara.jpg", "i34 - fernanda_stuart.jpg", "i35 - marina.jpg",
+        "i36 - silvia.jpg", "i37 - nagila.jpg", "i38 - orando_de_joelhos.jpg", "i39 - lhara.jpg", "i40 - michelle.jpg",
+        "i41 - marcela.jpg", "i42 - ana_beatriz.jpg", "i43 - bilocacao.jpg", "oracao3", "i44 - ana_j.jpg", 
+        "i45 - rodrigo_missa.jpg", "i46.jpg", "i47 - mae_rodrigo.jpg", "i48 - icone.jpg", "i49 - abraco_1.jpg", 
+        "i50 - bolo_1.jpg", "i51 - parabens_1.jpg", "i52 - parabens_2.jpg", "video-fim"
     ]
-
-    // console.log('Files loaded:', files);
-
-    // const imageFiles = [
-    //     "", "video-inicio", "1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "7.jpg", "8.jpg", "9.jpg",
-    //     "10.jpg", "11.jpg", "12.jpg", "13.jpg", "14.jpg", "15.jpg", "16.jpg", "17.jpg", "oracao1", "18.jpg",
-    //     "19.jpg", "20.jpg", "21.jpg", "22.jpg", "23.jpg", "24.jpg", "25.jpg", "26.jpg", "27.jpg", "28.jpg",
-    //     "29.jpg", "30.jpg", "31.jpg", "aline.jpg", "ana_beatriz.jpg", "ana_j.jpg", "andrea.jpg", "andreia.jpg",
-    //     "tree", "oracao2", "barbara.jpg", "bruna.jpg", "carol.jpg", "dona_bete.jpg", "dona_maria_ferreira.jpg",
-    //     "erica.jpg", "fernanda.jpg", "fernanda_stuart.jpg", "flavio.jpg", "giovana_isabela.jpg", "gustavo.jpg",
-    //     "oracao2", "IMG-20250626-WA0019.jpg", "IMG-20250626-WA0020.jpg", "IMG-20250626-WA0021.jpg",
-    //     "isabela.jpg", "junia.jpg", "laura.jpg", "oracao3", "lhara.jpg", "luiz.jpg", "marcela.jpg",
-    //     "maria_carolina.jpg", "marina.jpg", "matheus.jpg", "nagila.jpg", "regiane.jpg", "regiane_2.jpg",
-    //     "regiane_3.jpg", "regina.jpg", "rodrigo.jpg", "santos.jpg", "silvia.jpg", "slane.jpg", "tati.jpg",
-    //     "viviane.jpg", "will.jpg", "zaza.jpg", "video-fim"];
 
     console.log('Image files loaded:', imageFiles);
 

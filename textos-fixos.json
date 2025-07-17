@@ -1,0 +1,82 @@
+[
+    {
+        "autor": "inicio",
+        "texto": "E assim começou tudo...",
+        "foto": "inicio"
+    },
+    {
+        "autor": "orando",
+        "texto": "... sempre em permanente comunhão!",
+        "foto": "orando"
+    },
+    {
+        "autor": "babies_1",
+        "texto": "Sob a providência de Deus",
+        "foto": "babies_1"
+    },
+    {
+        "autor": "carol",
+        "texto": "A pequena gigante",
+        "foto": "carol"
+    },
+    {
+        "autor": "coracao",
+        "texto": "Amor e alegria, nossa marca registrada.",
+        "foto": "coracao"
+    },
+    {
+        "autor": "missa",
+        "texto": "Em tua presença, Senhor",
+        "foto": "missa"
+    },
+    {
+        "autor": "orando_de_joelhos",
+        "texto": "Abençoa, Senhor, nosso sentir, pensar, agir e falar",
+        "foto": "orando_de_joelhos"
+    },
+    {
+        "autor": "bilocacao",
+        "texto": "Com poder de bilocação",
+        "foto": "bilocacao"
+    },
+    {
+        "autor": "ana_j",
+        "texto": "De coração a coração: sintonia total",
+        "foto": "ana_j"
+    },
+    {
+        "autor": "rodrigo_missa",
+        "texto": "Os frutos virão",
+        "foto": "rodrigo_missa"
+    },
+    {
+        "autor": "mae_rodrigo",
+        "texto": "Amor incondicional",
+        "foto": "mae_rodrigo"
+    },
+    {
+        "autor": "icone",
+        "texto": "Mãe santa, em ti confiamos",
+        "foto": "icone"
+    },
+    {
+        "autor": "abraco_1",
+        "texto": "Feliz aniversário",
+        "foto": "abraco_1"
+    },
+    {
+        "autor": "bolo_1",
+        "texto": "Vera Cruz, 1 ano",
+        "foto": "bolo_1"
+    },
+    {
+        "autor": "parabens_1",
+        "texto": "Para...",
+        "foto": "parabens_1"
+    },
+    {
+        "autor": "parabens_2",
+        "texto": "...bens!",
+        "foto": "parabens_2"
+    }
+]
