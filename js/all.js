@@ -29,12 +29,12 @@
         depthWidth = 19 * Math.min(1, (pages - page) * 2 / pages);
 
         if (newPage < pages - 3)
-            $(".sj-book .p65 .depth").css({
+            $(".sj-book .p61 .depth").css({
                 width: depthWidth,
                 right: 20 - depthWidth
             });
         else
-            $(".sj-book .p65 .depth").css({ width: 0 });
+            $(".sj-book .p61 .depth").css({ width: 0 });
 
     }
 
@@ -98,7 +98,7 @@
             acceleration: !isChrome(),
             autoCenter: true,
             duration: 1500,
-            pages: 66,
+            pages: 62,
             width: 1000,
             height: 800,
             when: {
@@ -145,9 +145,9 @@
                         $(".sj-book .p2").removeClass("fixed");
 
                     if (page < book.turn("pages"))
-                        $(".sj-book .p65").addClass("fixed");
+                        $(".sj-book .p61").addClass("fixed");
                     else
-                        $(".sj-book .p65").removeClass("fixed");
+                        $(".sj-book .p61").removeClass("fixed");
 
                     // Update the spine position
 
