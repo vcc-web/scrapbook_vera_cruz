@@ -1,6 +1,7 @@
 
 // Load frases-vera-cruz.json once and keep in memory
 let scrapbookJsonData = [];
+let fixedTextsData = [];
 
 function loadScrapbookJsonData() {
 	if (scrapbookJsonData.length > 0) return scrapbookJsonData;
@@ -19,6 +20,23 @@ function loadScrapbookJsonData() {
 	return scrapbookJsonData;
 }
 
+function loadFixedTextsData() {
+	if (fixedTextsData.length > 0) return fixedTextsData;
+	// Synchronous fetch for simplicity (assumes local file)
+	$.ajax({
+		url: 'textos-fixos.json',
+		dataType: 'json',
+		async: false,
+		success: function (data) {
+			fixedTextsData = data;
+		},
+		error: function () {
+			fixedTextsData = [];
+		}
+	});
+	return fixedTextsData;
+}
+
 function getRandomRotation() {
 	return Math.random() * 40 - 20; // -20 to 20 degrees
 }
@@ -29,6 +47,71 @@ function getRandomPattern() {
 		pattern = Math.floor(Math.random() * 156) + 1;
 	} while (pattern === 56 || pattern === 57 || pattern === 11);
 	return pattern; // patterns 1-156
+}
+
+
+// Returns the fixed text for a given imageSrc
+function getFixedTextForImage(imageSrc) {
+	const data = loadFixedTextsData();
+	
+	// Extract base name from image
+	let baseName = null;
+	
+	// Check if it's in the format "iX - <nome>.jpg"
+	const match = imageSrc.match(/^i\d+\s*-\s*(.+)\.jpg$/i);
+	if (match) {
+		baseName = match[1].trim();
+	} else {
+		// For other formats, use filename without extension
+		baseName = imageSrc.replace(/\.(jpg|jpeg|png|gif)$/i, '');
+	}
+	
+	if (!baseName) return null;
+	
+	console.log(`Searching for fixed text for: "${baseName}" from image: "${imageSrc}"`);
+	
+	// Try to find entry by foto field matching the base name
+	const entry = data.find(e => {
+		if (!e.foto) return false;
+		
+		const fotoName = e.foto.toLowerCase().trim();
+		const searchName = baseName.toLowerCase().trim();
+		
+		// Direct match
+		if (fotoName === searchName) {
+			console.log(`Fixed text direct match found: ${fotoName} === ${searchName}`);
+			return true;
+		}
+		
+		// Try matching with underscores/spaces
+		if (fotoName.replace(/_/g, ' ') === searchName) {
+			console.log(`Fixed text underscore match found: ${fotoName.replace(/_/g, ' ')} === ${searchName}`);
+			return true;
+		}
+		
+		if (fotoName === searchName.replace(/ /g, '_')) {
+			console.log(`Fixed text space match found: ${fotoName} === ${searchName.replace(/ /g, '_')}`);
+			return true;
+		}
+		
+		// Try matching without special characters
+		const normalizedFoto = fotoName.replace(/[^a-z0-9]/g, '');
+		const normalizedSearch = searchName.replace(/[^a-z0-9]/g, '');
+		if (normalizedFoto === normalizedSearch) {
+			console.log(`Fixed text normalized match found: ${normalizedFoto} === ${normalizedSearch}`);
+			return true;
+		}
+		
+		return false;
+	});
+	
+	if (!entry) {
+		console.log(`No fixed text entry found for: "${baseName}" from image: "${imageSrc}"`);
+		return null;
+	}
+	
+	console.log(`Found fixed text entry for ${baseName}:`, entry.texto);
+	return entry.texto;
 }
 
 
@@ -778,6 +861,7 @@ function createScrapbookPage(imageSrc, imageAlt, page, book, isFirstPage = false
 	const layout = getRandomLayout();
 	const postItColor = getRandomPostItColor();
 	const postItText = getPostItTextForImage(imageSrc);
+	const fixedText = getFixedTextForImage(imageSrc);
 
 	// Check if there is a matching audio file
 	const audioFiles = ['marcela.opus', 'maria_ferreira.opus', 'slane.opus', 'valeska.opus', 'will.opus'];
@@ -881,6 +965,32 @@ function createScrapbookPage(imageSrc, imageAlt, page, book, isFirstPage = false
 			isFirstPage: isFirstPage,
 			isLastPage: isLastPage
 		});
+	}
+
+	// Add fixed text if available
+	if (fixedText && !isFirstPage && !isLastPage) {
+		pageElement.find('.scrapbook-content').append(
+			$('<div />', {
+				'class': 'fixed-text',
+				text: fixedText,
+				css: {
+					position: 'absolute',
+					top: '70px',
+					left: '50%',
+					transform: 'translateX(-50%)',
+					fontFamily: '"Dancing Script", cursive',
+					fontSize: '26px',
+					fontWeight: '600',
+					color: '#5d4e37',
+					textShadow: '1px 1px 2px rgba(255, 255, 255, 0.8)',
+					textAlign: 'center',
+					maxWidth: '80%',
+					lineHeight: '1.2',
+					zIndex: '10',
+					pointerEvents: 'none'
+				}
+			})
+		);
 	}
 
 	if (postItText && !isFirstPage && !isLastPage) {
