@@ -67,9 +67,7 @@ function getRandomBackground() {
 
 
 // Returns the fixed text for a given imageSrc
-function getFixedTextForImage(imageSrc) {
-	const data = loadFixedTextsData();
-	
+function getBaseNameFromImage(imageSrc) {
 	// Extract base name from image
 	let baseName = null;
 	
@@ -81,6 +79,15 @@ function getFixedTextForImage(imageSrc) {
 		// For other formats, use filename without extension
 		baseName = imageSrc.replace(/\.(jpg|jpeg|png|gif)$/i, '');
 	}
+	
+	return baseName;
+}
+
+function getFixedTextForImage(imageSrc) {
+	const data = loadFixedTextsData();
+	
+	// Use the utility function to get base name
+	const baseName = getBaseNameFromImage(imageSrc);
 	
 	if (!baseName) return null;
 	
@@ -1009,6 +1016,20 @@ function createScrapbookPage(imageSrc, imageAlt, page, book, isFirstPage = false
 
 	// Add fixed text if available
 	if (fixedText && !isFirstPage && !isLastPage) {
+		// Determinar se é uma imagem de aniversário que precisa de fonte maior
+		const baseName = getBaseNameFromImage(imageSrc);
+		const isParabensImage = ['abraco_1', 'bolo_1'].includes(baseName);
+		const isAnniversaryImage = ['parabens_1', 'parabens_2'].includes(baseName);
+		let fontSize;
+
+		if (isParabensImage) {
+			fontSize = '36px';
+		} else if (isAnniversaryImage) {
+			fontSize = '48px';
+		} else {
+			fontSize = '26px';
+		}
+		
 		pageElement.find('.scrapbook-content').append(
 			$('<div />', {
 				'class': 'fixed-text',
@@ -1019,7 +1040,7 @@ function createScrapbookPage(imageSrc, imageAlt, page, book, isFirstPage = false
 					left: '50%',
 					transform: 'translateX(-50%)',
 					fontFamily: '"Dancing Script", cursive',
-					fontSize: '26px',
+					fontSize: fontSize,
 					fontWeight: '600',
 					color: '#5d4e37',
 					textShadow: '1px 1px 2px rgba(255, 255, 255, 0.8)',

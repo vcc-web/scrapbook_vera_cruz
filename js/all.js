@@ -42,15 +42,15 @@
     const imageFiles = [
         "", "video-inicio", "i1 - inicio.jpg", "i2.jpg", "i3 - regiane.jpg", "i4 - orando.jpg", "i5 - babies.jpg", 
         "i6 - carol.jpg", "i7 - babies_1.jpg", "i8 - regina.jpg", "i9 - gustavo.jpg", "i10 - viviane.jpg", "i11 - isabela.jpg", 
-        "i12 - giovana-isabela.jpg", "i13 - laura.jpg", "i14.jpg", "oracao1", "i15.jpg", "i16 - coracao.jpg",
+        "i12 - giovana-isabela.jpg", "i13 - laura.jpg", "i14.jpg", "i15.jpg", "i16 - coracao.jpg", "oracao1",
         "i17 - bete.jpg", "i18 - andrea.jpg", "i19 - maria_carolina.jpg", "i20 - aline.jpg", "i21 - tati.jpg", 
         "i22 - maria_ferreira.jpg", "i23 - matheus.jpg", "i24 - ana_paula.jpg", "i25 - junia.jpg", "i26 - flavio.jpg", 
         "i27 - slane.jpg", "i28 - bruna.jpg", "i29 - andreia.jpg", "i30 - zaza.jpg", "oracao2", "tree",
-        "i31 - will.jpg", "i32 - missa.jpg", "i33 - barbara.jpg", "i34 - fernanda_stuart.jpg", "i35 - marina.jpg",
+        "i31 - will.jpg", "i32 - barbara.jpg", "i33 - fernanda_stuart.jpg", "i34 - missa.jpg", "i35 - marina.jpg",
         "i36 - silvia.jpg", "i37 - nagila.jpg", "i38 - orando_de_joelhos.jpg", "i39 - lhara.jpg", "i40 - michelle.jpg",
         "i41 - marcela.jpg", "i42 - ana_beatriz.jpg", "i43 - bilocacao.jpg", "oracao3", "i44 - ana_j.jpg", 
         "i45 - rodrigo_missa.jpg", "i46.jpg", "i47 - mae_rodrigo.jpg", "i48 - icone.jpg", "i49 - abraco_1.jpg", 
-        "i50 - bolo_1.jpg", "i51 - parabens_1.jpg", "i52 - parabens_2.jpg", "video-fim"
+        "i50.jpg", "i51 - parabens_1.jpg", "i52 - parabens_2.jpg", "video-fim"
     ]
 
     console.log('Image files loaded:', imageFiles);
